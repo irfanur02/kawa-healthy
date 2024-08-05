@@ -1,0 +1,571 @@
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+:root{
+  --purpledark: #2c1a4d;
+  --purplelight: #6f42c1;
+  --purple: #6f42c1;
+  --purplelight: #e2d9f3;
+  --tosca: #087990;
+  --toscalight: #d2f4ea;
+  --red: #DC3545;
+  --pink: #d63384;
+  --pinklight: #f8d7da;
+}
+
+body {
+  font-size: .9em;
+  color: var(--purpledark);
+}
+
+.my-text-purpledark {
+  color: var(--purpledark);
+}
+
+.my-border-input {
+  outline: 1px solid black;
+}
+
+.my-border-btn {
+  border: 1px solid black !important;
+}
+
+.my-border-btn:hover {
+  border: 1px solid black !important;
+}
+
+.my-border-btn:active {
+  border: 1px solid black !important;
+}
+
+.my-btn-purple {
+  color: white !important;
+  background-color: var(--purple) !important;
+}
+
+.my-btn-purpledark {
+  color: white !important;
+  background-color: var(--purpledark) !important;
+}
+
+.my-btn-purpledark:hover {
+  color: white !important;
+  background-color: var(--purpledark) !important;
+  filter: brightness(1.1) !important;
+}
+
+.my-btn-purple:hover {
+  color: white !important;
+  background-color: var(--purpledark) !important;
+  filter: brightness(1.1) !important;
+}
+
+.my-btn-tosca {
+  color: white;
+  background-color: var(--tosca) !important;
+}
+
+.my-btn-tosca:hover {
+  color: white !important;
+  background-color: var(--tosca) !important;
+  filter: brightness(1.1) !important;
+}
+
+.my-bg-purple {
+  background-color: var(--purple) !important;
+  color: white !important;
+}
+
+.my-bg-purpledark {
+  background-color: var(--purpledark) !important;
+  color: white;
+}
+
+.my-bg-pinklight {
+  background-color: var(--pinklight) !important;
+}
+
+.my-bg-purplelight {
+  background-color: var(--purplelight) !important;
+}
+
+.my-bg-toscalight {
+  background-color: var(--toscalight) !important;
+  color: black !important;
+}
+
+.my-btn-purpledark {
+  color: white !important;
+  background-color: var(--purpledark) !important;
+}
+
+.my-btn-purpledark:hover {
+  color: white !important;
+  background-color: var(--purpledark) !important;
+  filter: brightness(1.1) !important;
+}
+
+.my-btn-pink {
+  color: white !important;
+  background-color: var(--pink) !important;
+}
+
+.my-btn-pink:hover {
+  color: white !important;
+  background-color: var(--pink) !important;
+  filter: brightness(1.1) !important;
+}
+
+.my-btn-pink:active {
+  color: white !important;
+  background-color: var(--pink) !important;
+  filter: brightness(1) !important;
+}
+
+/*--------------*/
+
+.content-daftar ul li:nth-child(1) {
+  border-bottom: 1px solid black !important;
+}
+
+nav.my-nav {
+  box-shadow: 1px -1px 10px black !important;
+}
+
+nav img {
+  box-shadow: 0px 3px 10px -4px black !important;
+}
+
+.my-dropdown {
+  position: relative;
+  direction: rtl;
+}
+
+.my-dropdown-menu {
+  display: none;
+  background-color: salmon;
+  position: absolute;
+  margin-top: .2em;
+}
+
+.my-dropdown-menu > * {
+  padding: .2em .7em .2em 1.5em !important;
+}
+
+.content {
+  margin-top: 4em;
+}
+
+.content ul.nav-tab a {
+  outline: 1px solid black !important;
+  width: 10em !important;
+}
+
+.content ul.nav-tab a:hover {
+  background-color: var(--purple);
+  color: white;
+}
+
+.my-active-tab{
+  background-color: var(--purple);
+  color: white;
+}
+
+.content-pesananku .table-content,
+.content-pesanan-selesai .table-content {
+  border: 1px solid black;
+  width: fit-content;
+  margin: 0 auto;
+  border-radius: .5em;
+  overflow: hidden;
+}
+
+.content-pesananku table thead tr td,
+.content-pesanan-selesai table thead tr td {
+  background-color: var(--purple);
+  color: white;
+}
+
+.content-pesananku table tr td,
+.content-pesanan-selesai table tr td {
+  border-bottom: 1px solid black;
+}
+
+.content-pesananku table tbody tr:last-child td,
+.content-pesanan-selesai table tbody tr:last-child td {
+  border-bottom: unset;
+}
+
+.content-pesananku table tr td {
+  padding-left: .5em !important;
+  padding-right: .5em !important;
+}
+
+.content-pesanan-selesai table tr td {
+  padding-left: 1.3em !important;
+  padding-right: 1.3em !important;
+}
+
+.content-detail-pesanan-b ul,
+.content-detail-pesanan-p ul {
+  max-width: 600px;
+}
+
+.content-detail-pesanan-b ul.data-pesanan p,
+.content-detail-pesanan-p ul.data-pesanan p {
+  margin: 0 !important;
+}
+
+.content-detail-pesanan-b ul.list-pesanan li,
+.content-detail-pesanan-p ul.list-pesanan li {
+  border-top: 1px solid black;
+}
+
+.content-detail-pesanan-b ul.list-pesanan li:first-child,
+.content-detail-pesanan-p ul.list-pesanan li:first-child {
+  background-color: var(--purple);
+  color: white;
+  border: none;
+}
+
+.content-detail-pesanan-b table tr td {
+  border: 1px solid black;
+}
+
+.content-daftar-pesanan {
+  max-width: 50em;
+}
+
+.content-daftar-pesanan ul.list-daftar-pesanan li {
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
+  border-left: 1px solid black;
+}
+
+.content-daftar-pesanan ul.list-daftar-pesanan li:first-child {
+  border-top: 1px solid black;
+}
+
+.content-daftar-pesanan ul.list-daftar-pesanan button {
+  background-color: var(--red);
+  color: white;
+  height: 100%;
+  font-size: .9em;
+  border-left: 1px solid black;
+}
+
+.content-daftar-pesanan ul.list-daftar-pesanan button:hover {
+  background-color: var(--red);
+  filter: brightness(.9);
+  color: white;
+}
+
+.content-daftar-pesanan ul.list-daftar-pesanan button:active {
+  background-color: var(--red);
+  color: white;
+  border-left: 1px solid black;
+  border-right: 1px solid var(--red);
+  border-top: 1px solid var(--red);
+  border-bottom: 1px solid var(--red);
+}
+
+.content-daftar-pesanan .my-collapse {
+  display: none;
+}
+
+#modalPaketan .my-collapse {
+  display: none;
+}
+
+.content-daftar-pesanan .list-pembayaran {
+  border:  unset;
+}
+
+.content-daftar-pesanan .InfoDaftarPesanan {
+  display: none;
+}
+
+.content-homepage .my-jumbotron {
+  padding-top: 3em;
+  position: relative;
+  height: 100vh;
+  background-color: salmon;
+  overflow: hidden;
+}
+
+.content-homepage .my-img-jumbotron {
+  background-image: url('/assets/img/background.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.1);
+  height: 100%;
+  box-shadow: 
+    inset 0px 11px 8px -10px black,
+    inset 0px -130px 50px -100px black;
+}
+
+.content-homepage .my-effect {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 100%;
+  height: 50%;
+  transform: scale(1.3);
+  background-color: var(--pinklight);
+  filter: blur(130px);
+}
+
+.content-homepage .my-body-jumbotron {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  left: 0;
+  right: 0;
+}
+
+.content-homepage .my-body-jumbotron h4 {
+  letter-spacing: .2em;
+}
+
+.content-homepage .my-body-jumbotron h1 {
+  letter-spacing: .1em;
+}
+
+.content-homepage .my-body-jumbotron h3 {
+  letter-spacing: .1em;
+}
+
+.content-homepage .my-body-jumbotron h1, h3, h4 {
+  text-shadow: 0 0 4px rgba(0, 0, 0, .4);
+}
+
+.content-homepage .my-body-jumbotron a:first-child {
+  padding-right: unset !important;
+}
+
+.content-homepage .my-body-jumbotron a:last-child {
+  padding-left: unset !important;
+}
+
+.content-homepage .my-body-jumbotron .my-btn-group {
+  box-shadow: 0 5px 20px rgba(0, 0, 0, .7);
+}
+
+.content-homepage .my-body-jumbotron a:hover {
+  background-color: var(--purpledark);
+  color: white;
+}
+
+.content-homepage .content-katalog {
+  padding-top: 5em;
+  padding-bottom: 25em;
+  padding-left: 1.5em;
+  padding-right: 1.5em;
+  background-color: var(--pinklight);
+  height: auto;
+}
+
+.content-homepage .content-body-katalog {
+  max-width: 100em;
+  margin: 0 auto;
+}
+
+.content-homepage .personal .list-data-menu ul li {
+  padding: .6em !important;
+  border-bottom: 1px solid black;
+}
+
+.content-homepage .family .list-data-menu ul {
+  height: fit-content;
+}
+
+.content-homepage .family .list-data-menu ul li {
+  padding: .6em !important;
+  border-bottom: 1px solid black !important;
+}
+
+.content-homepage .personal .list-data-menu ul li:not(:first-child):hover {
+  color: var(--purpledark) !important;
+  filter: brightness(.9);
+}
+
+.content-homepage .family .list-data-menu ul li:not(:first-child):not(:last-child):hover {
+  background-color: #e8e8e8;
+}
+
+.content-homepage .personal .list-data-menu ul li:first-child {
+  border-bottom: 1px solid black !important;
+  padding: unset !important;
+}
+
+.content-homepage .personal .list-data-menu ul li:last-child {
+  border-bottom: unset;
+}
+
+.content-homepage .family .list-data-menu ul li:last-child {
+  border-bottom: unset !important;
+  height: 100%;
+}
+
+.content-homepage .personal .list-data-menu ul li .row div:nth-child(2) {
+  width: 30%;
+}
+
+.content-homepage .personal .list-data-menu ul li .row div:nth-child(2) label {
+  margin: 0 .5em;
+}
+
+.content-homepage .personal .list-data-menu span:nth-child(1) {
+  transform: rotate(90deg);
+}
+
+.content-homepage .personal .btnPilihMenu:hover {
+  background-color: var(--purpledark);
+  filter: brightness(.9);
+  cursor: pointer;
+}
+
+.content-homepage .personal .list-data-menu input[type=checkbox],
+.content-homepage .personal .list-data-menu button {
+  display: none;
+}
+
+.content-homepage .family .list-data-menu input[type=checkbox],
+.content-homepage .personal .list-data-menu input[type=checkbox] {
+  width: 1.5em;
+  height: 1.5em;
+}
+
+.content-homepage .family .list-data-menu input[type=checkbox],
+.content-homepage .family .list-data-menu button:nth-child(2) {
+  display: none;
+}
+
+#modalPaketan .multiselect {
+  width: 100%;
+}
+
+#modalPaketan .selectBox {
+  position: relative;
+}
+
+#modalPaketan .selectBox select {
+  width: 100%;
+}
+
+#modalPaketan .overSelect {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+#modalPaketan #checkboxes {
+  display: none;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  border-left: 1px solid black;
+}
+
+#modalPaketan #checkboxes label {
+  display: block;
+  padding: .5em;
+}
+
+#modalPaketan #checkboxes label:hover {
+  background-color: lightgrey;
+}
+
+@media (max-width: 576px) {
+  .content-homepage .personal .list-data-menu {
+    width: 100%;
+  }
+
+  .content-homepage .personal .list-data-menu ul {
+    margin-bottom: 1em;
+  }
+
+  .content-homepage .family .list-data-menu ul {
+    margin: .4em;
+    width: 100%;
+  }
+
+  .content-homepage .personal .list-data-menu ul:last-child {
+    margin-bottom: unset;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 768px) {
+  .content-homepage .personal .list-data-menu {
+    width: 100%;
+  }
+
+  .content-homepage .personal .list-data-menu ul {
+    margin-bottom: 1em;
+  }
+
+  .content-homepage .family .list-data-menu ul {
+    margin: .4em;
+    width: calc(50% - 1em);
+  }
+
+  .content-homepage .personal .list-data-menu ul:last-child {
+    margin-bottom: unset;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 992px) {
+  .content-homepage .personal .list-data-menu {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .content-homepage .personal .list-data-menu ul {
+    margin: .5em;
+    width: calc(50% - 1em);
+  }
+
+  .content-homepage .family .list-data-menu ul {
+    margin: .4em;
+    width: calc(33.3% - 1em);
+  }
+
+  .content-homepage .personal .list-data-menu ul li .row div:nth-child(2) {
+    width: 30%;
+  }
+}
+
+@media (min-width: 992px) {
+  .content-homepage .personal .list-data-menu {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .content-homepage .personal .list-data-menu ul {
+    margin: .5em;
+    width: calc(50% - 1em);
+  }
+
+  .content-homepage .family .list-data-menu ul {
+    margin: .4em;
+    width: calc(25% - 1em);
+  }
+
+  .content-homepage .personal .list-data-menu ul li .row div:nth-child(2) {
+    width: 30%;
+  }
+}

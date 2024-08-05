@@ -1,0 +1,382 @@
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.my-border-input {
+  outline: 1px solid black;
+}
+
+.my-border-btn {
+  border: 1px solid black !important;
+}
+
+.my-border-btn:hover {
+  border: 1px solid black !important;
+}
+
+.my-border-btn:active {
+  border: 1px solid black !important;
+}
+
+.my-bg-main,
+.my-btn-main {
+  background-color: #055160;
+  color: white;
+}
+
+.my-btn-main:hover {
+  background-color: #033f4b;
+  color: white;
+}
+
+.my-btn-main:active {
+  background-color: #055160 !important;
+  color: white !important;
+}
+
+.my-text-main {
+  color: #055160 !important;
+}
+
+.my-template-area {
+  width: 100%;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  grid-template-areas:
+    'navbar navbar'
+    'sidebar content'
+    'sidebar content';
+}
+
+.my-navbar {
+  grid-area: navbar;
+  background-color: #055160;
+  color: white;
+  padding: 7px 14px 7px 14px;
+  z-index: 99;
+}
+
+.my-sidebar {
+  grid-area: sidebar;
+  position: relative;
+  top: 0;
+  bottom: 0;
+  height: 100vmax;
+  background-color: white;
+  border-right: 1px solid black;
+  border-radius: 0px;
+}
+
+.my-content {
+  grid-area: content;
+  padding: 0 10px 0 10px;
+}
+
+.my-list-sidebar {
+  padding-left: 1.5rem !important;
+  padding-right: 1.5rem !important;
+  font-size: .9em !important;
+  border: none;
+  border-radius: unset !important;
+}
+
+.my-active {
+  background-color: #055160;
+  color: white;
+}
+
+.my-active:hover {
+  background-color: #055160;
+  color: white;
+}
+
+.my-navbar .toggleMenu {
+  display: none !important;
+}
+
+.my-navbar .toggleMenu:hover {
+  cursor: pointer;
+}
+
+table.my-table-admin thead td {
+  background-color: #055160 !important;
+  color: white !important;
+}
+
+table.my-table-admin tr {
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+}
+
+.content-pesanan table.my-table-admin tr {
+  border: 1px solid black;
+}
+
+.content-detail-pesanan table.my-full-border tr {
+  border: 1px solid black !important;
+}
+
+.content-detail-pesanan table.my-full-border thead td {
+  background-color: #055160 !important;
+  color: white !important;
+}
+
+.content-detail-pesanan table.my-full-border tbody td {
+  border-bottom: unset;
+}
+
+.content-dashboard table.my-full-border tr {
+  border: 1px solid black !important;
+}
+
+.content-dashboard table.my-full-border thead td {
+  background-color: #055160 !important;
+  color: white !important;
+}
+
+.content-dashboard table.my-full-border tbody td {
+  border-bottom: unset;
+}
+
+.content-dashboard .list-pesanan {
+  width: 30em;
+}
+
+.content-detail-pesanan .list-pesanan {
+  width: fit-content;
+}
+
+.content-paket-menu {
+  width: 80%;
+}
+
+.content-biaya-ongkir {
+  width: 70%;
+}
+
+.content-review-menu{
+  width: 80%;
+}
+
+.content-jadwal-personal{
+  width: 100%;
+  margin: 0 auto;
+}
+
+.content-pesanan table tr {
+  white-space: nowrap !important;
+}
+
+.content-batal-pesanan table {
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.my-form-jadwal-family {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.my-form-jadwal-family input {
+  display: block;
+}
+
+.my-form-jadwal-family button {
+  width: 100%;
+}
+
+.list-content-jadwal li {
+  padding: .5em !important;
+}
+
+.list-tambah-menu li {
+  padding: 0 !important;
+  margin: 0 !important;
+  border: unset !important;
+}
+
+.btnHapusListMenu {
+  padding: 0 !important;
+}
+
+.content-jadwal-personal .list-jadwal{
+  display: flex;
+}
+
+.content-jadwal-personal .list-jadwal > *{
+  width: 100%;
+}
+
+.content-jadwal-personal .list-jadwal .sublist-jadwal:nth-child(1) {
+  width: fit-content;
+  padding: 10px;
+}
+
+.header-list{
+  background-color: #055160;
+  color: white;
+  padding: 10px;
+}
+
+.body-list{
+  padding: 10px;
+}
+
+.content-pesanan ul a, 
+.content-detail-pesanan ul a, 
+.content-batal-pesanan ul a, 
+.content-riwayat-pesanan ul a {
+  outline: 1px solid black !important;
+}
+
+.content-pesanan ul li, 
+.content-riwayat-pesanan ul li {
+  padding: unset !important;
+  background-color: unset !important;
+  border: unset !important;
+}
+
+.content-riwayat-pesanan table td{
+/*  max-width: 70ch !important;*/
+  white-space: nowrap !important;
+/*  width: fit-content; !important;*/
+/*  max-width: fit-content !important;*/
+}
+
+.content-detail-pesanan ul li,
+.content-dashboard ul li {
+  border-left: 1px solid black !important;
+  border-top: 1px solid black !important;
+  border-right: 1px solid black !important;
+}
+
+.content-detail-pesanan ul li:last-child,
+.content-dashboard ul li:last-child {
+  border-bottom: 1px solid black !important;
+}
+
+@media (max-width: 576px) {
+  .my-navbar .toggleMenu {
+    display: inline-block !important;
+  }
+
+  .content-jadwal-family .list-content-jadwal {
+    width: 70% !important;
+  }
+
+  .content-biaya-ongkir,
+  .content-paket-menu,
+  .content-review-menu,
+  .content-tambah-menu .form-tambahMenu {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .my-navbar .toggleMenu {
+    display: inline-block !important;
+    position: relative;
+  }
+
+  .my-template-area {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-areas:
+      'navbar'
+      'sidebar'
+      'content';
+  }
+
+  .toggleMenu.dropdownMenu {
+    position: absolute;
+    background-color: white;
+    top: 0;
+    bottom: 0;
+    padding-top: 2.9em;
+    transform: translateX(-100%);
+    z-index: 88;
+  }
+
+  .toggleMenu.dropdownMenu.open {
+    animation-name: openSidebar;
+    animation-duration: .500s;
+    animation-fill-mode: forwards;
+  }
+
+  .toggleMenu.dropdownMenu.close {
+    animation-name: closeSidebar;
+    animation-duration: .500s;
+    animation-fill-mode: forwards;
+  }
+
+  .content-jadwal-personal .list-jadwal{
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 3em;
+  }
+
+  .content-jadwal-personal .list-jadwal .sublist-jadwal:nth-child(1) {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .content-jadwal-personal .sublist-jadwal:nth-child(1) {
+    border: 1px solid black !important;
+    border-radius: unset !important;
+    border-top-left-radius: .5em !important;
+    border-top-right-radius: .5em !important;
+  }
+
+  .content-jadwal-personal .sublist-jadwal:nth-child(2) {
+    border: unset !important;
+    border-right: 1px solid black !important;
+    border-left: 1px solid black !important;
+  }
+
+  .content-jadwal-personal .sublist-jadwal:nth-child(3) {
+    border: 1px solid black !important;
+    border-radius: unset !important;
+    border-bottom-left-radius: .5em !important;
+    border-bottom-right-radius: .5em !important;
+  }
+
+  .content-jadwal-family .list-content-jadwal {
+/*    width: 50% !important;*/
+    margin-bottom: 1em;
+  }
+}
+
+@media (min-width: 768px) {
+}
+
+@media (min-width: 576px) and (max-width: 768px) { 
+}
+
+@media (min-width: 768px) and (max-width: 992px) {
+}
+
+@media (min-width: 992px) {
+}
+
+@keyframes openSidebar {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    box-shadow: 0 10px 15px black;
+    transform: translateX(0);
+  }
+}
+
+@keyframes closeSidebar {
+  from {
+    transform: translateX(0);
+    box-shadow: 0 10px 15px black;
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
