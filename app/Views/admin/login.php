@@ -15,14 +15,25 @@
       FORM LOGIN
     </li>
     <li class="list-group-item">
-      <form action="" class="mt-4 mb-4">
+      <form action="/dadmin/authLogin" method="post" class="mt-4 mb-4">
+        <?php echo csrf_field(); ?>
         <div class="mb-3">
           <label for="txtUsernameAdmin" class="form-label">Username</label>
-          <input type="text" class="form-control my-border-input" id="txtUsernameAdmin" required>
+          <input type="text" class="form-control my-border-input <?php echo session()->getFlashdata('dataLogin') == "username" ? "is-invalid" : ""; ?>" <?php echo session()->getFlashdata('dataLogin') == "username" ? "autofocus" : ""; ?> name="username" id="txtUsernameAdmin" value="<?php echo old('username'); ?>" required>
+          <?php if (session()->getFlashdata('dataLogin') == "username"): ?>
+            <div class="invalid-feedback">
+              Username tidak ada
+            </div>
+          <?php endif; ?>
         </div>
         <div class="mb-4">
           <label for="txtPasswordAdmin" class="form-label">Password</label>
-          <input type="password" class="form-control my-border-input" id="txtPasswordAdmin" required>
+          <input type="password" class="form-control my-border-input <?php echo session()->getFlashdata('dataLogin') == "password" ? "is-invalid" : ""; ?>" <?php echo session()->getFlashdata('dataLogin') == "password" ? "autofocus" : ""; ?> name="password" id="txtPasswordAdmin" required>
+          <?php if (session()->getFlashdata('dataLogin') == "password"): ?>
+            <div class="invalid-feedback">
+              Password salah
+            </div>
+          <?php endif; ?>
         </div>
         <div class="d-grid gap-2 col-6 mx-auto">
           <button type="submit" class="btn btn-md my-btn-main my-border-btn rounded-pill">Masuk</button>
