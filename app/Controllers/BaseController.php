@@ -46,6 +46,9 @@ abstract class BaseController extends Controller
     /**
      * @return void
      */
+
+    protected $db;
+
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
         // Do Not Edit This Line
@@ -54,5 +57,6 @@ abstract class BaseController extends Controller
         // Preload any models, libraries, etc, here.
 
         // E.g.: $this->session = \Config\Services::session();
+        $this->db = \Config\Database::connect();
     }
 }

@@ -134,6 +134,138 @@ $(document).ready(function() {
   })
   // view paket menu
 
+
+
+  // view biaya ongkir
+  $(".content-biaya-ongkir #dataTableOngkir").on('click', '.btnModalEditOngkir', function() {
+    var id = $(this).data('id');
+    var namaPaket = $(this).parent().parent().find('td:nth-child(2)').text();
+    var hargaPaket = $(this).parent().parent().find('td:nth-child(3)').text();
+    hargaPaket = hargaPaket.split(' ');
+    hargaPaket = hargaPaket[1];
+    $("#modalEditKota #formOngkir").attr('action', '/dadmin/biayaOngkir/update/' + id);
+    $("#modalEditKota input[name=namaKota]").val(namaPaket);
+    $("#modalEditKota input[name=biayaOngkir]").val(hargaPaket);
+  })
+
+  $(".content-biaya-ongkir #dataTableOngkir").on('click', '.btnModalHapusOngkir', function() {
+    var id = $(this).data('id');
+    $("#modalHapusKota form").attr('action', '/dadmin/biayaOngkir/delete/' + id);
+  })
+
+  $(".content-biaya-ongkir #formCariOngkirKota input").on('keyup', function() {
+    var keyword = $(this).val();
+    if (keyword !== '') {
+      $.ajax({
+        url: base_url + '/dadmin/biayaOngkir/cari/',
+        type: 'POST',
+        data: {
+          keyword: keyword,
+        },
+        dataType: 'json',
+        success: function (data) {
+          var element = '';
+          $("#formCariOngkirKota #datalistOptions").empty();
+          for (var i = 0; i < data.dataPencarian.length; i++) {
+            element += `<option class="itemPencarian" value="${data.dataPencarian[i].ongkir_kota}">`;
+          }
+
+          $("#formCariOngkirKota #datalistOptions").append(element);
+        }
+      });
+    }
+  })
+
+  $(".content-biaya-ongkir #formCariOngkirKota input").on('keypress', function(e) {
+    var keyword = $(this).val();
+    if(e.which == 13) {
+      $.ajax({
+      url: base_url + '/dadmin/biayaOngkir/cari/',
+      type: 'POST',
+      data: {
+        keyword: keyword,
+      },
+      dataType: 'json',
+      success: function (data) {
+        var element = '';
+        for (var i = 0; i < data.dataPencarian.length; i++) {
+          element += `<tr class="align-middle">
+                        <td scope="row">${i+1}.</td>
+                        <td>${data.dataPencarian[i].ongkir_kota}</td>
+                        <td>Rp. ${data.dataPencarian[i].biaya_ongkir}</td>
+                        <td>
+                          <button type="button" data-id="${data.dataPencarian[i].id_ongkir}" class="btn btn-sm btn-warning rounded-pill my-border-btn btnModalEditOngkir" data-bs-toggle="modal"
+                            data-bs-target="#modalEditKota">Edit</button>
+                          <button type="button" data-id="${data.dataPencarian[i].id_ongkir}" class="btn btn-sm btn-danger rounded-pill my-border-btn btnModalHapusOngkir" data-bs-toggle="modal"
+                            data-bs-target="#modalHapusKota">Hapus</button>
+                        </td>
+                      </tr>`;
+        }
+        $(".content-biaya-ongkir #dataTableOngkir").html(element);
+      }
+    });
+    }
+  })
+
+  $(".content-biaya-ongkir #formCariOngkirKota #txtCariKotaAdmin").on('keydown', function(e) {
+    eventSource = e.key ? 'typed' : 'clicked';
+  })
+
+  $(".content-biaya-ongkir #formCariOngkirKota #txtCariKotaAdmin").on('input', function() {
+    if (eventSource === 'clicked') {
+      $.ajax({
+        url: base_url + '/dadmin/biayaOngkir/getDetailPencarian/' + $(this).val(),
+        type: 'POST',
+        dataType: 'json',
+        success: function (data) {
+          $(".content-biaya-ongkir #dataTableOngkir").html(`
+            <tr class="align-middle">
+                <td scope="row">1</td>
+                <td>${data.detailData.ongkir_kota}</td>
+                <td>Rp. ${data.detailData.biaya_ongkir}</td>
+                <td>
+                  <button type="button" data-id="${data.detailData.id_ongkir}" class="btn btn-sm btn-warning rounded-pill my-border-btn btnModalEditOngkir" data-bs-toggle="modal"
+                    data-bs-target="#modalEditKota">Edit</button>
+                  <button type="button" data-id="${data.detailData.id_ongkir}" class="btn btn-sm btn-danger rounded-pill my-border-btn btnModalHapusOngkir" data-bs-toggle="modal"
+                    data-bs-target="#modalHapusKota">Hapus</button>
+                </td>
+              </tr>
+            `);
+        }
+      });
+    }
+  })
+
+  $(".content-biaya-ongkir #formCariOngkirKota button").on('click', function() {
+    var keyword = $(".content-biaya-ongkir #txtCariKotaAdmin").val();
+    $.ajax({
+      url: base_url + '/dadmin/biayaOngkir/cari/',
+      type: 'POST',
+      data: {
+        keyword: keyword,
+      },
+      dataType: 'json',
+      success: function (data) {
+        var element = '';
+        for (var i = 0; i < data.dataPencarian.length; i++) {
+          element += `<tr class="align-middle">
+                        <td scope="row">${i+1}.</td>
+                        <td>${data.dataPencarian[i].ongkir_kota}</td>
+                        <td>Rp. ${data.dataPencarian[i].biaya_ongkir}</td>
+                        <td>
+                          <button type="button" data-id="${data.dataPencarian[i].id_ongnkir}" class="btn btn-sm btn-warning rounded-pill my-border-btn btnModalEditOngkir" data-bs-toggle="modal"
+                            data-bs-target="#modalEditKota">Edit</button>
+                          <button type="button" data-id="${data.dataPencarian[i].id_ongnkir}" class="btn btn-sm btn-danger rounded-pill my-border-btn btnModalHapusOngkir" data-bs-toggle="modal"
+                            data-bs-target="#modalHapusKota">Hapus</button>
+                        </td>
+                      </tr>`;
+        }
+        $(".content-biaya-ongkir #dataTableOngkir").html(element);
+      }
+    });
+  })
+  // view biaya ongkir
+
   $("#formMenu select[name='jenisPack']").on('change', function() {
     if(this.value == 1) {
       $("#formMenu input[name='hargaMenu']").attr("disabled", false);
