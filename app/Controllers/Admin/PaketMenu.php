@@ -64,8 +64,7 @@ class PaketMenu extends BaseController
 
   public function cari()
   {
-    $db      = \Config\Database::connect();
-    $builder = $db->table('paket_menu');
+    $builder = $this->db->table('paket_menu');
 
     $keyword = $this->request->getVar('keyword');
 
