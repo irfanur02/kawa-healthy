@@ -135,6 +135,131 @@ $(document).ready(function() {
   // view paket menu
 
 
+  // view menu
+  $(".content-menu #dataTableMenu").on('click', '.btnModalHapusMenu', function() {
+    var id = $(this).data('id');
+    $("#modalHapusMenu form").attr('action', '/dadmin/menu/delete/' + id);
+  })
+
+  $(".content-menu #formCariMenu input").on('keyup', function() {
+    var keyword = $(this).val();
+    if (keyword !== '') {
+      $.ajax({
+        url: base_url + '/dadmin/menu/cari',
+        type: 'POST',
+        data: {
+          keyword: keyword,
+        },
+        dataType: 'json',
+        success: function (data) {
+          var element = '';
+          $("#formCariMenu #datalistOptions").empty();
+          for (var i = 0; i < data.dataPencarian.length; i++) {
+            element += `<option class="itemPencarian" value="${data.dataPencarian[i].nama_menu}">`;
+          }
+
+          $("#formCariMenu #datalistOptions").append(element);
+        }
+      });
+    }
+  })
+
+  $(".content-menu #formCariMenu input").on('keypress', function(e) {
+    var keyword = $(this).val();
+    if(e.which == 13) {
+      $.ajax({
+      url: base_url + '/dadmin/menu/cari/',
+      type: 'POST',
+      data: {
+        keyword: keyword,
+      },
+      dataType: 'json',
+      success: function (data) {
+        var element = '';
+        for (var i = 0; i < data.dataPencarian.length; i++) {
+          element += `<tr class="align-middle">
+                        <td scope="row">${i+1}.</td>
+                        <td>${data.dataPencarian[i].nama_menu}</td>
+                        <td>${data.dataPencarian[i].nama_pack}</td>
+                        <td>${data.dataPencarian[i].nama_paket_menu != null ? data.dataPencarian[i].nama_paket_menu : '-'}</td>
+                        <td>${data.dataPencarian[i].harga_menu != null ? 'Rp. ' + data.dataPencarian[i].harga_menu : '-'}</td>
+                        <td>
+                          <a class="btn btn-sm btn-warning rounded-pill my-border-btn" href="${base_url}/dadmin/menu/edit/${data.dataPencarian[i].id_menu}" role="button">Edit
+                          </a>
+                          <button type="button" data-id="${data.dataPencarian[i].id_menu}" class="btn btn-sm btn-danger rounded-pill my-border-btn btnModalHapusMenu" data-bs-toggle="modal"
+                            data-bs-target="#modalHapusMenu">Hapus</button>
+                        </td>
+                      </tr>`;
+        }
+        $(".content-menu #dataTableMenu").html(element);
+      }
+    });
+    }
+  })
+
+  $(".content-menu #formCariMenu #txtCariMenuAdmin").on('keydown', function(e) {
+    eventSource = e.key ? 'typed' : 'clicked';
+  })
+
+  $(".content-menu #formCariMenu #txtCariMenuAdmin").on('input', function() {
+    if (eventSource === 'clicked') {
+      $.ajax({
+        url: base_url + '/dadmin/menu/getDetailPencarian/' + $(this).val(),
+        type: 'POST',
+        dataType: 'json',
+        success: function (data) {
+          $(".content-menu #dataTableMenu").html(`
+            <tr class="align-middle">
+              <td scope="row">1.</td>
+              <td>${data.dataPencarian.nama_menu}</td>
+              <td>${data.dataPencarian.nama_pack}</td>
+              <td>${data.dataPencarian.nama_paket_menu != null ? data.dataPencarian.nama_paket_menu : '-'}</td>
+              <td>${data.dataPencarian.harga_menu != null ? 'Rp. ' + data.dataPencarian.harga_menu : '-'}</td>
+              <td>
+                <a class="btn btn-sm btn-warning rounded-pill my-border-btn" href="${base_url}/dadmin/menu/edit/${data.dataPencarian.id_menu}" role="button">Edit
+                </a>
+                <button type="button" data-id="${data.dataPencarian.id_menu}" class="btn btn-sm btn-danger rounded-pill my-border-btn btnModalHapusMenu" data-bs-toggle="modal"
+                  data-bs-target="#modalHapusMenu">Hapus</button>
+              </td>
+            </tr>
+            `);
+        }
+      });
+    }
+  })
+
+  $(".content-menu #formCariMenu button").on('click', function() {
+    var keyword = $(".content-menu #txtCariMenuAdmin").val();
+    $.ajax({
+      url: base_url + '/dadmin/menu/cari/',
+      type: 'POST',
+      data: {
+        keyword: keyword,
+      },
+      dataType: 'json',
+      success: function (data) {
+        var element = '';
+        for (var i = 0; i < data.dataPencarian.length; i++) {
+          element += `<tr class="align-middle">
+                        <td scope="row">${i+1}.</td>
+                        <td>${data.dataPencarian[i].nama_menu}</td>
+                        <td>${data.dataPencarian[i].nama_pack}</td>
+                        <td>${data.dataPencarian[i].nama_paket_menu != null ? data.dataPencarian[i].nama_paket_menu : '-'}</td>
+                        <td>${data.dataPencarian[i].harga_menu != null ? 'Rp. ' + data.dataPencarian[i].harga_menu : '-'}</td>
+                        <td>
+                          <a class="btn btn-sm btn-warning rounded-pill my-border-btn" href="${base_url}/dadmin/menu/edit/${data.dataPencarian[i].id_menu}" role="button">Edit
+                          </a>
+                          <button type="button" data-id="${data.dataPencarian[i].id_menu}" class="btn btn-sm btn-danger rounded-pill my-border-btn btnModalHapusMenu" data-bs-toggle="modal"
+                            data-bs-target="#modalHapusMenu">Hapus</button>
+                        </td>
+                      </tr>`;
+        }
+        $(".content-menu #dataTableMenu").html(element);
+      }
+    });
+  })
+  // view menu
+
 
   // view biaya ongkir
   $(".content-biaya-ongkir #dataTableOngkir").on('click', '.btnModalEditOngkir', function() {

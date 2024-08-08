@@ -23,8 +23,12 @@ $routes->get('/dadmin/review', 'Admin\Review::index');
 // menu
 $routes->get('/dadmin/menu', 'Admin\Menu::index'); 
 $routes->get('/dadmin/createMenu', 'Admin\Menu::createMenu'); 
-$routes->get('/dadmin/updateMenu/(:num)', 'Admin\Menu::updateMenu/$1'); 
+$routes->get('/dadmin/menu/edit/(:num)', 'Admin\Menu::editMenu/$1'); 
 $routes->post('/dadmin/menu/save', 'Admin\Menu::save'); 
+$routes->post('/dadmin/menu/update/(:num)', 'Admin\Menu::update/$1'); 
+$routes->post('/dadmin/menu/delete/(:num)', 'Admin\Menu::delete/$1'); 
+$routes->post('/dadmin/menu/cari', 'Admin\Menu::cari'); 
+$routes->post('/dadmin/menu/getDetailPencarian/(:any)', 'Admin\Menu::getDetailPencarian/$1'); 
 
 // paket menu
 $routes->get('/dadmin/paketMenu', 'Admin\PaketMenu::index'); 

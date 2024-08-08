@@ -31,8 +31,8 @@ class PaketMenu extends BaseController
   public function save()
   {
     $this->paketMenuModel->save([
-      'nama_paket_menu' => ucfirst($this->request->getVar('namaPaketMenu')),
-      'harga_paket_menu' => ucfirst($this->request->getVar('hargaPaketMenu'))
+      'nama_paket_menu' => $this->request->getVar('namaPaketMenu'),
+      'harga_paket_menu' => $this->request->getVar('hargaPaketMenu')
     ]);
     
     session()->setFlashdata('notif', 'tambahPaketMenu');
@@ -44,8 +44,8 @@ class PaketMenu extends BaseController
   {
     $this->paketMenuModel->save([
       'id_paket_menu' => $id,
-      'nama_paket_menu' => ucfirst($this->request->getVar('namaPaketMenu')),
-      'harga_paket_menu' => ucfirst($this->request->getVar('hargaPaketMenu'))
+      'nama_paket_menu' => $this->request->getVar('namaPaketMenu'),
+      'harga_paket_menu' => $this->request->getVar('hargaPaketMenu')
     ]);
     
     session()->setFlashdata('notif', 'updatePaketMenu');
@@ -91,5 +91,10 @@ class PaketMenu extends BaseController
       'detailData' => $detailData[0]
     );
     echo json_encode($result);
+  }
+
+  public function getAllPaketMenu() {
+    $dataPaketMenu = $this->paketMenuModel->findAll();
+    return $dataPaketMenu;
   }
 }
