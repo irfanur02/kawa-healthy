@@ -10,7 +10,7 @@
         Menu</a>
       <a href="/dadmin/paketMenu" class="list-group-item my-list-sidebar list-group-item-action <?php echo $sidebar == 'kelolaPaketMenu' ? "my-active" : ""; ?>">Kelola
         Paket Menu</a>
-      <a href="/dadmin/jadwalMenu"
+      <a href="/dadmin/jadwal"
         class="list-group-item list-group-item-action my-list-sidebar <?php echo $sidebar == 'kelolaJadwalMenu' ? "my-active" : ""; ?>">Kelola
         Jadwal Menu</a>
       <a href="/dadmin/biayaOngkir" class="list-group-item my-list-sidebar list-group-item-action <?php echo $sidebar == 'kelolaBiayaOngkir' ? "my-active" : ""; ?>">Kelola

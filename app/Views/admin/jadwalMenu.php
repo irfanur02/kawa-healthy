@@ -14,15 +14,16 @@
       </div>
       <div class="row mt-3 d-flex justify-content-center">
         <div class="col-auto text-center">
-          <ul class="list-group">
+          <ul class="list-group ul-create">
             <li class="list-group-item border-0">
               <div class="fs-6 fw-bolder">Buat Jadwal</div>
             </li>
             <li class="list-group-item border-0">
               <select class="form-select form-select-sm my-border-input fw-bolder" id="selectJenisPack" required>
                 <option selected disabled value="">Pilh Jenis Pack</option>
-                <option value="1">Family Pack</option>
-                <option value="2">Personal Pack</option>
+                <?php foreach ($dataPack as $data) : ?>
+                  <option value="<?php echo $data['nama_pack']; ?>"><?php echo $data['nama_pack']; ?> Pack</option>
+                <?php endforeach ?>
               </select>
             </li>
             <li class="list-group-item border-0">
@@ -33,40 +34,38 @@
         </div>
       </div>
       <div class="row">
-        <div class="col d-flex justify-content-center">
-          <table class="table my-table-admin table-hover text-center mt-3" style="width: fit-content;">
-            <caption class="caption-top text-center fw-bold text-black">Riwayat Jadwal Menu</caption>
-            <thead>
-              <tr class="align-middle">
-                <td scope="col" style="padding: .5em 30px .5em 30px;">Tanggal Mulai</td>
-                <td scope="col" style="padding: .5em 30px .5em 30px;">Tanggal Akhir</td>
-                <td scope="col" style="padding: .5em 30px .5em 30px;">Aksi</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="align-middle">
-                <td>1/1/2024</td>
-                <td>5/1/2024</td>
-                <td>
-                  <button type="button" class="btn btn-sm btn-warning rounded-pill my-border-btn"
-                    data-bs-toggle="modal" data-bs-target="#modalEditJadwal">Edit</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="modalEditJadwal" tabindex="-1" aria-labelledby="modalEditJadwalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-sm modal-dialog-centered">
-    <div class="modal-content border border-dark">
-      <div class="modal-body">
-        <div class="d-grid gap-2">
-          <a href="/dadmin/jadwalMenu/1/family" class="btn btn-primary rounded-pill my-border-btn d-block" role="button">Family Pack</a>
-          <a href="/dadmin/jadwalMenu/1/personal" class="btn btn-primary rounded-pill my-border-btn d-block" role="button">Personal Pack</a>
+        <div class="col d-flex flex-column justify-content-center">
+          <div class="col text-center d-flex justify-content-center mt-4">
+            <ul class="list-group list-group-horizontal ul-view">
+              <button type="button" class="list-group-item border border-0 list-group-item-action text-nowrap my-active" style="width:12em;" id="tabJadwalFamily">Jadwal Family Pack</button>
+              <button type="button" class="list-group-item border border-0 list-group-item-action text-nowrap" style="width:12em;" id="tabJadwalPersonal">Jadwal Personal Pack</button>
+            </ul>
+          </div>
+          <div id="datatable">
+            <table class="table my-table-admin table-hover text-center" style="width: fit-content; margin: 0 auto;">
+              <caption class="caption-top text-center fw-bold text-black">Riwayat Jadwal Family Pack</caption>
+              <thead>
+                <tr class="align-middle">
+                  <td scope="col" style="padding: .5em 30px .5em 30px;">Tanggal Mulai</td>
+                  <td scope="col" style="padding: .5em 30px .5em 30px;">Tanggal Akhir</td>
+                  <td scope="col" style="padding: .5em 30px .5em 30px;">Aksi</td>
+                </tr>
+              </thead>
+              <div id="dataTableJadwalMenu">
+                <tbody>
+                  <?php foreach ($dataJadwalMenu as $data) : ?>
+                    <tr class="align-middle">
+                      <td><?php echo $data['tanggal_mulai']; ?></td>
+                      <td><?php echo $data['tanggal_akhir']; ?></td>
+                      <td>
+                        <a href="/dadmin/jadwal/<?php echo $data['id_jadwal']; ?>/family" role="button" class="btn btn-sm btn-warning rounded-pill my-border-btn">Edit</buttaon>
+                      </td>
+                    </tr>
+                  <?php endforeach ?>
+                </tbody>
+              </div>
+            </table>
+          </div>
         </div>
       </div>
     </div>

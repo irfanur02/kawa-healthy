@@ -22,4 +22,11 @@ class Pack extends BaseController
 
     return $data;
   }
+
+  public function getAllPack()
+  {
+    $data = $this->packModel->findAll();
+
+    return $data;
+  }
 }

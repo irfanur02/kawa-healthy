@@ -83,8 +83,8 @@ input::-webkit-inner-spin-button {
 }
 
 .my-active {
-  background-color: #055160;
-  color: white;
+  background-color: #055160 !important;
+  color: white !important;
 }
 
 .my-active:hover {
@@ -229,6 +229,15 @@ table.my-table-admin tr {
 .content-batal-pesanan ul a, 
 .content-riwayat-pesanan ul a {
   outline: 1px solid black !important;
+}
+
+.content-jadwal-menu ul button {
+  border: 1px solid black !important;
+}
+
+.content-jadwal-menu ul button:hover {
+  background-color: #055160;
+  color: white;
 }
 
 .content-pesanan ul li, 
