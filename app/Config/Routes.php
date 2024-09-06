@@ -61,11 +61,29 @@ $routes->post('/dadmin/biayaOngkir/getDetailPencarian/(:any)', 'Admin\biayaOngki
 // laporan
 $routes->get('/dadmin/laporan', 'Admin\Laporan::index');
 // ROUTES ADMIN
-
-
+#
+#
+#
+#
+#
 // ROUTES USER
-$routes->get('/daftar', 'Daftar::index');
+// homepage
+// $routes->get('/daftar', 'Daftar::index');
 $routes->get('/', 'Homepage::index');
+
+// auth
+$routes->post('/authLogin', 'AuthUser::login');
+$routes->post('/authLogout', 'AuthUser::logout');
+$routes->post('/cekUsername', 'AuthUser::cekUsername');
+
+// profil
+$routes->post('/profil/getProfil', 'Profil::getProfil');
+$routes->post('/profil/update', 'Profil::update');
+
+// daftar akun
+$routes->get('/daftarAkun', 'Daftar::index');
+$routes->post('/daftarAkun/save', 'Daftar::save');
+
 
 $routes->get('/daftarPesanan', 'Pesanan::daftarPesanan');
 $routes->get('/pesananKu', 'Pesanan::pesananku');

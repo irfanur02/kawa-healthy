@@ -12,21 +12,21 @@ class Pack extends BaseController
 
   protected $packModel;
 
-  public function __construct() {
+  public function __construct()
+  {
     $this->packModel = new PackModel();
   }
 
   public function getPackById($id = '')
   {
-    $data = $this->packModel->find($id);
-
+    $data = $this->packModel->getPackById($id);
+    dd($data);
     return $data;
   }
 
   public function getAllPack()
   {
-    $data = $this->packModel->findAll();
-
+    $data = $this->packModel->getAllPack()->getResultArray();
     return $data;
   }
 }

@@ -19,4 +19,40 @@ class PaketMenuModel extends Model
   protected $createdField  = 'created_at';
   protected $updatedField  = 'updated_at';
   protected $deletedField  = 'deleted_at';
+
+  protected $db;
+
+  public function __construct()
+  {
+    $this->db = \Config\Database::connect();
+  }
+
+  public function getAllPaketMenu()
+  {
+    $builder = $this->db->table('paket_menu');
+    $builder->select('*');
+    $builder->where('deleted_at', null);
+    $query = $builder->get();
+    return $query;
+  }
+
+  public function insertPaketMenu($data = '')
+  {
+    $builder = $this->db->table('paket_menu');
+    $builder->insert($data);
+  }
+
+  public function updatePaketMenu($data = '', $id = '')
+  {
+    $builder = $this->db->table('paket_menu');
+    $builder->where('id_paket_menu', $id);
+    $builder->update($data);
+  }
+
+  public function deletePaketMenu($data = '', $id = '')
+  {
+    $builder = $this->db->table('paket_menu');
+    $builder->where('id_paket_menu', $id);
+    $builder->update($data);
+  }
 }

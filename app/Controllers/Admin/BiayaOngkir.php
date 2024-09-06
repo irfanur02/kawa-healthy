@@ -11,14 +11,14 @@ class BiayaOngkir extends BaseController
 
   protected $biayaOngkirModel;
 
-  public function __construct() {
+  public function __construct()
+  {
     $this->biayaOngkirModel = new BiayaOngkirModel();
   }
 
   public function index()
   {
-    $dataOngkir = $this->biayaOngkirModel->findAll();
-
+    $dataOngkir = $this->biayaOngkirModel->getAllOngkir()->getResultArray();
     $data = [
       'title' => 'Kelola Biaya Ongkir',
       'sidebar' => 'kelolaBiayaOngkir',
@@ -30,11 +30,15 @@ class BiayaOngkir extends BaseController
 
   public function save()
   {
-    $this->biayaOngkirModel->save([
+    $date = date("Y-m-d") . ' ' . date("H:i:s");
+    $data = [
       'ongkir_kota' => ucfirst($this->request->getVar('namaKota')),
-      'biaya_ongkir' => $this->request->getVar('biayaOngkir')
-    ]);
-    
+      'biaya_ongkir' => $this->request->getVar('biayaOngkir'),
+      'created_at' => $date
+    ];
+
+    $this->biayaOngkirModel->insertOngkir($data);
+
     session()->setFlashdata('notif', 'tambahKota');
 
     return redirect()->to('/dadmin/biayaOngkir');
@@ -42,12 +46,15 @@ class BiayaOngkir extends BaseController
 
   public function update($id = '')
   {
-    $this->biayaOngkirModel->save([
-      'id_ongkir' => $id,
+    $date = date("Y-m-d") . ' ' . date("H:i:s");
+    $data = [
       'ongkir_kota' => ucfirst($this->request->getVar('namaKota')),
-      'biaya_ongkir' => $this->request->getVar('biayaOngkir')
-    ]);
-    
+      'biaya_ongkir' => $this->request->getVar('biayaOngkir'),
+      'updated_at' => $date
+    ];
+
+    $this->biayaOngkirModel->updateOngkir($data, $id);
+
     session()->setFlashdata('notif', 'updateKota');
 
     return redirect()->to('/dadmin/biayaOngkir');
@@ -55,8 +62,12 @@ class BiayaOngkir extends BaseController
 
   public function delete($id = '')
   {
-    $this->biayaOngkirModel->delete($id);
-    
+    $date = date("Y-m-d") . ' ' . date("H:i:s");
+    $data = [
+      'deleted_at' => $date
+    ];
+    $this->biayaOngkirModel->deleteOngkir($data, $id);
+
     session()->setFlashdata('notif', 'deleteKota');
 
     return redirect()->to('/dadmin/biayaOngkir');

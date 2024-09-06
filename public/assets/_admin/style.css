@@ -63,7 +63,7 @@ input::-webkit-inner-spin-button {
   position: relative;
   top: 0;
   bottom: 0;
-  height: 100vmax;
+  height: 100vh;
   background-color: white;
   border-right: 1px solid black;
   border-radius: 0px;
@@ -156,11 +156,11 @@ table.my-table-admin tr {
   width: 70%;
 }
 
-.content-review-menu{
+.content-review-menu {
   width: 80%;
 }
 
-.content-jadwal-personal{
+.content-jadwal-personal {
   width: 100%;
   margin: 0 auto;
 }
@@ -201,11 +201,11 @@ table.my-table-admin tr {
   padding: 0 !important;
 }
 
-.content-jadwal-personal .list-jadwal{
+.content-jadwal-personal .list-jadwal {
   display: flex;
 }
 
-.content-jadwal-personal .list-jadwal > *{
+.content-jadwal-personal .list-jadwal>* {
   width: 100%;
 }
 
@@ -214,19 +214,19 @@ table.my-table-admin tr {
   padding: 10px;
 }
 
-.header-list{
+.header-list {
   background-color: #055160;
   color: white;
   padding: 10px;
 }
 
-.body-list{
+.body-list {
   padding: 10px;
 }
 
-.content-pesanan ul a, 
-.content-detail-pesanan ul a, 
-.content-batal-pesanan ul a, 
+.content-pesanan ul a,
+.content-detail-pesanan ul a,
+.content-batal-pesanan ul a,
 .content-riwayat-pesanan ul a {
   outline: 1px solid black !important;
 }
@@ -240,18 +240,18 @@ table.my-table-admin tr {
   color: white;
 }
 
-.content-pesanan ul li, 
+.content-pesanan ul li,
 .content-riwayat-pesanan ul li {
   padding: unset !important;
   background-color: unset !important;
   border: unset !important;
 }
 
-.content-riwayat-pesanan table td{
-/*  max-width: 70ch !important;*/
+.content-riwayat-pesanan table td {
+  /*  max-width: 70ch !important;*/
   white-space: nowrap !important;
-/*  width: fit-content; !important;*/
-/*  max-width: fit-content !important;*/
+  /*  width: fit-content; !important;*/
+  /*  max-width: fit-content !important;*/
 }
 
 .content-detail-pesanan ul li,
@@ -321,7 +321,7 @@ table.my-table-admin tr {
     animation-fill-mode: forwards;
   }
 
-  .content-jadwal-personal .list-jadwal{
+  .content-jadwal-personal .list-jadwal {
     display: flex;
     flex-wrap: wrap;
     margin-bottom: 3em;
@@ -353,27 +353,24 @@ table.my-table-admin tr {
   }
 
   .content-jadwal-family .list-content-jadwal {
-/*    width: 50% !important;*/
+    /*    width: 50% !important;*/
     margin-bottom: 1em;
   }
 }
 
-@media (min-width: 768px) {
-}
+@media (min-width: 768px) {}
 
-@media (min-width: 576px) and (max-width: 768px) { 
-}
+@media (min-width: 576px) and (max-width: 768px) {}
 
-@media (min-width: 768px) and (max-width: 992px) {
-}
+@media (min-width: 768px) and (max-width: 992px) {}
 
-@media (min-width: 992px) {
-}
+@media (min-width: 992px) {}
 
 @keyframes openSidebar {
   from {
     transform: translateX(-100%);
   }
+
   to {
     box-shadow: 0 10px 15px black;
     transform: translateX(0);
@@ -385,6 +382,7 @@ table.my-table-admin tr {
     transform: translateX(0);
     box-shadow: 0 10px 15px black;
   }
+
   to {
     transform: translateX(-100%);
   }

@@ -80,7 +80,7 @@
                   <div class="row m-0 justify-content-end">
                     <div class="col text-end d-flex align-items-center justify-content-end">
                       <button class="btn btn-sm lh-sm my-btn-purpledark border rounded-pill border-black my-border-btn lh-sm modalPilihMenu modalPersonal" data-bs-toggle="modal" data-bs-target="#modalPilihMenu">Lanjut</button>
-                    </div>                                                              
+                    </div>
                     <div class="col-3 p-0 d-flex align-items-center justify-content-end">
                       <div class="my-form-checkbox d-flex align-items-center">
                         <label class="form-check-label"><span class="jenisPaketMenu">Infuse</span><br><span class="hargaMenuPersonal">Rp. 55000</span></label>
@@ -131,7 +131,7 @@
                   <div class="row m-0 justify-content-end">
                     <div class="col text-end d-flex align-items-center justify-content-end">
                       <button class="btn btn-sm lh-sm my-btn-purpledark border rounded-pill border-black my-border-btn lh-sm modalPilihMenu modalPersonal" data-bs-toggle="modal" data-bs-target="#modalPilihMenu">Lanjut</button>
-                    </div>                                                              
+                    </div>
                     <div class="col-3 p-0 d-flex align-items-center justify-content-end">
                       <div class="my-form-checkbox d-flex align-items-center">
                         <label class="form-check-label"><span class="jenisPaketMenu">Infuse</span><br><span class="hargaMenuPersonal">Rp. 55000</span></label>
@@ -143,7 +143,7 @@
               </ul>
             </div>
           </div>
-        </div>      
+        </div>
       </div>
 
       <!-- family -->
@@ -237,7 +237,7 @@
       </div>
       <div class="modal-body p-0">
         <ul class="list-group">
-          
+
         </ul>
       </div>
       <div class="modal-footer my-bg-pinklight border-top border-black">
@@ -268,15 +268,15 @@
               </div>
               <div id="checkboxes">
                 <label for="one">
-                  <input class="form-check-input my-border-input m-0" data-harga="50000" type="checkbox" id="one"/>
+                  <input class="form-check-input my-border-input m-0" data-harga="50000" type="checkbox" id="one" />
                   Paket Lunch
                 </label>
                 <label for="two">
-                  <input class="form-check-input my-border-input m-0" data-harga="55000" type="checkbox" id="two"/>
+                  <input class="form-check-input my-border-input m-0" data-harga="55000" type="checkbox" id="two" />
                   Paket Dinner
                 </label>
                 <label for="three">
-                  <input class="form-check-input my-border-input m-0" data-harga="5000" type="checkbox" id="three"/>
+                  <input class="form-check-input my-border-input m-0" data-harga="5000" type="checkbox" id="three" />
                   Infuse
                 </label>
               </div>
@@ -309,12 +309,14 @@
           <div class="row">
             <div class="col d-flex justify-content-between">
               <span>HARGA</span>
-              <span class="totalHargaMenu">Rp. 83000</span></div>
+              <span class="totalHargaMenu">Rp. 83000</span>
+            </div>
           </div>
           <div class="row">
             <div class="col d-flex justify-content-between">
               <span>ONGKIR</span>
-              <span class="hargaOngkir">Rp. 10000</span></div>
+              <span class="hargaOngkir">Rp. 10000</span>
+            </div>
           </div>
           <div class="row">
             <div class="col d-flex justify-content-between">
@@ -353,56 +355,6 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal Profil -->
-<div class="modal fade" id="modalProfil" tabindex="-1" aria-labelledby="modalProfilLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable">
-    <div class="modal-content border border-dark">
-      <div class="modal-header justify-content-center my-bg-purpledark">
-        <h1 class="modal-title fs-5" id="modalProfilLabel">Profil</h1>
-      </div>
-      <div class="modal-body">
-        <form action="" class="">
-          <div class="mb-3 lh-1">
-            <label for="txtNama" class="form-label">Nama</label>
-            <input type="text" class="form-control form-control-sm my-border-input" id="txtNama" required>
-          </div>
-          <div class="mb-3 lh-1">
-            <label for="txtAlamat" class="form-label">Alamat</label>
-            <input type="text" class="form-control form-control-sm my-border-input" id="txtAlamat" required>
-          </div>
-          <div class="mb-3 lh-1">
-            <label for="selectKota" class="form-label">Kota</label>
-            <select class="form-select form-select-sm my-border-input" id="selectKota" required>
-              <option selected disabled value=""></option>
-              <option value="1">Gresik</option>
-              <option value="2">Surabaya</option>
-            </select>
-          </div>
-          <div class="mb-3 lh-1">
-            <label for="txtNomorHP" class="form-label">Nomor HP</label>
-            <input type="number" class="form-control form-control-sm my-border-input" id="txtNomorHP" required>
-          </div>
-          <div class="mb-3 lh-1">
-            <label for="txtEmail" class="form-label">Email</label>
-            <input type="email" class="form-control form-control-sm my-border-input" id="txtEmail" required>
-          </div>
-          <div class="mb-3 lh-1">
-            <label for="txtUsername" class="form-label">Username</label>
-            <input type="text" class="form-control form-control-sm my-border-input" id="txtUsername" required>
-          </div>
-          <div class="mb-4 lh-1">
-            <label for="txtPassword" class="form-label">Password</label>
-            <input type="password" class="form-control form-control-sm my-border-input" id="txtPassword" required>
-          </div>
-          <div class="d-flex justify-content-center">
-            <button type="submit" class="btn btn-sm lh-sm px-4 my-btn-purpledark my-border-btn rounded-pill">UPDATE</button>
-          </div>
-        </form>
       </div>
     </div>
   </div>

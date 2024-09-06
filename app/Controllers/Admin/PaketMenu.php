@@ -11,13 +11,14 @@ class PaketMenu extends BaseController
 
   protected $paketMenuModel;
 
-  public function __construct() {
+  public function __construct()
+  {
     $this->paketMenuModel = new paketMenuModel();
   }
 
   public function index()
   {
-    $dataPaketMenu = $this->paketMenuModel->findAll();
+    $dataPaketMenu = $this->paketMenuModel->getAllPaketMenu()->getResultArray();
 
     $data = [
       'title' => 'Kelola Paket Menu',
@@ -30,11 +31,15 @@ class PaketMenu extends BaseController
 
   public function save()
   {
-    $this->paketMenuModel->save([
+    $date = date("Y-m-d") . ' ' . date("H:i:s");
+    $data = [
       'nama_paket_menu' => $this->request->getVar('namaPaketMenu'),
-      'harga_paket_menu' => $this->request->getVar('hargaPaketMenu')
-    ]);
-    
+      'harga_paket_menu' => $this->request->getVar('hargaPaketMenu'),
+      'created_at' => $date
+    ];
+
+    $this->paketMenuModel->insertPaketMenu($data);
+
     session()->setFlashdata('notif', 'tambahPaketMenu');
 
     return redirect()->to('/dadmin/paketMenu');
@@ -42,12 +47,15 @@ class PaketMenu extends BaseController
 
   public function update($id = '')
   {
-    $this->paketMenuModel->save([
-      'id_paket_menu' => $id,
+    $date = date("Y-m-d") . ' ' . date("H:i:s");
+    $data = [
       'nama_paket_menu' => $this->request->getVar('namaPaketMenu'),
-      'harga_paket_menu' => $this->request->getVar('hargaPaketMenu')
-    ]);
-    
+      'harga_paket_menu' => $this->request->getVar('hargaPaketMenu'),
+      'updated_at' => $date
+    ];
+
+    $this->paketMenuModel->updatePaketMenu($data, $id);
+
     session()->setFlashdata('notif', 'updatePaketMenu');
 
     return redirect()->to('/dadmin/paketMenu');
@@ -55,8 +63,12 @@ class PaketMenu extends BaseController
 
   public function delete($id = '')
   {
-    $this->paketMenuModel->delete($id);
-    
+    $date = date("Y-m-d") . ' ' . date("H:i:s");
+    $data = [
+      'deleted_at' => $date
+    ];
+    $this->paketMenuModel->deletePaketMenu($data, $id);
+
     session()->setFlashdata('notif', 'deletePaketMenu');
 
     return redirect()->to('/dadmin/paketMenu');
@@ -93,8 +105,9 @@ class PaketMenu extends BaseController
     echo json_encode($result);
   }
 
-  public function getAllPaketMenu() {
-    $dataPaketMenu = $this->paketMenuModel->findAll();
+  public function getAllPaketMenu()
+  {
+    $dataPaketMenu = $this->paketMenuModel->getAllPaketMenu()->getResultArray();
     return $dataPaketMenu;
   }
 }

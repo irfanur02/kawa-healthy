@@ -8,6 +8,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 use App\Controllers\Admin\PaketMenu;
 use App\Controllers\Admin\Pack;
 use App\Models\MenuModel;
+use App\Models\PackModel;
 use App\Models\PaketMenuModel;
 
 class Menu extends BaseController
@@ -15,25 +16,20 @@ class Menu extends BaseController
 
   protected $menuModel;
   protected $paketMenuModel;
+  protected $packModel;
   protected $paketMenuController;
-  protected $packController;
 
-  public function __construct() {
+  public function __construct()
+  {
     $this->menuModel = new MenuModel();
     $this->paketMenuModel = new PaketMenuModel();
+    $this->packModel = new PackModel();
     $this->paketMenuController = new PaketMenu();
-    $this->packController = new Pack();
   }
 
   public function index()
   {
-    $builder = $this->db->table('menu');
-    $builder->select('menu.id_menu, menu.nama_menu, pack.nama_pack, paket_menu.nama_paket_menu, menu.harga_menu');
-    $builder->join('pack', 'pack.id_pack = menu.id_pack', 'left');
-    $builder->join('paket_menu', 'paket_menu.id_paket_menu = menu.id_paket_menu', 'left');
-    $builder->where('menu.deleted_at', null);
-    $query = $builder->get();
-    $dataMenu = $query->getResultArray();
+    $dataMenu = $this->menuModel->getAllMenu()->getResultArray();
 
     $data = [
       'title' => 'Kelola Menu',
@@ -51,9 +47,7 @@ class Menu extends BaseController
     $query = $builder->get();
     $dataKarbo = $query->getResultArray();
 
-    $builder = $this->db->table('pack');
-    $query = $builder->get();
-    $dataPack = $query->getResultArray();
+    $dataPack = $this->packModel->getAllPack()->getResultArray();
 
     $data = [
       'title' => 'Form Tambah Menu',
@@ -73,11 +67,9 @@ class Menu extends BaseController
     $query = $builder->get();
     $dataKarbo = $query->getResultArray();
 
-    $builder = $this->db->table('pack');
-    $query = $builder->get();
-    $dataPack = $query->getResultArray();
+    $dataPack = $this->packModel->getAllPack()->getResultArray();
 
-    $dataMenuId = $this->menuModel->find($id);
+    $dataMenuId = $this->menuModel->getMenuById($id)->getResultArray()[0];
 
     $data = [
       'title' => 'Form Edit Menu',
@@ -93,24 +85,28 @@ class Menu extends BaseController
   public function save()
   {
     $idJenisPack = $this->request->getVar('jenisPack');
-    $jenisPack = $this->packController->getPackById($idJenisPack);
+    $jenisPack = $this->packModel->getPackById($idJenisPack)->getResultArray()[0];
+    $date = date("Y-m-d") . ' ' . date("H:i:s");
 
     if ($jenisPack['nama_pack'] == "family") {
-      $this->menuModel->save([
+      $data = [
         'nama_menu' => $this->request->getVar('namaMenu'),
         'id_pack' => $this->request->getVar('jenisPack'),
-        'harga_menu' => $this->request->getVar('hargaMenu')
-      ]);
+        'harga_menu' => $this->request->getVar('hargaMenu'),
+        'created_at' => $date
+      ];
     }
 
     if ($jenisPack['nama_pack'] == "personal") {
-      $this->menuModel->save([
+      $data = [
         'nama_menu' => $this->request->getVar('namaMenu'),
         'id_pack' => $this->request->getVar('jenisPack'),
         'id_paket_menu' => $this->request->getVar('paketMenu'),
-        'id_karbo' => $this->request->getVar('jenisKarbo')
-      ]);
+        // 'id_karbo' => $this->request->getVar('jenisKarbo'),
+        'created_at' => $date
+      ];
     }
+    $this->menuModel->insertMenu($data);
 
     return redirect()->to('/dadmin/menu');
   }
@@ -118,33 +114,41 @@ class Menu extends BaseController
   public function update($id = '')
   {
     $idJenisPack = $this->request->getVar('jenisPack');
-    $jenisPack = $this->packController->getPackById($idJenisPack);
+    $jenisPack = $this->packModel->getPackById($idJenisPack)->getResultArray()[0];
+    $date = date("Y-m-d") . ' ' . date("H:i:s");
 
     if ($jenisPack['nama_pack'] == "family") {
-      $this->menuModel->save([
-        'id_menu' => $id,
+      $data = [
         'nama_menu' => $this->request->getVar('namaMenu'),
         'id_pack' => $this->request->getVar('jenisPack'),
-        'harga_menu' => $this->request->getVar('hargaMenu')
-      ]);
+        'id_paket_menu' => null,
+        'harga_menu' => $this->request->getVar('hargaMenu'),
+        'updated_at' => $date
+      ];
     }
 
     if ($jenisPack['nama_pack'] == "personal") {
-      $this->menuModel->save([
-        'id_menu' => $id,
+      $data = [
         'nama_menu' => $this->request->getVar('namaMenu'),
         'id_pack' => $this->request->getVar('jenisPack'),
         'id_paket_menu' => $this->request->getVar('paketMenu'),
-        'id_karbo' => $this->request->getVar('jenisKarbo')
-      ]);
+        'harga_menu' => null,
+        // 'id_karbo' => $this->request->getVar('jenisKarbo'),
+        'updated_at' => $date
+      ];
     }
+    $this->menuModel->updateMenu($data, $id);
 
     return redirect()->to('/dadmin/menu');
   }
 
   public function delete($id = '')
   {
-    $this->menuModel->delete($id);
+    $date = date("Y-m-d") . ' ' . date("H:i:s");
+    $data = [
+      'deleted_at' => $date
+    ];
+    $this->menuModel->deleteMenu($data, $id);
     session()->setFlashdata('notif', 'deleteMenu');
     return redirect()->to('/dadmin/menu');
   }
@@ -154,24 +158,11 @@ class Menu extends BaseController
     $keyword = $this->request->getVar('keyword');
 
     if ($keyword == '') {
-      $builder = $this->db->table('menu');
-      $builder->select('menu.id_menu, menu.nama_menu, pack.nama_pack, paket_menu.nama_paket_menu, menu.harga_menu');
-      $builder->join('pack', 'pack.id_pack = menu.id_pack', 'left');
-      $builder->join('paket_menu', 'paket_menu.id_paket_menu = menu.id_paket_menu', 'left');
-      $builder->where('menu.deleted_at', null);
-      $query = $builder->get();
-      $dataPencarian = $query->getResult();
+      $dataPencarian = $this->menuModel->getAllMenu()->getResult();
     }
 
     if ($keyword !== '') {
-      $builder = $this->db->table('menu');
-      $builder->select('menu.id_menu, menu.nama_menu, pack.nama_pack, paket_menu.nama_paket_menu, menu.harga_menu');
-      $builder->join('pack', 'pack.id_pack = menu.id_pack', 'left');
-      $builder->join('paket_menu', 'paket_menu.id_paket_menu = menu.id_paket_menu', 'left');
-      $builder->like('menu.nama_menu', $keyword);
-      $builder->where('menu.deleted_at', null);
-      $query = $builder->get();
-      $dataPencarian = $query->getResult();
+      $dataPencarian = $this->menuModel->getAllMenuByNama($keyword)->getResult();
     }
     $result = array(
       'dataPencarian' => $dataPencarian
@@ -181,18 +172,10 @@ class Menu extends BaseController
 
   public function getDetailPencarian($dataPencarian = '')
   {
-    $builder = $this->db->table('menu');
-    $builder->select('menu.id_menu, menu.nama_menu, pack.nama_pack, paket_menu.nama_paket_menu, menu.harga_menu');
-    $builder->join('pack', 'pack.id_pack = menu.id_pack', 'left');
-    $builder->join('paket_menu', 'paket_menu.id_paket_menu = menu.id_paket_menu', 'left');
-    $builder->where('menu.nama_menu', $dataPencarian);
-    $builder->where('menu.deleted_at', null);
-    $query = $builder->get();
-    $dataPencarian = $query->getResult();
+    $dataPencarian = $this->menuModel->getMenuByNama($dataPencarian)->getResult();
     $result = array(
       'dataPencarian' => $dataPencarian[0]
     );
     echo json_encode($result);
   }
-
 }
