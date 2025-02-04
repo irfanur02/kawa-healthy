@@ -85,61 +85,106 @@ class Menu extends BaseController
   public function save()
   {
     $idJenisPack = $this->request->getVar('jenisPack');
+    $namaMenu = $this->request->getVar('namaMenu');
+    $hargaMenu = $this->request->getVar('hargaMenu');
+    $paketMenu = $this->request->getVar('paketMenu');
+    // Tangkap file
+    $fileGambar = $this->request->getFile('fileGambar');
+    $namaGambar = $fileGambar->getRandomName();
+    $fileGambar->move('assets/img/menu', $namaGambar);
+
     $jenisPack = $this->packModel->getPackById($idJenisPack)->getResultArray()[0];
     $date = date("Y-m-d") . ' ' . date("H:i:s");
 
     if ($jenisPack['nama_pack'] == "family") {
       $data = [
-        'nama_menu' => $this->request->getVar('namaMenu'),
-        'id_pack' => $this->request->getVar('jenisPack'),
-        'harga_menu' => $this->request->getVar('hargaMenu'),
+        'nama_menu' => $namaMenu,
+        'gambar_menu' => $namaGambar,
+        'id_pack' => $idJenisPack,
+        'harga_menu' => $hargaMenu,
         'created_at' => $date
       ];
     }
 
     if ($jenisPack['nama_pack'] == "personal") {
       $data = [
-        'nama_menu' => $this->request->getVar('namaMenu'),
-        'id_pack' => $this->request->getVar('jenisPack'),
-        'id_paket_menu' => $this->request->getVar('paketMenu'),
+        'nama_menu' => $namaMenu,
+        'gambar_menu' => $namaGambar,
+        'id_pack' => $idJenisPack,
+        'id_paket_menu' => $paketMenu,
         // 'id_karbo' => $this->request->getVar('jenisKarbo'),
         'created_at' => $date
       ];
     }
+
     $this->menuModel->insertMenu($data);
 
-    return redirect()->to('/dadmin/menu');
+    $result = array(
+      'namaMenu' => $namaMenu,
+      'idJenisPack' => $idJenisPack,
+      'hargaMenu' => $hargaMenu,
+      'paketMenu' => $paketMenu,
+      'namaGambar' => $namaGambar
+    );
+    echo json_encode($result);
+
+    // return redirect()->to('/dadmin/menu');
   }
 
-  public function update($id = '')
+  public function update()
   {
+    $idMenu = $this->request->getVar('idMenu');
+    $gambarLama = $this->request->getVar('gambarLama');
     $idJenisPack = $this->request->getVar('jenisPack');
     $jenisPack = $this->packModel->getPackById($idJenisPack)->getResultArray()[0];
+    $namaMenu = $this->request->getVar('namaMenu');
+    $hargaMenu = $this->request->getVar('hargaMenu');
+    $paketMenu = $this->request->getVar('paketMenu');
+    // Tangkap file
+    $fileGambar = $this->request->getFile('fileGambar');
+    if ($fileGambar == null) {
+      $namaGambar = $gambarLama;
+    } else {
+      $namaGambar = $fileGambar->getRandomName();
+      $fileGambar->move('assets/img/menu', $namaGambar);
+    }
     $date = date("Y-m-d") . ' ' . date("H:i:s");
 
     if ($jenisPack['nama_pack'] == "family") {
       $data = [
-        'nama_menu' => $this->request->getVar('namaMenu'),
-        'id_pack' => $this->request->getVar('jenisPack'),
+        'nama_menu' => $namaMenu,
+        'id_pack' => $idJenisPack,
+        'gambar_menu' => $namaGambar,
         'id_paket_menu' => null,
-        'harga_menu' => $this->request->getVar('hargaMenu'),
+        'harga_menu' => $hargaMenu,
         'updated_at' => $date
       ];
     }
 
     if ($jenisPack['nama_pack'] == "personal") {
       $data = [
-        'nama_menu' => $this->request->getVar('namaMenu'),
-        'id_pack' => $this->request->getVar('jenisPack'),
-        'id_paket_menu' => $this->request->getVar('paketMenu'),
+        'nama_menu' => $namaMenu,
+        'id_pack' => $idJenisPack,
+        'gambar_menu' => $namaGambar,
+        'id_paket_menu' => $paketMenu,
         'harga_menu' => null,
         // 'id_karbo' => $this->request->getVar('jenisKarbo'),
         'updated_at' => $date
       ];
     }
-    $this->menuModel->updateMenu($data, $id);
+    $this->menuModel->updateMenu($data, $idMenu);
 
-    return redirect()->to('/dadmin/menu');
+    $result = array(
+      'namaMenu' => $namaMenu,
+      'idJenisPack' => $idJenisPack,
+      'hargaMenu' => $hargaMenu,
+      'paketMenu' => $paketMenu,
+      'namaGambar' => $namaGambar,
+      // 'fileGambar' => $fileGambar
+    );
+    echo json_encode($result);
+
+    // return redirect()->to('/dadmin/menu');
   }
 
   public function delete($id = '')

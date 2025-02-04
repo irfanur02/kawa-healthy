@@ -59,6 +59,16 @@ class AkunModel extends Model
     return $query;
   }
 
+  public function getDataPelangganById($id = '')
+  {
+    $builder = $this->db->table('akun');
+    $builder->select('*');
+    $builder->join('pelanggan', 'pelanggan.id_pelanggan = akun.id_pelanggan');
+    $builder->where('akun.id_akun', $id);
+    $query = $builder->get();
+    return $query;
+  }
+
   public function updateAkun($data = '', $idAkun = '')
   {
     $builder = $this->db->table('akun');
@@ -71,6 +81,15 @@ class AkunModel extends Model
     $builder = $this->db->table('akun');
     $builder->select('username_akun');
     $builder->where('username_akun', $username);
+    $query = $builder->get();
+    return $query;
+  }
+
+  public function cekEmail($email = '')
+  {
+    $builder = $this->db->table('akun');
+    $builder->select('email_akun');
+    $builder->where('email_akun', $email);
     $query = $builder->get();
     return $query;
   }

@@ -1,6 +1,6 @@
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
+  /* -webkit-appearance: none; */
   margin: 0;
 }
 
@@ -14,16 +14,23 @@ input::-webkit-inner-spin-button {
   --red: #DC3545;
   --pink: #d63384;
   --pinklight: #f8d7da;
+  /* ------- */
+  --green: #4CAF50;
+  --greenlight: #9FD356;
+  --orange: #FFA726;
+  --gray: #F0F0F0;
+  --vanilla: #FFF4E3;
 }
 
 body {
   font-size: .9em;
-  color: var(--purpledark);
+  color: var(--black);
+  background-color: var(--vanilla);btnHapusList
 }
 
-.my-text-purpledark {
+/* .my-text-purpledark {
   color: var(--purpledark);
-}
+} */
 
 .my-border-input {
   outline: 1px solid black;
@@ -41,7 +48,7 @@ body {
   border: 1px solid black !important;
 }
 
-.my-btn-purple {
+/* .my-btn-purple {
   color: white !important;
   background-color: var(--purple) !important;
 }
@@ -95,9 +102,60 @@ body {
 .my-bg-toscalight {
   background-color: var(--toscalight) !important;
   color: black !important;
+} */
+
+/* vvv NEW vvv */
+
+.my-bg-gray {
+  background-color: var(--gray) !important;
 }
 
-.my-btn-purpledark {
+.my-bg-vanilla {
+  background-color: var(--vanilla) !important;
+}
+
+.my-bg-green {
+  background-color: var(--green) !important;
+  color: white !important;
+}
+
+.my-bg-greenlight {
+  background-color: var(--greenlight) !important;
+}
+
+.my-bg-orange {
+  background-color: var(--orange) !important;
+}
+
+.my-btn-orange{
+  color: black !important;
+  background-color: var(--orange) !important;
+}
+
+.my-btn-orange:hover{
+  color: black !important;
+  background-color: var(--orange) !important;
+  filter: brightness(1.1) !important;
+}
+
+.my-btn-green{
+  color: white !important;
+  background-color: var(--green) !important;
+}
+
+.my-btn-green:hover{
+  color: white !important;
+  background-color: var(--green) !important;
+  filter: brightness(1.1) !important;
+}
+
+.text-green {
+  color: var(--green) !important;
+}
+
+/* ^^^ NEW ^^^ */
+
+/* .my-btn-purpledark {
   color: white !important;
   background-color: var(--purpledark) !important;
 }
@@ -123,7 +181,7 @@ body {
   color: white !important;
   background-color: var(--pink) !important;
   filter: brightness(1) !important;
-}
+} */
 
 /*--------------*/
 
@@ -165,13 +223,13 @@ nav img {
 }
 
 .content ul.nav-tab a:hover {
-  background-color: var(--purple);
-  color: white;
+  background-color: var(--orange);
+  color: black;
 }
 
 .my-active-tab{
-  background-color: var(--purple);
-  color: white;
+  background-color: var(--orange);
+  color: black;
 }
 
 .content-pesananku .table-content,
@@ -185,8 +243,8 @@ nav img {
 
 .content-pesananku table thead tr td,
 .content-pesanan-selesai table thead tr td {
-  background-color: var(--purple);
-  color: white;
+  background-color: var(--greenlight);
+  color: black;
 }
 
 .content-pesananku table tr td,
@@ -226,8 +284,8 @@ nav img {
 
 .content-detail-pesanan-b ul.list-pesanan li:first-child,
 .content-detail-pesanan-p ul.list-pesanan li:first-child {
-  background-color: var(--purple);
-  color: white;
+  background-color: var(--greenlight);
+  color: blaack;
   border: none;
 }
 
@@ -250,17 +308,17 @@ nav img {
 }
 
 .content-daftar-pesanan ul.list-daftar-pesanan button {
-  background-color: var(--red);
-  color: white;
+  background-color: white;
+  color: black;
   height: 100%;
   font-size: .9em;
   border-left: 1px solid black;
 }
 
 .content-daftar-pesanan ul.list-daftar-pesanan button:hover {
-  background-color: var(--red);
+  background-color: white;
   filter: brightness(.9);
-  color: white;
+  color: black;
 }
 
 .content-daftar-pesanan ul.list-daftar-pesanan button:active {
@@ -292,7 +350,7 @@ nav img {
   padding-top: 3em;
   position: relative;
   height: 100vh;
-  background-color: salmon;
+  background-color: white;
   overflow: hidden;
 }
 
@@ -319,8 +377,8 @@ nav img {
   width: 100%;
   height: 50%;
   transform: scale(1.3);
-  background-color: var(--pinklight);
-  filter: blur(130px);
+  background-color: var(--gray);
+  filter: blur(100px);
 }
 
 .content-homepage .my-body-jumbotron {
@@ -345,7 +403,7 @@ nav img {
 }
 
 .content-homepage .my-body-jumbotron h1, h3, h4 {
-  text-shadow: 0 0 4px rgba(0, 0, 0, .4);
+  text-shadow: 0 0 4px rgba(0, 0, 0, .2);
 }
 
 .content-homepage .my-body-jumbotron a:first-child {
@@ -361,7 +419,7 @@ nav img {
 }
 
 .content-homepage .my-body-jumbotron a:hover {
-  background-color: var(--purpledark);
+  background-color: var(--green);
   color: white;
 }
 
@@ -370,7 +428,7 @@ nav img {
   padding-bottom: 25em;
   padding-left: 1.5em;
   padding-right: 1.5em;
-  background-color: var(--pinklight);
+  background-color: var(--vanilla);
   height: auto;
 }
 
@@ -394,7 +452,7 @@ nav img {
 }
 
 .content-homepage .personal .list-data-menu ul li:not(:first-child):hover {
-  color: var(--purpledark) !important;
+  color: var(--black) !important;
   filter: brightness(.9);
 }
 
@@ -428,9 +486,10 @@ nav img {
   transform: rotate(90deg);
 }
 
-.content-homepage .personal .btnPilihMenu:hover {
-  background-color: var(--purpledark);
-  filter: brightness(.9);
+.content-homepage .personal .btnPilihMenu:not(.MenuTutup):hover {
+  background-color: var(--green);
+  color: white;
+  /* filter: brightness(.9); */
   cursor: pointer;
 }
 
@@ -446,8 +505,24 @@ nav img {
 }
 
 .content-homepage .family .list-data-menu input[type=checkbox],
-.content-homepage .family .list-data-menu button:nth-child(2) {
+.content-homepage .family .list-data-menu button:nth-child(2),
+.content-homepage .family .list-data-menu button:nth-child(3) {
   display: none;
+}
+
+.content-homepage .content-katalog .personal-menu .gambar-menu {
+  width: 2em;
+  cursor: pointer;
+}
+
+#modalLihatFotoMenu .gambar-menu {
+  background-color: salmon;
+  width: 10em;
+  height: 10em;
+}
+
+#modalLihatFotoMenu .gambar-menu img {
+  width: 100%;
 }
 
 #modalPaketan .multiselect {

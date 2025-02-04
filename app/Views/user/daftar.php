@@ -1,22 +1,22 @@
 <?php echo $this->extend('layout/user/template_login.php'); ?>
 
 <?php echo $this->section('content'); ?>
-<nav class="navbar my-nav p-2 mb-5 bg-body-tertiary my-bg-purplelight">
+<nav class="navbar my-nav p-2 mb-5 bg-body-tertiary my-bg-green">
   <div class="container-fluid justify-content-center flex-column">
     <a class="navbar-brand text-center" href="/">
       <img src="/assets/img/logo-big.jpg" alt="logo_kawa_healthy.jpg" class="rounded-circle">
-      <h6 class="text-center mt-2 m-0 lh-base">KAWA HEALTHY</h6>
+      <h6 class="text-center text-white mt-2 m-0 lh-base">KAWA HEALTHY</h6>
     </a>
   </div>
 </nav>
 
 <div class="d-flex justify-content-center content-daftar">
   <ul class="list-group border border-black mb-5" style="width: 300px;">
-    <li class="list-group-item my-bg-purple border border-0 text-center fw-medium p-3">
+    <li class="list-group-item my-bg-orange border border-0 text-center fw-medium p-3">
       PENDAFTARAN AKUN
     </li>
     <li class="list-group-item">
-      <form action="/daftarAkun/save" method="post" id="formDaftar class=" mt-3 mb-3">
+      <form id="formDaftar" class=" mt-3 mb-3">
         <div class="mb-3 lh-1">
           <label for="txtNama" class="form-label">Nama</label>
           <input type="text" class="form-control form-control-sm my-border-input" name="nama" id="txtNama" required>
@@ -51,7 +51,7 @@
           <input type="password" class="form-control form-control-sm my-border-input" name="password" id="txtPassword" required>
         </div>
         <div class="d-grid gap-2 col-6 mx-auto">
-          <button type="submit" class="btn btn-md my-btn-purpledark my-border-btn rounded-pill fw-medium">Daftar</button>
+          <button type="submit" class="btn btn-md my-btn-orange my-border-btn rounded-pill fw-medium">Daftar</button>
         </div>
       </form>
     </li>

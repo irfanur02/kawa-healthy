@@ -42,6 +42,17 @@ class Daftar extends BaseController
     $username = $this->request->getVar('username');
     $password = $this->request->getVar('password');
 
+    // $result = array(
+    //   'nama' => $nama,
+    //   'alamat' => $alamat,
+    //   'kota' => $kota,
+    //   'notelp' => $notelp,
+    //   'email' => $email,
+    //   'username' => $username,
+    //   'password' => $password
+    // );
+    // echo json_encode($result);
+
     $date = date("Y-m-d") . ' ' . date("H:i:s");
     $dataPelanggan = [
       'nama_pelanggan' => $nama,
@@ -64,12 +75,8 @@ class Daftar extends BaseController
     $this->akunModel->insertAkun($dataAkun);
 
     $idAkun = $this->akunModel->getMaxIdAkun()->getRowArray()['id_akun'];
-    $loginIdAkun = [
-      'id_akun' => $idAkun,
-      'logged_in' => true,
-    ];
 
-    $this->session->set($loginIdAkun);
+    setSession($this->session, $idAkun);
 
     return redirect()->to('/');
   }

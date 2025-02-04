@@ -50,6 +50,16 @@ class JadwalModel extends Model
     return $query;
   }
 
+  public function getMaxTanggalAkhir($pack)
+  {
+    $builder = $this->db->table('jadwal j');
+    $builder->selectMax('j.tanggal_akhir');
+    $builder->join('jadwal_menu jm', 'jm.id_jadwal = j.id_jadwal');
+    $builder->where('jm.infuse', ($pack == "family") ? NULL : 'y');
+    $query = $builder->get();
+    return $query;
+  }
+
   public function getAllJadwalMenu()
   {
     $builder = $this->db->table('jadwal');
@@ -75,10 +85,44 @@ class JadwalModel extends Model
 
   public function getJadwalMenuById($id = '')
   {
+    // $builder = $this->db->table('jadwal_menu as jm');
+    // $builder->select('
+    //               jm.id_jadwal_menu, jm.tanggal_menu, jm.status_libur, dmp.id_menu_pesanan, dmp.batal
+    //               ');
+    // $builder->join('detail_jadwal_menu as djm', 'jm.id_jadwal_menu = djm.id_jadwal_menu');
+    // $builder->join('detail_menu_pesanan as dmp', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left');
+    // $builder->where('jm.id_jadwal', $id);
+    // $builder->groupBy('jm.tanggal_menu');
+    $builder = $this->db->table('jadwal_menu as jm');
+    $builder->select("
+              jm.id_jadwal_menu,
+              jm.tanggal_menu,
+              dmp.batal,
+              dmp.id_menu_pesanan,
+              jm.status_libur,
+              CASE 
+                  WHEN SUM(CASE WHEN dmp.batal = 'b' THEN 1 ELSE 0 END) > 0 THEN 'b'
+                  ELSE NULL
+              END AS batal,
+              CASE 
+                  WHEN SUM(CASE WHEN sdmp.id_status_pesanan = 9 THEN 1 ELSE 0 END) > 0 THEN 'y'
+                  ELSE NULL
+              END AS berhenti_paketan
+          ");
+    $builder->join('detail_jadwal_menu as djm', 'jm.id_jadwal_menu = djm.id_jadwal_menu', 'left');
+    $builder->join('detail_menu_pesanan as dmp', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left');
+    $builder->join('status_detail_menu_pesanan as sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left');
+    $builder->where('jm.id_jadwal', $id);
+    $builder->groupBy('jm.tanggal_menu');
+    $query = $builder->get();
+    return $query;
+  }
+
+  public function getTanggalMenuBy($idJadwalMenu)
+  {
     $builder = $this->db->table('jadwal_menu');
-    $builder->select('id_jadwal_menu, tanggal_menu, status_libur')
-      ->where('id_jadwal', $id)
-      ->groupBy('tanggal_menu');
+    $builder->select('tanggal_menu')
+      ->where('id_jadwal_menu', $idJadwalMenu);
     $query = $builder->get();
     return $query;
   }
@@ -126,4 +170,76 @@ class JadwalModel extends Model
     $builder->insert($data);
   }
   // tabel detail jadwal menu
+
+  // tabel jadwal menu
+  public function getJadwalByTanggal($date = '', $pack = '')
+  {
+    $builder = $this->db->table('detail_jadwal_menu as djm');
+    $builder->select('*');
+    $builder->join('menu as m', 'm.id_menu = djm.id_menu');
+    $builder->join('pack as p', 'p.id_pack = m.id_pack');
+    $builder->join('jadwal_menu as jm', 'jm.id_jadwal_menu = djm.id_jadwal_menu');
+    $subQuery = $this->db->table('jadwal_menu');
+    $subQuery->select('id_jadwal');
+    $subQuery->where('tanggal_menu', $date);
+    $builder->where('jm.id_jadwal IN(' . $subQuery->getCompiledSelect() . ')', null, false);
+    $builder->where('p.nama_pack', $pack);
+    $builder->where('djm.deleted_at', null);
+    $builder->groupBy('jm.tanggal_menu');
+    $builder->orderBy('jm.tanggal_menu', 'ASC');
+    $query = $builder->get();
+    return $query;
+  }
+  // tabel jadwal menu
+
+  public function getInfuseJadwalPersonalByTanggal($date)
+  {
+    $builder = $this->db->table('detail_jadwal_menu as djm');
+    $builder->select('*');
+    $builder->join('jadwal_menu as jm', 'jm.id_jadwal_menu = djm.id_jadwal_menu');
+    $subQuery = $this->db->table('jadwal_menu');
+    $subQuery->select('id_jadwal');
+    $subQuery->where('tanggal_menu', $date);
+    $builder->where('jm.id_jadwal IN(' . $subQuery->getCompiledSelect() . ')', null, false);
+    $builder->where('djm.id_menu', null);
+    $builder->where('djm.deleted_at', null);
+    $builder->groupBy('jm.tanggal_menu');
+    $builder->orderBy('jm.tanggal_menu', 'ASC');
+    $query = $builder->get();
+    return $query;
+  }
+
+  // tabel jadwal menu
+  public function getDetailJadwalByTanggal($date = '', $pack = '')
+  {
+    $builder = $this->db->table('detail_jadwal_menu as djm');
+    $builder->select('*');
+    $builder->join('jadwal_menu as jm', 'jm.id_jadwal_menu = djm.id_jadwal_menu', 'left');
+    $builder->join('menu as m', 'm.id_menu = djm.id_menu', 'left');
+    $builder->join('pack as p', 'p.id_pack = m.id_pack', 'left');
+    $builder->join('paket_menu as pm', 'pm.id_paket_menu = m.id_paket_menu', 'left');
+    $subQuery = $this->db->table('jadwal_menu');
+    $subQuery->select('id_jadwal');
+    $subQuery->where('tanggal_menu', $date);
+    $builder->where('jm.id_jadwal IN(' . $subQuery->getCompiledSelect() . ')', null, false);
+    $builder->where('p.nama_pack', $pack);
+    $builder->where('djm.deleted_at', null);
+    $builder->orderBy("jm.tanggal_menu", "ASC");
+    $builder->orderBy("pm.id_paket_menu", "ASC");
+    $query = $builder->get();
+    return $query;
+  }
+  // tabel jadwal menu
+
+  public function findJadwal($date)
+  {
+    $builder = $this->db->table('jadwal');
+    $builder->select('tanggal_mulai');
+    $builder->where('tanggal_mulai >= ', $date);
+    $builder->groupBy('tanggal_mulai');
+    $builder->orderBy('tanggal_mulai', 'ASC');
+    $builder->limit(1);
+    $query = $builder->get();
+    return $query;
+  }
 }

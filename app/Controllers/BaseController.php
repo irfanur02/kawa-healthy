@@ -66,5 +66,8 @@ abstract class BaseController extends Controller
 		date_default_timezone_set('Asia/Jakarta');
 
 		$this->session = \Config\Services::session();
+		$this->session->start();
+
+		// $session = service('session');
 	}
 }

@@ -15,7 +15,7 @@
       <div class="d-flex justify-content-center">
         <div class="card mt-4 border border-dark p-3 form-tambahMenu" style="width: 60vw;">
           <div class="card-body">
-            <form action="/dadmin/menu/save" method="post" id="formMenu">
+            <form action="" method="post" id="formMenu">
               <div class="mb-3 row">
                 <label for="namaMenu" class="col-md-3 col-form-label">Nama Menu</label>
                 <div class="col-md-9">
@@ -25,7 +25,7 @@
               <div class="mb-3 row">
                 <label class="col-md-3 col-form-label">Kategori Pack</label>
                 <div class="col-md-7">
-                  <select class="form-select form-select-sm my-border-input" name="jenisPack" required>
+                  <select class="form-select form-select-sm my-border-input" name="jenisPack" id="jenisPack" required>
                     <option selected disabled value="">Pilh Jenis Pack</option>
                     <?php foreach ($dataPack as $data) : ?>
                       <option value="<?php echo $data['id_pack']; ?>"><?php echo $data['nama_pack']; ?> Pack</option>
@@ -42,7 +42,7 @@
               <div class="mb-3 row">
                 <label class="col-md-3 col-form-label">Nama Paket Menu</label>
                 <div class="col-md-7">
-                  <select class="form-select form-select-sm my-border-input" aria-label="Default select example" name="paketMenu" disabled="true" required>
+                  <select class="form-select form-select-sm my-border-input" aria-label="Default select example" id="paketMenu" name="paketMenu" disabled="true" required>
                     <option selected disabled value>Pilh Paket Menu</option>
                     <?php foreach ($dataPaketMenu as $data) : ?>
                       <?php if ($data['nama_paket_menu'] != 'infuse') : ?>
@@ -50,6 +50,14 @@
                       <?php endif ?>
                     <?php endforeach; ?>
                   </select>
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label for="hargaMenu" class="col-md-3 col-form-label">Gambar Menu</label>
+                <div class="col-md-7">
+                  <input type="file" style="color: transparent; width: 110px;" class="my-file-input mx-auto" id="fileGambar" required>
+                  <!-- Elemen untuk preview gambar -->
+                  <img id="previewGambar" src="" alt="Preview Gambar" style="max-width: 100%; margin-top: 10px; display: none;">
                 </div>
               </div>
               <!-- <div class="mb-5 row">
@@ -62,7 +70,7 @@
                     ?>
                       <option value="<?php //echo $data['id_karbo']; 
                                       ?>"><?php //echo $data['nama_karbo'];  
-                                                                          ?></option>
+                                          ?></option>
                     <?php //endforeach; 
                     ?>
                   </select>

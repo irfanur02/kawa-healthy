@@ -9,19 +9,19 @@
 
   <div class="my-content">
     <div class="container mt-4 content-menu">
-      <?php if (session()->getFlashdata('notif') == 'tambahMenu'): ?>
+      <?php if (session()->getFlashdata('notif') == 'tambahMenu') : ?>
         <div class="alert text-center alert-success p-2 position-relative alert-dismissible fade show" role="alert">
           Data Menu Berhasil Ditambahkan
           <button type="button" class="btn-close p-2 position-absolute top-50 end-0 translate-middle-y" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       <?php endif; ?>
-      <?php if (session()->getFlashdata('notif') == 'updateMenu'): ?>
+      <?php if (session()->getFlashdata('notif') == 'updateMenu') : ?>
         <div class="alert text-center alert-primary p-2 position-relative alert-dismissible fade show" role="alert">
           Data Menu Berhasil Diupdate
           <button type="button" class="btn-close p-2 position-absolute top-50 end-0 translate-middle-y" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       <?php endif; ?>
-      <?php if (session()->getFlashdata('notif') == 'deleteMenu'): ?>
+      <?php if (session()->getFlashdata('notif') == 'deleteMenu') : ?>
         <div class="alert text-center alert-danger p-2 position-relative alert-dismissible fade show" role="alert">
           Data Menu Berhasil Dihapus
           <button type="button" class="btn-close p-2 position-absolute top-50 end-0 translate-middle-y" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -65,18 +65,18 @@
             </tr>
           </thead>
           <tbody id="dataTableMenu">
-            <?php $no=1; foreach ($dataMenu as $data): ?>
+            <?php $no = 1;
+            foreach ($dataMenu as $data) : ?>
               <tr class="align-middle text-wrap">
                 <td scope="row"><?php echo $no++; ?>.</td>
-                <td><?php echo $data['nama_menu']; ?></td>
+                <td class="text-start"><img src="/assets/img/menu/<?php echo $data['gambar_menu']; ?>" class="gambar-menu lihatFotoMenu" alt="..." data-bs-toggle="modal" data-bs-target="#modalLihatFotoMenu"><?php echo $data['nama_menu']; ?></td>
                 <td><?php echo $data['nama_pack'] != NULL ? $data['nama_pack'] : "-"; ?></td>
                 <td><?php echo $data['nama_paket_menu'] != NULL ? $data['nama_paket_menu'] : "-"; ?></td>
                 <td><?php echo $data['harga_menu'] != NULL ? "Rp. " . $data['harga_menu'] : "-"; ?></td>
                 <td>
                   <a class="btn btn-sm btn-warning rounded-pill my-border-btn" href="/dadmin/menu/edit/<?php echo $data['id_menu']; ?>" role="button">Edit
                   </a>
-                  <button type="button" data-id="<?php echo $data['id_menu']; ?>" class="btn btn-sm btn-danger rounded-pill my-border-btn btnModalHapusMenu" data-bs-toggle="modal"
-                    data-bs-target="#modalHapusMenu">Hapus</button>
+                  <button type="button" data-id="<?php echo $data['id_menu']; ?>" class="btn btn-sm btn-danger rounded-pill my-border-btn btnModalHapusMenu" data-bs-toggle="modal" data-bs-target="#modalHapusMenu">Hapus</button>
                 </td>
               </tr>
             <?php endforeach ?>
@@ -87,9 +87,9 @@
   </div>
 
 </div>
+
 <!-- Modal Hapus Menu-->
-<div class="modal fade modal-sm" id="modalHapusMenu" tabindex="-1" aria-labelledby="modalHapusMenuLabel"
-  aria-hidden="true">
+<div class="modal fade modal-sm" id="modalHapusMenu" tabindex="-1" aria-labelledby="modalHapusMenuLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content border border-dark">
       <div class="modal-header justify-content-center" style=" background-color: #055160; color: white;">
@@ -106,12 +106,28 @@
                 </form>
               </div>
               <div class="col d-grid">
-                <button type="button" class="btn btn-light my-border-btn rounded-pill"
-                  data-bs-dismiss="modal">tidak</button>
+                <button type="button" class="btn btn-light my-border-btn rounded-pill" data-bs-dismiss="modal">tidak</button>
               </div>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal lihat foto menu -->
+<div class="modal fade" id="modalLihatFotoMenu" tabindex="-1" aria-labelledby="modalLihatFotoMenuLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header my-bg-orange border-bottom border-black justify-content-center">
+        <h1 class="modal-title fs-5" id="modalLihatFotoMenuLabel"></h1>
+      </div>
+      <div class="modal-body">
+        <img src="" class="rounded mx-auto d-block" alt="...">
+      </div>
+      <div class="modal-footer my-bg-vanilla">
+        <button type="button" class="btn btn-light btn-sm px-4 border rounded-pill border-black my-border-btn fw-medium" data-bs-dismiss="modal">Tutup</button>
       </div>
     </div>
   </div>

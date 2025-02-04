@@ -40,15 +40,18 @@ class AuthUser extends BaseController
       if ($akun['password_akun'] == $password) {
         $statusLogin = "sukses";
 
-        $loginAkun = [
-          'id_akun' => $akun['id_akun'],
-          'logged_in' => true,
-        ];
+        // $loginAkun = [
+        //   'id_akun' => $akun['id_akun'],
+        //   'logged_in' => true,
+        // ];
 
-        $this->session->set($loginAkun);
+        // $this->session->set($loginAkun);
+
+        setSession($this->session, $akun['id_akun']);
       }
     }
     $result = array(
+      'idAKun' => $akun['id_akun'],
       'statusLogin' => $statusLogin
     );
     echo json_encode($result);
@@ -71,6 +74,22 @@ class AuthUser extends BaseController
     }
     $result = array(
       'statusUsername' => $statusUsername
+    );
+    echo json_encode($result);
+  }
+
+  public function cekEmail()
+  {
+    $email = $this->request->getVar('email');
+    $cekEmail = $this->akunModel->cekEmail($email)->getRowArray();
+    if ($cekEmail != null) {
+      $statusEmail = "ada";
+    }
+    if ($cekEmail == null) {
+      $statusEmail = "kosong";
+    }
+    $result = array(
+      'statusEmail' => $statusEmail
     );
     echo json_encode($result);
   }

@@ -12,7 +12,7 @@
       <div class="row">
         <div class="col text-center fw-bold">Review Menu</div>
       </div>
-      
+
       <div class="table-responsive">
         <table class="table my-table-admin table-hover text-center mt-3">
           <thead>
@@ -23,14 +23,25 @@
             </tr>
           </thead>
           <tbody>
-            <tr class="align-middle">
-              <td>abdi</td>
-              <td class="text-start">
-                <span class="d-block">-nasi</span>
-                <span class="d-block">-mie goreng</span>
-              </td>
-              <td>enak</td>
-            </tr>
+            <?php foreach ($dataPelangganReview as $data) : ?>
+              <tr class="align-middle">
+                <td><?php echo $data['nama_pelanggan']; ?></td>
+                <td class="text-start">
+                  <?php foreach ($dataPesananPelanggan as $menu) : ?>
+                    <?php if ($data['id_menu_pesanan'] == $menu['id_menu_pesanan']) : ?>
+                      <ul class="list-unstyled m-0">
+                        <li>
+                          <ul>
+                            <li><?php echo (!empty($menu['nama_menu']) ? $menu['nama_menu'] : "Infuse"); ?></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    <?php endif; ?>
+                  <?php endforeach; ?>
+                </td>
+                <td><?php echo $data['keterangan_review']; ?></td>
+              </tr>
+            <?php endforeach; ?>
           </tbody>
         </table>
       </div>

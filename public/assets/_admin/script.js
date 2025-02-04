@@ -6,6 +6,27 @@ $(document).ready(function() {
   var jadwalNotifTanggal = false;
   var jadwalNotifMenu = false;
 
+  $("#btnKirimPesanan").on("click", function() {
+    var tanggalMenu = $(this).attr("data-tanggalMenu");
+
+    $.ajax({
+      url: base_url + '/dadmin/pesanan/kirim',
+      type: 'POST',
+      data: {
+        tanggalMenu: tanggalMenu
+      },
+      dataType: 'json',
+      success: function(response) {
+          console.log(response);
+      },
+      error: function(xhr, status, error) {
+          // Menangani kesalahan
+          alert('Terjadi kesalahan saat mengupload!');
+      }
+    });
+    location.reload();
+  })
+
   // view paket menu
   $(".content-paket-menu #dataTablePaketMenu").on('click', '.btnModalEditPaketMenu', function() {
     var id = $(this).data('id');
@@ -138,6 +159,13 @@ $(document).ready(function() {
 
 
   // view menu
+  $(".content-menu .lihatFotoMenu").on("click", function() {
+    const detailMenu = $(this).parent();
+
+    $("#modalLihatFotoMenu h1").text(detailMenu.text());
+    $("#modalLihatFotoMenu img").attr("src", $(this).attr('src'));
+  })
+
   $(".content-menu #dataTableMenu").on('click', '.btnModalHapusMenu', function() {
     var id = $(this).data('id');
     $("#modalHapusMenu form").attr('action', '/dadmin/menu/delete/' + id);
@@ -421,6 +449,7 @@ $(document).ready(function() {
       dataType: 'json',
       success: function (data) {
         $("#datatable").html(data.dataJadwal)
+        $("#datatable caption").text("Riwayat Jadwal Family Pack");
       }
     });
   })
@@ -435,6 +464,7 @@ $(document).ready(function() {
       dataType: 'json',
       success: function (data) {
         $("#datatable").html(data.dataJadwal)
+        $("#datatable caption").text("Riwayat Jadwal Personal Pack");
       }
     });
   })
@@ -562,7 +592,10 @@ $(document).ready(function() {
 
   $("#btnTambahHariFamily").on('click', function() {
     var cekLibur = $(".content-jadwal-family").find('ul.list-content-jadwal:last-child').find('input[type=checkbox]').is(':checked');
+    var cardFormJadwal = $(".content-jadwal-family").find(".list-content-jadwal");
     var tanggal = $(".content-jadwal-family").find("ul.list-content-jadwal:last-child").find("input[type=date]").val();
+    var minTanggal = $(".content-jadwal-family ul");
+    console.log(minTanggal);
     var listItemMenu = $(".content-jadwal-family").find('ul.list-content-jadwal:last-child').find('ul.list-tambah-menu li');
     if (tanggal == '') {
       if (jadwalNotifTanggal == false) {
@@ -576,11 +609,11 @@ $(document).ready(function() {
                       <div class="mb-2">
                         <label for="exampleFormControlInput1" class="form-label">Mulai</label>
                         <input type="date" class="form-control form-control-sm my-border-input txtDate jadwalFamily"
-                          style="width: fit-content; margin: auto;">
+                          style="width: fit-content; margin: auto;" min="${minTanggal}">
                       </div>
                       <div class="form-check form-check-inline">
-                        <input class="form-check-input my-border-input cbLibur" type="checkbox">
-                        <label class="form-check-label" for="cbLibur">Libur</label>
+                        <input class="form-check-input my-border-input cbLibur" id="cbLibur${cardFormJadwal.length+1}" type="checkbox">
+                        <label class="form-check-label" for="cbLibur${cardFormJadwal.length+1}">Libur</label>
                       </div>
                       <br>
                       <button type="button"
@@ -787,9 +820,10 @@ $(document).ready(function() {
   $(".content-jadwal-personal").on('keyup', '.my-form-jadwal-personal .txtMenuLunch', function() {
     $(this).parent().find('span.notifMenu').remove();
     var keyword = $(this).val();
-    var numCardFormJadwal = $(this).parent().parent().parent().parent().index() + 1;
+    var numCardFormJadwal = $(this).closest(".list-jadwal").index();
     console.log(numCardFormJadwal);
     var txtMenuLunch = $(this).parent().find("datalist#datalistOptionsLunch" + numCardFormJadwal);
+    console.log(txtMenuLunch);
     jadwalNotifMenuLunch = false;
     if (keyword !== '') {
       $.ajax({
@@ -802,13 +836,12 @@ $(document).ready(function() {
         },
         dataType: 'json',
         success: function (data) {
-          console.log(data);
           var element = '';
           txtMenuLunch.parent().find("#datalistOptionsLunch" + numCardFormJadwal).empty();
           for (var i = 0; i < data.dataPencarian.length; i++) {
             element += `<option id="itemPencarian" data-id="${data.dataPencarian[i].id_menu}" value="${data.dataPencarian[i].nama_menu}">`;
           }
-
+          
           txtMenuLunch.append(element);
         }
       });
@@ -818,7 +851,7 @@ $(document).ready(function() {
   $(".content-jadwal-personal").on('keyup', '.my-form-jadwal-personal .txtMenuDinner', function() {
     $(this).parent().find('span.notifMenu').remove();
     var keyword = $(this).val();
-    var numCardFormJadwal = $(this).parent().parent().parent().index() + 1;
+    var numCardFormJadwal = $(this).closest(".list-jadwal").index();
     console.log(numCardFormJadwal);
     var txtMenuDinner = $(this).parent().find("datalist#datalistOptionsDinner" + numCardFormJadwal);
     jadwalNotifMenuDinner = false;
@@ -846,8 +879,10 @@ $(document).ready(function() {
   })
 
   $("#btnTambahHariPersonal").on('click', function() {
+    var aksiJadwal = $(".content-jadwal-personal input[name=case]").val();
     var cardFormJadwal = $(".content-jadwal-personal").find(".list-jadwal");
     var tanggal = $(".content-jadwal-personal").find(".list-jadwal-personal .list-jadwal:last-child").find("input[type=date]").val();
+    var minTanggal = $(".content-jadwal-personal").find(".list-jadwal-personal .list-jadwal:last-child input[type=date]").attr("min");
     var itemMenuLunch = $(".content-jadwal-personal").find('.list-jadwal-personal .list-jadwal:last-child').find('input.txtMenuLunch');
     var itemMenuDinner = $(".content-jadwal-personal").find('.list-jadwal-personal .list-jadwal:last-child').find('input.txtMenuDinner');
     var cekLibur = $(".content-jadwal-personal").find('.list-jadwal-personal .list-jadwal:last-child').find('input[type=checkbox]').is(':checked');
@@ -859,16 +894,16 @@ $(document).ready(function() {
       }
     } else if (cekLibur || itemMenuLunch.val() != '' && itemMenuDinner.val() != '') {
       $(".list-jadwal-personal").append(`
-        <div class="list-jadwal mt-4 text-center">
+        <div class="list-jadwal mt-4 text-center ${aksiJadwal == "updateJadwalMenu" ? "updateListMenu" : ""}" ${aksiJadwal == "updateJadwalMenu" ? "data-id='-'" : ""}>
           <div class="sublist-jadwal border border-black rounded-start ">
             <div class="mb-2" >
               <label for="exampleFormControlInput1" class="form-label">Mulai</label>
               <input type="date" class="form-control form-control-sm my-border-input txtDate jadwalPersonal"
-                  style="width: fit-content; margin: auto;">
+                  style="width: fit-content; margin: auto;" min="${minTanggal}">
             </div>
             <div class="form-check form-check-inline">
-              <input class="form-check-input my-border-input cbLibur" id="cBoxLibur" type="checkbox">
-              <label class="form-check-label" for="cBoxLibur">Libur</label>
+              <input class="form-check-input my-border-input cbLibur" id="cBoxLibur${(cardFormJadwal.length)+1}" type="checkbox">
+              <label class="form-check-label" for="cBoxLibur${(cardFormJadwal.length)+1}">Libur</label>
             </div>
             <br>
             <button type="button" class="btn mt-1 btn-sm btn-danger rounded-pill my-border-btn btnListHapusJadwal">Hapus</button>
@@ -922,14 +957,15 @@ $(document).ready(function() {
     var itemMenuLunch = $(".content-jadwal-personal").find('.list-jadwal-personal .list-jadwal:last-child').find('input.txtMenuLunch');
     var itemMenuDinner = $(".content-jadwal-personal").find('.list-jadwal-personal .list-jadwal:last-child').find('input.txtMenuDinner');
     var cekLibur = $(".content-jadwal-personal").find('.list-jadwal:last-child').find('input[type=checkbox]').is(':checked');
-    var updateJadwalMenu = $(".content-jadwal-personal").find('.updateJadwalMenu');
+    var aksiJadwal = $(".content-jadwal-personal input[name=case]").val();
     if (tanggal === '') {
       if (jadwalNotifTanggal == false) {
         jadwalNotifTanggal = true;
         $(".content-jadwal-personal .list-jadwal-personal .list-jadwal:last-child").find("div:first-child div:first-child").append(`<span class="notifTanggal text-sm text-danger">Tanggal masih kosong</span>`);
       }
     } else if (cekLibur || itemMenuLunch.val() != '' && itemMenuDinner.val() != '') {
-      if (updateJadwalMenu.length == 0) { // save jadwal personal
+      if (aksiJadwal == "saveJadwalMenu") { // save jadwal personal
+        console.log("save jadwal");
         var contentJadwal = $(".content-jadwal-personal")
         var dataJadwal = [];
         contentJadwal.find(".list-jadwal").each(function (index, element) {
@@ -957,42 +993,49 @@ $(document).ready(function() {
           dataType: 'json',
           success: function (data) {
             console.log(data);
-            window.location.href = base_url + '/dadmin/jadwal';
           }
         });
+        window.location.href = base_url + '/dadmin/jadwal';
       } else { // update jadwal personal
+        console.log("update jadwal");
         var contentJadwal = $(".content-jadwal-personal")
         var idJadwal = $(this).data('id');
         var dataJadwal = [];
-        contentJadwal.find("ul.list-content-jadwal").each(function (index, element) {
-          var itemsMenu = [];
-          var idJadwalMenu = $(element).data('id');
-          var tanggal = $(element).find('input[type=date]').val();
-          var cbLibur = $(element).find('input[type=checkbox]').is(':checked');
-          var listItemMenu = $(element).find('.list-tambah-menu');
-          listItemMenu.find("li").each(function (index, element) {
-            var idMenu = $(element).find('input').val();
-            itemsMenu.push(idMenu);
-          })
-          dataJadwal.push({
-            idJadwalMenu: idJadwalMenu,
-            tanggal: tanggal,
-            cbLibur: cbLibur,
-            itemsMenu: itemsMenu
-          });
-        });
-        $.ajax({
-          url: base_url + '/dadmin/jadwal/update/personal',
-          type: 'POST',
-          data: {
-            idJadwal: idJadwal,
-            dataJadwal: dataJadwal
-          },
-          dataType: 'json',
-          success: function (data) {
-            window.location.href = base_url + '/dadmin/jadwal';
+        contentJadwal.find(".list-jadwal").each(function (index, element) {
+          if ($(element).hasClass("updateListMenu")) {
+            var itemsMenu = [];
+            var idJadwalMenu = $(element).data('id');
+            var tanggal = $(element).find('input[type=date]').val();
+            var cbLibur = $(element).find('input[type=checkbox]').is(':checked');
+            var idMenuLunch = $(element).find("input[nama=menuLunch]").data("idMenu");
+            var idMenuDinner = $(element).find("input.txtMenuDinner").data("idMenu");
+            // var listItemMenu = $(element).find('.list-tambah-menu');
+            // listItemMenu.find("li").each(function (index, element) {
+            //   var idMenu = $(element).find('input').val();
+            //   itemsMenu.push(idMenu);
+            // })
+            dataJadwal.push({
+              idJadwalMenu: idJadwalMenu,
+              tanggal: tanggal,
+              cbLibur: cbLibur,
+              idMenuLunch: idMenuLunch,
+              idMenuDinner: idMenuDinner
+            });
           }
         });
+        console.log(dataJadwal);
+        // $.ajax({
+        //   url: base_url + '/dadmin/jadwal/update/personal',
+        //   type: 'POST',
+        //   data: {
+        //     idJadwal: idJadwal,
+        //     dataJadwal: dataJadwal
+        //   },
+        //   dataType: 'json',
+        //   success: function (data) {
+        //     window.location.href = base_url + '/dadmin/jadwal';
+        //   }
+        // });
       }
     } else {
       if (itemMenuLunch.val() == '') {
@@ -1019,11 +1062,404 @@ $(document).ready(function() {
   // view jadwal personal
 
 
+  // view pesanan
+  $(".content-pesanan .btnApprove").on('click', function(e) {
+    var idPesanan = $(this).attr('data-idPesanan');
+    $.ajax({
+      url: base_url + '/dadmin/pesanan/approved',
+      type: 'POST',
+      data: {
+        idPesanan: idPesanan,
+      },
+      dataType: 'json',
+      success: function (data) {
+        console.log(data);
+      }
+    });
+    $(this) // Tombol approve yang diklik
+      .siblings(".btnTolakPesanan") // Cari tombol tolak pesanan bersaudara
+      .addBack() // Gabungkan dengan tombol approve
+      .remove(); // Hapus kedua elemen tersebut
+  });
+
+  $(".content-pesanan .btnLihatGambar").on('click', function(e) {
+    var idPesanan = $(this).attr('data-idPesanan');
+    $.ajax({
+      url: base_url + '/dadmin/pesanan/detailPembayaran',
+      type: 'POST',
+      data: {
+        idPesanan: idPesanan,
+      },
+      dataType: 'json',
+      success: function (data) {
+        var data = data.dataPembayaran;
+        console.log(data);
+        $("#modalLihatGambar img").attr("src", "/assets/img/bukti_transfer/" + data.gambar_transfer);
+        $("#modalLihatGambar .nama").text(data.atas_nama_pembayaran);
+        $("#modalLihatGambar .nominal").text(data.nominal_pembayaran);
+      }
+    });
+  })
+  
+  urlCek = base_url + '/dadmin/pesananPembayaran';
+  if ($(location).attr('href') == urlCek) {
+    modalLihatGambar.addEventListener('hidden.bs.modal', event => {
+      $("#modalLihatGambar .nama").text("");
+      $("#modalLihatGambar .nominal").text("");
+    })
+  }
+
+  const modalTolakPesanan = document.getElementById('modalTolakPesanan')
+  if (modalTolakPesanan) {
+    modalTolakPesanan.addEventListener('show.bs.modal', event => {
+      // Button that triggered the modal
+      const button = event.relatedTarget;
+      // Extract info from data-bs-* attributes
+      const idPesanan = button.getAttribute('data-idPesanan');
+      const indexBarix = button.getAttribute('data-indexBaris');
+
+      // Update the modal's content.
+      const modalBtnTolak = modalTolakPesanan.querySelector('#modalBtnTolak');
+      modalBtnTolak.setAttribute('data-idPesanan', idPesanan);
+      modalBtnTolak.setAttribute('data-indexBaris', indexBarix);
+    })
+  }
+  
+  $("#modalTolakPesanan #modalBtnTolak").on('click', function(e) {
+    var idPesanan = $(this).attr('data-idPesanan');
+    var indexBaris = $(this).attr('data-indexBaris');
+    $.ajax({
+      url: base_url + '/dadmin/pesanan/notApproved',
+    type: 'POST',
+    data: {
+      idPesanan: idPesanan,
+    },
+    dataType: 'json',
+    success: function (data) {
+        console.log(data);
+      }
+    });
+    const modalTolakPesanan = document.getElementById('modalTolakPesanan');    
+    const modalInstance = bootstrap.Modal.getInstance(modalTolakPesanan);
+    modalInstance.hide();
+    $(".modal-backdrop").remove();
+    var targetRow = $("#tabelPembayaran tr").eq(indexBaris); // Ambil baris berdasarkan index
+    var btnTolakPesanan = targetRow.find(".btnTolakPesanan");
+    var btnApprove = targetRow.find(".btnTolakPesanan").siblings(".btnApprove");
+    btnTolakPesanan.after("Pesanan Ditolak");
+    btnTolakPesanan.remove();
+    btnApprove.remove();
+  });
+
+  const modalKonfirmasiRefund = document.getElementById('modalKonfirmasiRefund')
+  if (modalKonfirmasiRefund) {
+    modalKonfirmasiRefund.addEventListener('show.bs.modal', event => {
+      // Button that triggered the modal
+      const button = event.relatedTarget;
+      const modalBtnKembalikanUang = modalKonfirmasiRefund.querySelector('#modalBtnKembalikanUang');
+      const indexBarix = button.getAttribute('data-indexBaris');
+      modalBtnKembalikanUang.setAttribute('data-indexBaris', indexBarix);
+      
+      if (button.classList.contains('batalMenuPesanan')) {
+        const idMenuPesanan = button.getAttribute('data-idMenuPesanan');        
+        modalBtnKembalikanUang.setAttribute('data-idMenuPesanan', idMenuPesanan);
+        modalKonfirmasiRefund.setAttribute('data-status', "batalMenuPesanan");
+      }
+      
+      if (button.classList.contains('gantiMasaHari')) {
+        const idMasaHariBatal = button.getAttribute('data-idMasaHariBatal');
+        modalBtnKembalikanUang.setAttribute('data-idMasaHariBatal', idMasaHariBatal);
+        modalKonfirmasiRefund.setAttribute('data-status', "gantiMasaHari");
+      }
+      
+      if (button.classList.contains('berhentiPaketan')) {
+        const idPesanan = button.getAttribute('data-idPesanan');
+        modalBtnKembalikanUang.setAttribute('data-idPesanan', idPesanan);
+        modalKonfirmasiRefund.setAttribute('data-status', "berhentiPaketan");
+      }
+    })
+    
+    modalKonfirmasiRefund.addEventListener('hide.bs.modal', event => {
+      modalKonfirmasiRefund.removeAttribute('data-idMenuPesanan');
+      modalKonfirmasiRefund.removeAttribute('data-idMasaHariBatal');
+      modalKonfirmasiRefund.removeAttribute('data-idPesanan');
+    })
+  }
+
+  $("#modalKonfirmasiRefund #modalBtnKembalikanUang").on("click", function() {
+    var dataStatus = $("#modalKonfirmasiRefund").attr("data-status");
+
+    var idPesanan = $(this).attr('data-idPesanan');
+    var idMenuPesanan = $(this).attr('data-idMenuPesanan');
+    var idMasaHariBatal = $(this).attr('data-idMasaHariBatal');
+    var indexBaris = $(this).attr('data-indexBaris');
+
+    $.ajax({
+      url: base_url + '/dadmin/pesanan/kembalikanUang',
+      type: 'POST',
+      data: {
+        idPesanan: idPesanan,
+        idMenuPesanan: idMenuPesanan,
+        idMasaHariBatal: idMasaHariBatal,
+        status: (dataStatus == "gantiMasaHari") ? "gantiMasaHari" : 
+              (dataStatus == "berhentiPaketan") ? "berhentiPaketan" : 
+              (dataStatus == "batalMenuPesanan") ? "batalMenuPesanan" : null
+    },
+    dataType: 'json',
+    success: function (data) {
+        console.log(data);
+      }
+    });
+    const modalKonfirmasiRefund = document.getElementById('modalKonfirmasiRefund');    
+    const modalInstance = bootstrap.Modal.getInstance(modalKonfirmasiRefund);
+    modalInstance.hide();
+    $(".modal-backdrop").remove();
+    var btnKembalikanUang = $("#tabelPesananBatal tr").find(`.${dataStatus}[data-indexBaris="${indexBaris}"]`); // Ambil baris berdasarkan index
+    btnKembalikanUang.after("Sudah Dikembalikan");
+    btnKembalikanUang.remove();
+  })
 
   $(".btnHapusPesanan").on('click', function(e) {
     var listPesanan = e.target.parentElement.parentElement.parentElement.parentElement;
     listPesanan.remove();
   });
+  // view pesanan
+
+
+  $(".content-tambah-menu").on('change', "#fileGambar", function (event) {
+    $(".invalid-feedback, .valid-feedback").remove();
+    var fileInput = $('.content-tambah-menu #fileGambar')[0];
+    var file = fileInput.files[0];
+    var allowedExtensions = ["jpg", "jpeg", "png"];
+    var allowedMimeTypes = ["image/jpeg", "image/jpg", "image/png"];
+    var preview = $('#previewGambar');
+
+
+    // Ambil ekstensi file
+    var fileExtension = file.name.split('.').pop().toLowerCase();
+
+    // Validasi ekstensi file
+    if (!allowedExtensions.includes(fileExtension)) {
+      $(".content-tambah-menu #fileGambar").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-fileGambar">
+          File harus dalam format JPG/JPEG
+      </div>`);
+      return;
+    } else {
+      if (event.target.files && event.target.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          preview.attr("src", e.target.result);
+          preview.css("display", "block");
+        };
+        reader.readAsDataURL(event.target.files[0]);
+      } else {
+        preview.css("display", "none");
+      }
+      $(".content-tambah-menu #fileGambar").parent().find(".invalid-fileGambar").remove();
+    }
+
+    // Validasi tipe MIME
+    if (!allowedMimeTypes.includes(file.type)) {
+      $(".content-tambah-menu #fileGambar").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-fileGambar">
+          File harus dalam format JPG/JPEG
+      </div>`);
+      return;
+    } else {
+      if (event.target.files && event.target.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          preview.attr("src", e.target.result);
+          preview.css("display", "block");
+        };
+        reader.readAsDataURL(event.target.files[0]);
+      } else {
+        preview.css("display", "none");
+      }
+      $(".content-tambah-menu #fileGambar").parent().find(".invalid-fileGambar").remove();
+    }
+  })
+
+  var klikGambar = false;
+  $(".content-edit-menu").on('change', "#fileGambar", function (event) {
+    klikGambar = true;
+    $(".invalid-feedback, .valid-feedback").remove();
+    var fileInput = $('.content-edit-menu #fileGambar')[0];
+    var file = fileInput.files[0];
+    var allowedExtensions = ["jpg", "jpeg", "png"];
+    var allowedMimeTypes = ["image/jpeg", "image/jpg", "image/png"];
+    var preview = $('#previewGambar');
+
+    // Ambil ekstensi file
+    var fileExtension = file.name.split('.').pop().toLowerCase();
+
+    // Validasi ekstensi file
+    if (!allowedExtensions.includes(fileExtension)) {
+      $(".content-edit-menu #fileGambar").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-fileGambar">
+          File harus dalam format JPG/JPEG
+      </div>`);
+      return;
+    } else {
+      if (event.target.files && event.target.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          preview.attr("src", e.target.result);
+          preview.css("display", "block");
+        };
+        reader.readAsDataURL(event.target.files[0]);
+      } else {
+        preview.css("display", "none");
+      }
+      $(".content-edit-menu #fileGambar").parent().find(".invalid-fileGambar").remove();
+    }
+
+    // Validasi tipe MIME
+    if (!allowedMimeTypes.includes(file.type)) {
+      $(".content-edit-menu #fileGambar").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-fileGambar">
+          File harus dalam format JPG/JPEG
+      </div>`);
+      return;
+    } else {
+      if (event.target.files && event.target.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          preview.attr("src", e.target.result);
+          preview.css("display", "block");
+        };
+        reader.readAsDataURL(event.target.files[0]);
+      } else {
+        preview.css("display", "none");
+      }
+      $(".content-edit-menu #fileGambar").parent().find(".invalid-fileGambar").remove();
+    }
+  })
+
+  $("#formMenu").on('submit', function(e) {
+    e.preventDefault();
+    
+    var namaMenu = $('.content-tambah-menu #namaMenu').val();
+    var jenisPack = $('.content-tambah-menu #jenisPack').val();
+    var hargaMenu = $('.content-tambah-menu #hargaMenu').val();
+    var paketMenu = $('.content-tambah-menu #paketMenu').val();
+
+    var fileInput = $('.content-tambah-menu #fileGambar')[0];
+    var file = fileInput.files[0];
+    var allowedExtensions = ["jpg", "jpeg"];
+    var allowedMimeTypes = ["image/jpeg", "image/jpg"];
+    // Ambil ekstensi file
+    var fileExtension = file.name.split('.').pop().toLowerCase();
+    // Validasi ekstensi file
+    if (!allowedExtensions.includes(fileExtension)) {
+      $(".content-tambah-menu #fileGambar").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-fileGambar">
+          File harus dalam format JPG/JPEG
+      </div>`);
+      return;
+    }
+    // Validasi tipe MIME
+    if (!allowedMimeTypes.includes(file.type)) {
+      $(".content-tambah-menu #fileGambar").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-fileGambar">
+          File harus dalam format JPG/JPEG
+      </div>`);
+      return;
+    }
+    
+    var formData = new FormData();
+    formData.append('namaMenu', namaMenu);
+    formData.append('jenisPack', jenisPack);
+    formData.append('hargaMenu', hargaMenu);
+    formData.append('paketMenu', paketMenu);
+    formData.append('fileGambar', fileInput.files[0]);
+    // Kirim data menggunakan AJAX
+    $.ajax({
+      url: base_url + '/dadmin/menu/save',
+      type: 'POST',
+      data: formData,
+      dataType: 'json',
+      contentType: false,  // Jangan set Content-Type, biar FormData yang mengatur
+      processData: false,  // Jangan memproses data menjadi string
+      success: function(response) {
+          console.log(response);
+          window.location.href = base_url + '/dadmin/menu';
+      },
+      error: function(xhr, status, error) {
+          // Menangani kesalahan
+          alert('Terjadi kesalahan saat mengupload!');
+      }
+    });
+  })
+
+  $("#formMenuEdit").on('submit', function(e) {
+    e.preventDefault();
+
+    $(".content-edit-menu #fileGambar").parent().find(".invalid-fileGambar").remove();
+
+    var idMenu = $('.content-edit-menu #idMenu').val();
+    var gambarLama = $('.content-edit-menu #gambarLama').val();
+    var namaMenu = $('.content-edit-menu #namaMenu').val();
+    var jenisPack = $('.content-edit-menu #jenisPack').val();
+    var hargaMenu = $('.content-edit-menu #hargaMenu').val();
+    var paketMenu = $('.content-edit-menu #paketMenu').val();
+    var fileInput = $('.content-edit-menu #fileGambar')[0];
+
+    // console.log(idMenu);
+    // console.log(gambarLama);
+    // console.log(namaMenu);
+    // console.log(jenisPack);
+    // console.log(hargaMenu);
+    // console.log(paketMenu);
+    // console.log((fileInput.files[0]) ? fileInput.files[0] : gambarLama);
+
+    if (klikGambar) {
+      var file = fileInput.files[0];
+      var allowedExtensions = ["jpg", "jpeg"];
+      var allowedMimeTypes = ["image/jpeg", "image/jpg"];
+      // Ambil ekstensi file
+      var fileExtension = file.name.split('.').pop().toLowerCase();
+      // Validasi ekstensi file
+      if (!allowedExtensions.includes(fileExtension)) {
+        $(".content-edit-menu #fileGambar").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-fileGambar">
+            File harus dalam format JPG/JPEG
+        </div>`);
+        return;
+      } else {
+        $(".content-edit-menu #fileGambar").parent().find(".invalid-fileGambar").remove();
+      }
+      // Validasi tipe MIME
+      if (!allowedMimeTypes.includes(file.type)) {
+        $(".content-edit-menu #fileGambar").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-fileGambar">
+            File harus dalam format JPG/JPEG
+        </div>`);
+        return;
+      } else {
+        $(".content-edit-menu #fileGambar").parent().find(".invalid-fileGambar").remove();
+      }
+    }
+
+    var formData = new FormData();
+    formData.append('idMenu', idMenu);
+    formData.append('gambarLama', gambarLama);
+    formData.append('namaMenu', namaMenu);
+    formData.append('jenisPack', jenisPack);
+    formData.append('hargaMenu', hargaMenu);
+    formData.append('paketMenu', paketMenu);
+    formData.append('fileGambar', (fileInput.files[0]) ? fileInput.files[0] : null);
+    // Kirim data menggunakan AJAX
+    $.ajax({
+      url: base_url + '/dadmin/menu/update',
+      type: 'POST',
+      data: formData,
+      dataType: 'json',
+      contentType: false,  // Jangan set Content-Type, biar FormData yang mengatur
+      processData: false,  // Jangan memproses data menjadi string
+      success: function(response) {
+          console.log(response);
+          window.location.href = base_url + '/dadmin/menu';
+      },
+      error: function(xhr, status, error) {
+          // Menangani kesalahan
+          alert('Terjadi kesalahan saat mengupload!');
+      }
+    });
+  })
 
   $("#formMenu select[name='jenisPack']").on('change', function() {
     if(this.value == 1) {
@@ -1045,7 +1481,12 @@ $(document).ready(function() {
     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
     var yyyy = today.getFullYear();
     newToday = yyyy + '-' + mm + '-' + dd;
-    $(this).attr("min", newToday);
+    // $(this).attr("min", newToday);
+    if($(".content-jadwal input[name=case]").val() == "saveJadwalMenu") {
+      $(this).attr("min", $(this).attr("min"));
+    } else {
+      $(this).attr("min", newToday);
+    }
   });
 
   $(".my-navbar .toggleMenu").on('click', function() {
@@ -1056,13 +1497,104 @@ $(document).ready(function() {
     }
   })
 
+  $(".content-laporan").on('submit', '#filterPerPeriode form', function(e) {
+    e.preventDefault();
+    $.ajax({
+      url: base_url + '/dadmin/laporanByPeriode',
+      type: 'POST',
+      data: {
+        tanggalAwal: $("#filterPerPeriode input[name=tanggalAwal]").val(),
+        tanggalAkhir: $("#filterPerPeriode input[name=tanggalAkhir]").val()
+      },
+      dataType: 'json',
+      success: function (data) {
+        console.log(data.laporan);
+        $("#dataLaporan").html(data.element)
+      }
+    });
+  })
+
+  $(".content-laporan").on("click", ".btnLaporanDetailPelanggan", function() {
+    console.log($(this).data("id"));
+    $.ajax({
+      url: base_url + '/dadmin/laporanByDetailPelanggan',
+      type: 'POST',
+      data: {id: $(this).data("id")},
+      dataType: 'json',
+      success: function (data) {
+        console.log(data.laporan);
+        console.log(data.id);
+        $("#dataLaporan").html(data.element)
+      }
+    });
+  })
+  
+  $(".content-laporan").on("click", "#btnLihatPelanggan", function() {
+    $.ajax({
+      url: base_url + '/dadmin/laporanByPelanggan',
+      type: 'POST',
+      dataType: 'json',
+      success: function (data) {
+        console.log(data.laporan);
+        $("#dataLaporan").html(data.element)
+      }
+    });
+  })
+
   $(".content-laporan select#selectLaporan").on('change', function() {
-    if(this.value == "periode") {
-      $(".content-laporan #filterPerPeriode").css("display", 'block');
+    if(this.value == "periode" || this.value == "bulan" || this.value == "pelanggan" || this.value == "menu") {
+      $(".content-laporan #filterPerPeriode").css("display", 'none');
     };
 
+    if(this.value == "periode") {
+      $(".content-laporan #filterPerPeriode").css("display", 'block');
+      
+      $.ajax({
+        url: base_url + '/dadmin/laporanByPeriode',
+        type: 'POST',
+        dataType: 'json',
+        success: function (data) {
+          console.log(data.laporan);
+          $("#dataLaporan").html(data.element)
+        }
+      });
+    };
+    
     if(this.value == "bulan") {
-      $(".content-laporan #filterPerPeriode").css("display", 'none');
+      $.ajax({
+        url: base_url + '/dadmin/laporanByBulan',
+        type: 'POST',
+        dataType: 'json',
+        success: function (data) {
+          console.log(data.laporan);
+          console.log(data.data);
+          $("#dataLaporan").html(data.element)
+        }
+      });
+    };
+
+    if(this.value == "pelanggan") {
+      $.ajax({
+        url: base_url + '/dadmin/laporanByPelanggan',
+        type: 'POST',
+        dataType: 'json',
+        success: function (data) {
+          console.log(data.laporan);
+          $("#dataLaporan").html(data.element)
+        }
+      });
+    };
+
+    if(this.value == "menu") {
+      $.ajax({
+        url: base_url + '/dadmin/laporanByMenu',
+        type: 'POST',
+        dataType: 'json',
+        success: function (data) {
+          console.log(data.laporan);
+          $("#dataLaporan").html(data.element)
+        }
+      });
     };
   });
 

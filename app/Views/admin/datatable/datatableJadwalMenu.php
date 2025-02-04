@@ -1,5 +1,5 @@
 <table class="table my-table-admin table-hover text-center" style="width: fit-content; margin: 0 auto;">
-  <caption class="caption-top text-center fw-bold text-black">Riwayat Jadwal Family Pack</caption>
+  <caption class="caption-top text-center fw-bold text-black"></caption>
   <thead>
     <tr class="align-middle">
       <td scope="col" style="padding: .5em 30px .5em 30px;">Tanggal Mulai</td>

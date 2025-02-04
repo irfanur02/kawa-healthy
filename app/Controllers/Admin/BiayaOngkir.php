@@ -28,6 +28,14 @@ class BiayaOngkir extends BaseController
     return view('admin/biayaOngkir', $data);
   }
 
+  public function getAllOngkir() {
+    $dataOngkir = $this->biayaOngkirModel->getAllOngkir()->getResultArray();
+    $result = array(
+      'dataOngkir' => $dataOngkir
+    );
+    echo json_encode($result);
+  }
+
   public function save()
   {
     $date = date("Y-m-d") . ' ' . date("H:i:s");

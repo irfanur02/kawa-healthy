@@ -100,6 +100,15 @@ input::-webkit-inner-spin-button {
   cursor: pointer;
 }
 
+#previewGambar {
+  width: 8em; /* Lebar maksimum gambar */
+  /* height: auto; //Tinggi disesuaikan secara otomatis */
+  border: 1px solid #ddd; /* Garis tepi */
+  border-radius: 5px; /* Sudut melengkung */
+  padding: 5px; /* Ruang di dalam gambar */
+  margin-top: 10px; /* Jarak dari input file */
+}
+
 table.my-table-admin thead td {
   background-color: #055160 !important;
   color: white !important;
@@ -189,6 +198,12 @@ table.my-table-admin tr {
 
 .list-content-jadwal li {
   padding: .5em !important;
+}
+
+.content-menu .gambar-menu {
+  width: 2em;
+  margin-right: 10px;
+  cursor: pointer;
 }
 
 .list-tambah-menu li {

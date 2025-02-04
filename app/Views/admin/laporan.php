@@ -22,6 +22,8 @@
               <select class="form-select form-select-sm my-border-input fw-bolder" id="selectLaporan">
                 <option selected value="periode">Per Periode</option>
                 <option value="bulan">Per Bulan</option>
+                <option value="pelanggan">Per Pelanggan</option>
+                <option value="menu">Per Menu</option>
               </select>
             </li>
             <li class="list-group-item border-0 mt-3" id="filterPerPeriode">
@@ -36,13 +38,13 @@
                     <div class="row">
                       <div class="col d-flex align-items-center">
                         <span style="width: 100%;">Tanggal Awal</span>
-                        <input type="date" name="" class="form-control form-control-sm my-border-input">
+                        <input type="date" name="tanggalAwal" class="form-control form-control-sm my-border-input">
                       </div>
                     </div>
                     <div class="row mt-1">
                       <div class="col d-flex align-items-center">
                         <span style="width: 100%;">Tanggal Akhir</span>
-                        <input type="date" name="" class="form-control form-control-sm my-border-input">
+                        <input type="date" name="tanggalAkhir" class="form-control form-control-sm my-border-input">
                       </div>
                     </div>
                     <div class="row mt-3">
@@ -57,8 +59,8 @@
           </ul>
         </div>
       </div>
-      <div class="row" id="dataLaporan">
-        <div class="col d-flex justify-content-center">
+      <div class="row">
+        <div class="col d-flex justify-content-center" id="dataLaporan">
           <table class="table my-table-admin table-hover text-center mt-3" style="width: fit-content;">
             <thead>
               <tr class="align-middle">
@@ -68,14 +70,16 @@
               </tr>
             </thead>
             <tbody>
-              <tr class="align-middle fw-medium">
-                <td>1/1/2024</td>
-                <td>Rp. 4.000.000</td>
-                <td>
-                  <span class="d-block">family pack: 10</span>
-                  <span class="d-block">personal pack: 14</span>
-                </td>
-              </tr>
+              <?php foreach ($dataLaporan as $data) : ?>
+                <tr class="align-middle fw-medium">
+                  <td><?php echo $data['tanggal_menu']; ?></td>
+                  <td>Rp. <?php echo $data['total_harga'] + $data['biaya_ongkir']; ?></td>
+                  <td>
+                    <span class="d-block">family pack: <?php echo (!empty($data['jumlah_family']) ? $data['jumlah_family'] : "-"); ?></span>
+                    <span class="d-block">personal pack: <?php echo (!empty($data['jumlah_personal']) ? $data['jumlah_personal'] : "-"); ?></span>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
             </tbody>
           </table>
         </div>

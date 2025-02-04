@@ -14,58 +14,72 @@
       </div>
 
       <div class="list-jadwal-personal content-jadwal">
-        <?php if ($case == 'update') : ?>
-          <?php foreach ($dataJadwalMenu as $dataJadwal) : ?>
-            <div class="list-jadwal mt-4 text-center updateJadwalMenu" data-id="<?php echo $dataJadwal['id_jadwal_menu']; ?>">
+        <?php if ($case == 'update') : ?> <!-- case update jadwal -->
+          <input type="hidden" name="case" value="updateJadwalMenu"></input>
+          <?php foreach ($dataJadwalMenu as $index => $dataJadwal) : ?>
+            <div class="list-jadwal mt-4 text-center <?php echo ($dataJadwal['tanggal_menu'] > date("Y-m-d") && $dataJadwal['id_menu_pesanan'] == null) ? "updateListMenu" : ""; ?>" data-id="<?php echo $dataJadwal['id_jadwal_menu']; ?>">
               <div class="sublist-jadwal border border-black rounded-start ">
                 <div class="mb-2">
                   <label for="exampleFormControlInput1" class="form-label">Mulai</label>
-                  <input type="date" class="form-control form-control-sm my-border-input txtDate jadwalPersonal" style="width: fit-content; margin: auto;" value="<?php echo $dataJadwal['tanggal_menu']; ?>">
+                  <input type="date" class="form-control form-control-sm my-border-input txtDate jadwalPersonal" style="width: fit-content; margin: auto;" value="<?php echo $dataJadwal['tanggal_menu']; ?>" <?php echo ($dataJadwal['tanggal_menu'] < date("Y-m-d") || $dataJadwal['id_menu_pesanan'] != null) ? "disabled" : ""; ?>>
                 </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input my-border-input cbLibur" id="cBoxLibur" <?php echo ($dataJadwal['status_libur'] == 'L') ? 'checked' : ''; ?> type="checkbox">
-                  <label class="form-check-label" for="cBoxLibur">Libur</label>
-                </div>
-                <br>
-                <button type="button" class="btn mt-1 btn-sm btn-danger rounded-pill my-border-btn btnListHapusJadwal">Hapus</button>
+                <?php if ($dataJadwal['tanggal_menu'] < date("Y-m-d")) : ?>
+                  <span>Jadwal Kadaluarsa</span>
+                <?php else : ?>
+                  <?php if (empty($dataJadwal['id_menu_pesanan']) || !empty($dataJadwal['id_menu_pesanan'])) : ?>
+                    <?php if (!empty($dataJadwal['batal']) && !empty($dataJadwal['berhenti_paketan'])) : ?>
+                      <span>Sudah Dipesan</span>
+                    <?php else : ?>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input my-border-input cbLibur" id="cBoxLibur<?php echo $index + 1; ?>" <?php echo ($dataJadwal['status_libur'] == 'L') ? 'checked' : ''; ?> type="checkbox">
+                        <label class="form-check-label" for="cBoxLibur<?php echo $index + 1; ?>">Libur</label>
+                      </div>
+                      <br>
+                      <button type="button" class="btn mt-1 btn-sm btn-danger rounded-pill my-border-btn btnListHapusJadwal">Hapus</button>
+                    <?php endif; ?>
+                  <?php endif; ?>
+                <?php endif; ?>
               </div>
               <?php if ($dataJadwal['status_libur'] == 'B') : ?>
                 <?php foreach ($dataDetailJadwal as $dataDetail) : ?>
                   <?php if ($dataDetail['tanggal_menu'] == $dataJadwal['tanggal_menu']) : ?>
-                    <?php if ($dataDetail['nama_paket_menu'] == 'family') : ?>
-                      <div class="sublist-jadwal border-top border-bottom border-black">
-                        <div class="header-list">Lunch</div>
-                        <div class="body-list my-form-jadwal-personal">
-                          <div class="mb-3">
-                            <label for="txtMenuLunch" class="form-label">Cari</label>
-                            <input type="text" class="form-control form-control-sm my-border-input txtMenuLunch" name="itemMenu" list="datalistOptionsLunch1" placeholder="Ketik Menu" value="<?php echo $dataDetail['nama_menu']; ?>">
-                            <datalist id="datalistOptionsLunch1">
+                    <?php if (!empty($dataDetail['nama_paket_menu'])) : ?>
+                      <?php if ($dataDetail['nama_paket_menu'] == 'lunch') : ?>
+                        <div class="sublist-jadwal border-top border-bottom border-black">
+                          <div class="header-list">Lunch</div>
+                          <div class="body-list my-form-jadwal-personal">
+                            <div class="mb-3">
+                              <label for="txtMenuLunch" class="form-label">Cari</label>
+                              <input type="text" class="form-control form-control-sm my-border-input txtMenuLunch" name="menuLunch" list="datalistOptionsLunch<?php echo $index + 1; ?>" placeholder="Ketik Menu" data-idMenu="<?php echo $dataDetail['id_menu']; ?>" value="<?php echo $dataDetail['nama_menu']; ?>" <?php echo ($dataJadwal['tanggal_menu'] < date("Y-m-d") || $dataJadwal['id_menu_pesanan'] != null) ? "disabled" : ""; ?>>
+                              <datalist id="datalistOptionsLunch<?php echo $index + 1; ?>">
+                              </datalist>
+                            </div>
+                          </div>
+                        </div>
+                      <?php else : ?>
+                        <div class="sublist-jadwal border border-black rounded-end">
+                          <div class="header-list">Dinner</div>
+                          <div class="body-list my-form-jadwal-personal">
+                            <label for="txtMenuDinner" class="form-label">Cari</label>
+                            <input type="text" class="form-control form-control-sm my-border-input txtMenuDinner" name="menuDinner" list="datalistOptionsDinner<?php echo $index + 1; ?>" placeholder="Ketik Menu" data-idMenu="<?php echo $dataDetail['id_menu']; ?>" value="<?php echo $dataDetail['nama_menu']; ?>" <?php echo ($dataJadwal['tanggal_menu'] < date("Y-m-d") || $dataJadwal['id_menu_pesanan'] != null) ? "disabled" : ""; ?>>
+                            <datalist id="datalistOptionsDinner<?php echo $index + 1; ?>">
                             </datalist>
                           </div>
                         </div>
-                      </div>
-                    <?php else : ?>
-                      <div class="sublist-jadwal border border-black rounded-end">
-                        <div class="header-list">Dinner</div>
-                        <div class="body-list my-form-jadwal-personal">
-                          <label for="txtMenuDinner" class="form-label">Cari</label>
-                          <input type="text" class="form-control form-control-sm my-border-input txtMenuDinner" name="itemMenu" list="datalistOptionsDinner1" placeholder="Ketik Menu" value="<?php echo $dataDetail['nama_menu']; ?>">
-                          <datalist id="datalistOptionsDinner1">
-                          </datalist>
-                        </div>
-                      </div>
+                      <?php endif ?>
                     <?php endif ?>
                   <?php endif ?>
                 <?php endforeach ?>
               <?php endif ?>
             </div>
           <?php endforeach ?>
-        <?php else : ?>
+        <?php else : ?> <!-- case save jadwal -->
+          <input type="hidden" name="case" value="saveJadwalMenu"></input>
           <div class="list-jadwal mt-4 text-center">
             <div class="sublist-jadwal border border-black rounded-start ">
               <div class="mb-2">
                 <label for="exampleFormControlInput1" class="form-label">Mulai</label>
-                <input type="date" class="form-control form-control-sm my-border-input txtDate jadwalPersonal" style="width: fit-content; margin: auto;">
+                <input type="date" class="form-control form-control-sm my-border-input txtDate jadwalPersonal" style="width: fit-content; margin: auto;" min="<?php echo date('Y-m-d', strtotime($maxTanggalAkhir['tanggal_akhir'] . ' +1 day')); ?>">
               </div>
               <div class="form-check form-check-inline">
                 <input class="form-check-input my-border-input cbLibur" id="cBoxLibur" type="checkbox">
@@ -79,7 +93,7 @@
               <div class="body-list my-form-jadwal-personal">
                 <div class="mb-3">
                   <label for="txtMenuLunch" class="form-label">Cari</label>
-                  <input type="text" class="form-control form-control-sm my-border-input txtMenuLunch" name="itemMenu" list="datalistOptionsLunch1" placeholder="Ketik Menu">
+                  <input type="text" class="form-control form-control-sm my-border-input txtMenuLunch" name="itemMenu" list="datalistOptionsLunch1" autocomplete="off" placeholder="Ketik Menu">
                   <datalist id="datalistOptionsLunch1">
                   </datalist>
                 </div>
@@ -89,7 +103,7 @@
               <div class="header-list">Dinner</div>
               <div class="body-list my-form-jadwal-personal">
                 <label for="txtMenuDinner" class="form-label">Cari</label>
-                <input type="text" class="form-control form-control-sm my-border-input txtMenuDinner" name="itemMenu" list="datalistOptionsDinner1" placeholder="Ketik Menu">
+                <input type="text" class="form-control form-control-sm my-border-input txtMenuDinner" name="itemMenu" list="datalistOptionsDinner1" autocomplete="off" placeholder="Ketik Menu">
                 <datalist id="datalistOptionsDinner1">
                 </datalist>
               </div>

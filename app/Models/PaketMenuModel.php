@@ -36,6 +36,16 @@ class PaketMenuModel extends Model
     return $query;
   }
 
+  public function getPaketMenu($paketMenu = '')
+  {
+    $builder = $this->db->table('paket_menu');
+    $builder->select('*');
+    $builder->where('nama_paket_menu', $paketMenu);
+    $builder->where('deleted_at', null);
+    $query = $builder->get();
+    return $query;
+  }
+
   public function insertPaketMenu($data = '')
   {
     $builder = $this->db->table('paket_menu');

@@ -7,15 +7,17 @@
 
   <?php echo $this->include('layout/admin/sidebar'); ?>
 
-  <div class="my-content content-tambah-menu">
+  <div class="my-content content-edit-menu">
     <div class="container mt-4">
       <div class="row">
         <div class="col text-center fw-bold">Form Edit Menu</div>
       </div>
       <div class="d-flex justify-content-center">
-        <div class="card mt-4 border border-dark p-3 form-tambahMenu" style="width: 60vw;">
+        <div class="card mt-4 border border-dark p-3 form-editMenu" style="width: 60vw;">
           <div class="card-body">
-            <form action="/dadmin/menu/update/<?php echo $dataMenuId['id_menu']; ?>" method="post" id="formMenu">
+            <form action="" method="post" id="formMenuEdit">
+              <input type="text" value="<?php echo $dataMenuId['gambar_menu']; ?>" name="gambarLama" id="gambarLama">
+              <input type="text" value="<?php echo $dataMenuId['id_menu']; ?>" name="idMenu" id="idMenu">
               <div class="mb-3 row">
                 <label for="namaMenu" class="col-md-3 col-form-label">Nama Menu</label>
                 <div class="col-md-9">
@@ -25,7 +27,7 @@
               <div class="mb-3 row">
                 <label class="col-md-3 col-form-label">Kategori Pack</label>
                 <div class="col-md-7">
-                  <select class="form-select form-select-sm my-border-input" name="jenisPack" required>
+                  <select class="form-select form-select-sm my-border-input" name="jenisPack" id="jenisPack" required>
                     <option disabled value="">Pilih Jenis Pack</option>
                     <?php foreach ($dataPack as $data) : ?>
                       <?php if ($dataMenuId['id_pack'] == $data['id_pack']) : ?>
@@ -51,7 +53,7 @@
               <div class="mb-3 row">
                 <label class="col-md-3 col-form-label">Nama Paket Menu</label>
                 <div class="col-md-7">
-                  <select class="form-select form-select-sm my-border-input" aria-label="Default select example" name="paketMenu" <?php echo $dataMenuId['id_paket_menu'] == NULL ? "disabled" : ""; ?> required>
+                  <select class="form-select form-select-sm my-border-input" aria-label="Default select example" id="paketMenu" name="paketMenu" <?php echo $dataMenuId['id_paket_menu'] == NULL ? "disabled" : ""; ?> required>
                     <option <?php echo $dataMenuId['id_paket_menu'] == NULL ? "selected" : ""; ?> disabled value="">Pilih Paket Menu</option>
                     <?php foreach ($dataPaketMenu as $data) : ?>
                       <?php if ($data['nama_paket_menu'] != 'infuse') : ?>
@@ -59,6 +61,14 @@
                       <?php endif ?>
                     <?php endforeach; ?>
                   </select>
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label for="fileGambar" class="col-md-3 col-form-label">Gambar Menu</label>
+                <div class="col-md-7">
+                  <input type="file" style="color: transparent; width: 110px;" class="my-file-input mx-auto" id="fileGambar">
+                  <!-- Elemen untuk preview gambar -->
+                  <img id="previewGambar" src="/assets/img/menu/<?php echo $dataMenuId['gambar_menu']; ?>" alt="Preview Gambar" style="max-width: 100%; margin-top: 10px;">
                 </div>
               </div>
               <!-- <div class="mb-5 row">
@@ -73,7 +83,7 @@
                     ?>
                       <option value="<?php //echo $data['id_karbo']; 
                                       ?>"><?php //echo $data['nama_karbo'];  
-                                                                          ?></option>
+                                          ?></option>
                     <?php //endforeach; 
                     ?>
                   </select>

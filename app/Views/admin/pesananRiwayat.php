@@ -15,7 +15,10 @@
       <div class="row mt-3">
         <div class="col text-center d-flex justify-content-center">
           <ul class="list-group list-group-horizontal">
-            <a href="/dadmin/pesanan" class="list-group-item border border-0 list-group-item-action <?php echo $tabPesanan == "pesananMasuk" ? "my-active" : ""; ?>" style="width: max-content;">
+            <a href="/dadmin/pesananPembayaran" class="list-group-item border border-0 list-group-item-action <?php echo $tabPesanan == "pesananPembayaran" ? "my-active" : ""; ?>" style="width: max-content;">
+              Pembayaran
+            </a>
+            <a href="/dadmin/pesananMasuk" class="list-group-item border border-0 list-group-item-action <?php echo $tabPesanan == "pesananMasuk" ? "my-active" : ""; ?>" style="width: max-content;">
               Pesanan Masuk
             </a>
             <a href="/dadmin/pesananBatal" class="list-group-item border border-0 list-group-item-action <?php echo $tabPesanan == "pesananBatal" ? "my-active" : ""; ?>" style="width: max-content;">
@@ -36,32 +39,52 @@
               <td class="text-center" scope="col">Alamat</td>
               <td class="text-center" scope="col">Menu</td>
               <td class="text-center" scope="col">Total Harga</td>
-              <td class="text-center" scope="col">Aksi</td>
+              <!-- <td class="text-center" scope="col">Aksi</td> -->
             </tr>
           </thead>
           <tbody class="fw-normal">
-            <tr class="align-middle">
-              <td class="text-center">Selasa 2 Januari</td>
-              <td class="text-center">Anis</td>
-              <td>Jl. nanas no.22 kel. peneleh kec. genteng gresik</td>
-              <td>
-                <ul class="list-group">
-                  <li class="list-group-item align-items-center">
-                    nasi merah ayam bakar suwir
-                    <span class="badge text-bg-warning rounded-pill border border-black">14</span>
-                  </li>
-                  <li class="list-group-item align-items-center">
-                    Kangkung
-                    <span class="badge text-bg-warning rounded-pill border border-black">2</span>
-                  </li>
-                </ul>
-              </td>
-              <td class="text-center">Rp. 150000</td>
-              <td class="text-center">
-                <button type="button" class="btn btn-sm btn-primary rounded-pill my-border-btn" data-bs-toggle="modal"
-                  data-bs-target="#modalLihatGambar">Lihat Bukti Transfer</button>
-              </td>
-            </tr>
+            <?php foreach ($dataPesananPelangganSelesai as $data) : ?>
+              <tr class="align-middle">
+                <td class="text-center"><?php echo formatTanggal($data['tanggal_menu']); ?></td>
+                <td class="text-center"><?php echo $data['nama_pelanggan']; ?></td>
+                <td><?php echo $data['alamat_pengiriman']; ?> <?php echo $data['ongkir_kota']; ?></td>
+                <td>
+                  <?php foreach ($dataMenuPesananPelangganSelesai as $detail) : ?>
+                    <ul class="list-group">
+                      <?php if (!empty($detail['id_catatan_pesanan'])) : ?>
+                        <?php if ($data['id_menu_pesanan'] == $detail['id_menu_pesanan']) : ?>
+                          <li class="list-group-item align-items-center">
+                            <?php if (!empty($detail['nama_menu'])) : ?>
+                              <?php echo $detail['nama_menu']; ?>
+                              <span class="badge text-bg-warning rounded-pill border border-black"><?php echo $detail['qty_menu']; ?></span>
+                            <?php else : ?>
+                              Infuse
+                              <span class="badge text-bg-warning rounded-pill border border-black"><?php echo $detail['qty_infuse']; ?></span>
+                            <?php endif; ?>
+                          </li>
+                        <?php endif; ?>
+                      <?php else : ?>
+                        <?php if ($data['id_pesanan'] == $detail['id_pesanan']) : ?>
+                          <li class="list-group-item align-items-center">
+                            <?php if (!empty($detail['nama_menu'])) : ?>
+                              <?php echo $detail['nama_menu']; ?>
+                              <span class="badge text-bg-warning rounded-pill border border-black"><?php echo $detail['qty_menu']; ?></span>
+                            <?php else : ?>
+                              Infuse
+                              <span class="badge text-bg-warning rounded-pill border border-black"><?php echo $detail['qty_infuse']; ?></span>
+                            <?php endif; ?>
+                          </li>
+                        <?php endif; ?>
+                      <?php endif; ?>
+                    </ul>
+                  <?php endforeach; ?>
+                </td>
+                <td class="text-center">Rp. <?php echo $data['total_harga'] + $data['biaya_ongkir']; ?></td>
+                <!-- <td class="text-center">
+                    <button type="button" class="btn btn-sm btn-primary rounded-pill my-border-btn" data-bs-toggle="modal" data-bs-target="#modalLihatGambar">Lihat Bukti Transfer</button>
+                  </td> -->
+              </tr>
+            <?php endforeach; ?>
           </tbody>
         </table>
       </div>
@@ -70,8 +93,7 @@
 </div>
 
 <!-- modal lihat gambar -->
-<div class="modal fade modal-md" id="modalLihatGambar" tabindex="-1" aria-labelledby="modalLihatGambarLabel"
-aria-hidden="true">
+<div class="modal fade modal-md" id="modalLihatGambar" tabindex="-1" aria-labelledby="modalLihatGambarLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content border border-dark">
       <div class="modal-header justify-content-center" style=" background-color: #055160; color: white;">

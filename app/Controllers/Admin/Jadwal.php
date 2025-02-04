@@ -7,16 +7,19 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 use App\Controllers\Admin\Pack;
 use App\Models\JadwalModel;
+use App\Models\PesananModel;
 
 class Jadwal extends BaseController
 {
   protected $packController;
   protected $jadwalModel;
+  protected $pesananModel;
 
   public function __construct()
   {
     $this->packController = new Pack();
     $this->jadwalModel = new JadwalModel();
+    $this->pesananModel = new PesananModel();
   }
 
   public function index()
@@ -41,7 +44,7 @@ class Jadwal extends BaseController
     } else {
       $pack = 'personal';
     }
-    $htmlContent = view('admin/datatable/datatableJadwalMenu', ['dataJadwalMenu' => $dataJadwalMenu, 'dataPack' => $pack]);
+    $htmlContent = view('admin/datatable/dataTableJadwalMenu', ['dataJadwalMenu' => $dataJadwalMenu, 'dataPack' => $pack]);
 
     $result = array(
       'dataJadwal' => $htmlContent
@@ -51,20 +54,26 @@ class Jadwal extends BaseController
 
   public function createMenuFamily()
   {
+    $maxTanggalAkhir = $this->jadwalModel->getMaxTanggalAkhir('family')->getRowArray();
+    // dd($maxTanggalAkhir);
     $data = [
       'title' => 'Buat Jadwal Family Pack',
       'sidebar' => 'kelolaJadwalMenu',
-      'case' => 'save'
+      'case' => 'save',
+      'maxTanggalAkhir' => $maxTanggalAkhir
     ];
     return view('admin/jadwalMenuFamily', $data);
   }
 
   public function createMenuPersonal()
   {
+    $maxTanggalAkhir = $this->jadwalModel->getMaxTanggalAkhir('personal')->getRowArray();
+    // dd($maxTanggalAkhir);
     $data = [
       'title' => 'Buat Jadwal Personal Pack',
       'sidebar' => 'kelolaJadwalMenu',
-      'case' => 'save'
+      'case' => 'save',
+      'maxTanggalAkhir' => $maxTanggalAkhir
     ];
     return view('admin/jadwalMenuPersonal', $data);
   }
@@ -114,10 +123,13 @@ class Jadwal extends BaseController
   {
     $dataJadwal = $this->request->getVar('dataJadwal');
 
+    $date = date("Y-m-d") . ' ' . date("H:i:s");
+
     // insert data to table jadwal
     $data = [
       'tanggal_mulai' => $dataJadwal[0]['tanggal'],
-      'tanggal_akhir' => $dataJadwal[count($dataJadwal) - 1]['tanggal']
+      'tanggal_akhir' => $dataJadwal[count($dataJadwal) - 1]['tanggal'],
+      'created_at' => $date
     ];
     $this->jadwalModel->insertJadwal($data);
 
@@ -127,7 +139,8 @@ class Jadwal extends BaseController
       $data = [
         'id_jadwal' => $maxIdJadwal,
         'tanggal_menu' => $dataJadwal[$i]['tanggal'],
-        'status_libur' => ($dataJadwal[$i]['cbLibur'] == 'true') ? "L" : "B"
+        'status_libur' => ($dataJadwal[$i]['cbLibur'] == 'true') ? "L" : "B",
+        'created_at' => $date
       ];
       $this->jadwalModel->insertJadwalMenu($data);
 
@@ -137,7 +150,8 @@ class Jadwal extends BaseController
         for ($j = 0; $j < count($dataJadwal[$i]['itemsMenu']); $j++) {
           $data = [
             'id_jadwal_menu' => $maxIdJadwalMenu,
-            'id_menu' => $dataJadwal[$i]['itemsMenu'][$j]
+            'id_menu' => $dataJadwal[$i]['itemsMenu'][$j],
+            'created_at' => $date
           ];
           $this->jadwalModel->insertDetailJadwalMenu($data);
         }
@@ -153,6 +167,7 @@ class Jadwal extends BaseController
   {
     $dataJadwalMenu = $this->jadwalModel->getJadwalMenuById($id)->getResultArray();
     $dataDetailJadwal = $this->jadwalModel->getDetailJadwalByIdByPack($id, 'family')->getResultArray();
+    // dd($dataJadwalMenu);
     $data = [
       'title' => 'Edit Jadwal Personal Family',
       'sidebar' => 'kelolaJadwalMenu',
@@ -169,10 +184,13 @@ class Jadwal extends BaseController
     $idJadwal = $this->request->getVar('idJadwal');
     $dataJadwal = $this->request->getVar('dataJadwal');
 
+    $date = date("Y-m-d") . ' ' . date("H:i:s");
+
     // update data to table jadwal
     $data = [
       'tanggal_mulai' => $dataJadwal[0]['tanggal'],
-      'tanggal_akhir' => $dataJadwal[count($dataJadwal) - 1]['tanggal']
+      'tanggal_akhir' => $dataJadwal[count($dataJadwal) - 1]['tanggal'],
+      'updated_at' => $date
     ];
     $this->jadwalModel->updateJadwal($data, $idJadwal);
 
@@ -182,7 +200,8 @@ class Jadwal extends BaseController
       $data = [
         'id_jadwal' => $maxIdJadwal,
         'tanggal_menu' => $dataJadwal[$i]['tanggal'],
-        'status_libur' => ($dataJadwal[$i]['cbLibur'] == 'true') ? "L" : "B"
+        'status_libur' => ($dataJadwal[$i]['cbLibur'] == 'true') ? "L" : "B",
+        'updated_at' => $date
       ];
       $this->jadwalModel->insertJadwalMenu($data);
 
@@ -192,7 +211,8 @@ class Jadwal extends BaseController
         for ($j = 0; $j < count($dataJadwal[$i]['itemsMenu']); $j++) {
           $data = [
             'id_jadwal_menu' => $maxIdJadwalMenu,
-            'id_menu' => $dataJadwal[$i]['itemsMenu'][$j]
+            'id_menu' => $dataJadwal[$i]['itemsMenu'][$j],
+            'updated_at' => $date
           ];
           $this->jadwalModel->insertDetailJadwalMenu($data);
         }
@@ -208,10 +228,13 @@ class Jadwal extends BaseController
   {
     $dataJadwal = $this->request->getVar('dataJadwal');
 
+    $date = date("Y-m-d") . ' ' . date("H:i:s");
+
     // insert data to table jadwal
     $data = [
       'tanggal_mulai' => $dataJadwal[0]['tanggal'],
-      'tanggal_akhir' => $dataJadwal[count($dataJadwal) - 1]['tanggal']
+      'tanggal_akhir' => $dataJadwal[count($dataJadwal) - 1]['tanggal'],
+      'created_at' => $date
     ];
     $this->jadwalModel->insertJadwal($data);
 
@@ -221,7 +244,9 @@ class Jadwal extends BaseController
       $data = [
         'id_jadwal' => $maxIdJadwal,
         'tanggal_menu' => $dataJadwal[$i]['tanggal'],
-        'status_libur' => ($dataJadwal[$i]['cbLibur'] == 'true') ? "L" : "B"
+        'status_libur' => ($dataJadwal[$i]['cbLibur'] == 'true') ? "L" : "B",
+        'infuse' => 'Y',
+        'created_at' => $date
       ];
       $this->jadwalModel->insertJadwalMenu($data);
 
@@ -230,18 +255,29 @@ class Jadwal extends BaseController
       if ($dataJadwal[$i]['cbLibur'] == 'false') {
         $data = [
           'id_jadwal_menu' => $maxIdJadwalMenu,
-          'id_menu' => $dataJadwal[$i]['idMenuLunch']
+          'id_menu' => $dataJadwal[$i]['idMenuLunch'],
+          'created_at' => $date
         ];
         $this->jadwalModel->insertDetailJadwalMenu($data);
         $data = [
           'id_jadwal_menu' => $maxIdJadwalMenu,
-          'id_menu' => $dataJadwal[$i]['idMenuDinner']
+          'id_menu' => $dataJadwal[$i]['idMenuDinner'],
+          'created_at' => $date
+        ];
+        $this->jadwalModel->insertDetailJadwalMenu($data);
+        $data = [
+          'id_jadwal_menu' => $maxIdJadwalMenu,
+          'id_menu' => null,
+          'created_at' => $date
         ];
         $this->jadwalModel->insertDetailJadwalMenu($data);
       }
     }
+
+    $dataPelangganPaketan = $this->pesananModel->getAllPelangganPaketan()->getResultArray();
     $result = array(
-      'data' => $dataJadwal
+      'data' => $dataJadwal,
+      'dataPelanggan' => $dataPelangganPaketan
     );
     echo json_encode($result);
   }
@@ -250,6 +286,7 @@ class Jadwal extends BaseController
   {
     $dataJadwalMenu = $this->jadwalModel->getJadwalMenuById($id)->getResultArray();
     $dataDetailJadwal = $this->jadwalModel->getDetailJadwalByIdByPack($id, 'personal')->getResultArray();
+    // dd($dataJadwalMenu);
     $data = [
       'title' => 'Edit Jadwal Personal Personak',
       'sidebar' => 'kelolaJadwalMenu',
