@@ -1955,7 +1955,7 @@ $( document ).ready(function() {
             alert('Terjadi kesalahan saat mengupload!');
         }
       });
-      // location.reload();
+      location.reload();
     })
   }
 
@@ -1977,7 +1977,7 @@ $( document ).ready(function() {
           alert('Terjadi kesalahan saat mengupload!');
       }
     });
-    // window.location.href = base_url + '/pesananSelesai';
+    window.location.href = base_url + '/pesananSelesai';
   })
 
   $(".content-pesanan-selesai .btnReview").on("click", function() {
@@ -2052,13 +2052,14 @@ $( document ).ready(function() {
           alert('Terjadi kesalahan saat mengupload!');
       }
     });
-    const modalTundaPesanan = document.getElementById('modalTundaPesanan');    
-    const modalInstance = bootstrap.Modal.getInstance(modalTundaPesanan);
-    modalInstance.hide();
-    $(".modal-backdrop").remove();
-    var listPesanan = $(`li[data-indexBaris="${indexBaris}"]`);
-    console.log(listPesanan);
-    listPesanan.remove();
+    location.reload();
+    // const modalTundaPesanan = document.getElementById('modalTundaPesanan');    
+    // const modalInstance = bootstrap.Modal.getInstance(modalTundaPesanan);
+    // modalInstance.hide();
+    // $(".modal-backdrop").remove();
+    // var listPesanan = $(`li[data-indexBaris="${indexBaris}"]`);
+    // console.log(listPesanan);
+    // listPesanan.remove();
   })
 
 

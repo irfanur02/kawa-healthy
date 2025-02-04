@@ -1153,12 +1153,18 @@ class PesananModel extends Model
 
   public function getCatatanPaketanBy($idAkun, $idPesanan)
   {
+    $subquery1 = $this->db->table('tunda_pesanan tp')
+      ->select('SUM(tp.jumlah_tunda)')
+      ->where('tp.id_pesanan', 'p.id_pesanan', false)
+      ->groupBy('tp.id_pesanan');
+
     $builder = $this->db->table('catatan_pesanan cp');
-    $builder->select('
+    $builder->select("
                   p.id_pesanan, p.id_catatan_pesanan, cp.id_karbo, k.nama_karbo, cp.pantangan_paketan, 
                   cp.periode_hari_paketan, cp.periode_hari_baru, cp.tanggal_mulai_pesanan, 
                   t.tanggal_transaksi, p.approved, p.berhenti_paketan, SUM(DISTINCT tp.jumlah_tunda) AS jumlah_tunda
-              ');
+              ");
+    $builder->select("({$subquery1->getCompiledSelect()}) AS jumlah_tunda", false);
     $builder->join('detail_catatan dc', 'dc.id_detail_catatan = cp.id_catatan_pesanan', 'left');
     $builder->join('pesanan p', 'p.id_catatan_pesanan = cp.id_catatan_pesanan', 'left');
     $builder->join('tunda_pesanan tp', 'tp.id_pesanan = p.id_pesanan', 'left');
@@ -1177,7 +1183,7 @@ class PesananModel extends Model
     $builder->where('p.id_catatan_pesanan IS NOT', null);
     $builder->whereIn('sdmp.id_status_pesanan', [2, 4, 5, 6, 9]);
     $builder->where('dmp.deleted_at', null);
-    $builder->groupBy('p.id_pesanan');
+    // $builder->groupBy('p.id_pesanan');
 
     $query = $builder->get();
     return $query;
@@ -1503,6 +1509,39 @@ class PesananModel extends Model
     }
     $builder->groupBy('jm.tanggal_menu');
     $builder->orderBy('jm.tanggal_menu', 'DESC');
+    $query = $builder->get();
+    return $query;
+  }
+
+  public function getPelangganWithSisaJadwal()
+  {
+    $subQueryJumlahTunda = $this->db->table('tunda_pesanan')
+      ->select('COUNT(*)')
+      ->where('id_pesanan = p.id_pesanan')
+      ->groupBy('id_pesanan')
+      ->getCompiledSelect();
+
+    $subQueryMenuTerjadwal = $this->db->table('menu_pesanan mp')
+      ->select('COUNT(*)')
+      ->join('tunda_pesanan tp', 'tp.id_menu_pesanan = mp.id_menu_pesanan', 'left')
+      ->where('tp.id_tunda_pesanan IS NULL')
+      ->where('mp.id_pesanan = p.id_pesanan')
+      ->groupBy('tp.id_tunda_pesanan')
+      ->getCompiledSelect();
+
+    $builder = $this->db->table('pesanan p')
+      ->select('
+            p.id_pesanan, p.id_akun, pel.nama_pelanggan, 
+            cp.periode_hari_paketan, cp.periode_hari_baru, 
+            cp.id_karbo, cp.pantangan_paketan')
+      ->select("({$subQueryJumlahTunda}) AS jumlah_tunda", false)
+      ->select("({$subQueryMenuTerjadwal}) AS jumlah_tunda", false)
+      ->select("(COALESCE(cp.periode_hari_baru, cp.periode_hari_paketan) - ({$subQueryMenuTerjadwal})) AS sisa_jadwal", false)
+      ->join('catatan_pesanan cp', 'cp.id_catatan_pesanan = p.id_catatan_pesanan')
+      ->join('akun a', 'a.id_akun = p.id_akun')
+      ->join('pelanggan pel', 'pel.id_pelanggan = a.id_pelanggan')
+      ->where('p.berhenti_paketan IS NULL')
+      ->where("(COALESCE(cp.periode_hari_baru, cp.periode_hari_paketan) - ({$subQueryMenuTerjadwal}))", " > 0 ", false);
     $query = $builder->get();
     return $query;
   }

@@ -227,7 +227,6 @@ class Jadwal extends BaseController
   public function saveJadwalPersonal()
   {
     $dataJadwal = $this->request->getVar('dataJadwal');
-
     $date = date("Y-m-d") . ' ' . date("H:i:s");
 
     // insert data to table jadwal
@@ -250,8 +249,8 @@ class Jadwal extends BaseController
       ];
       $this->jadwalModel->insertJadwalMenu($data);
 
-      // insert data to detail jadwal menu
       $maxIdJadwalMenu = $this->jadwalModel->getMaxIdJadwalMenu()->getRowArray()['id_jadwal_menu'];
+      // insert data to detail jadwal menu
       if ($dataJadwal[$i]['cbLibur'] == 'false') {
         $data = [
           'id_jadwal_menu' => $maxIdJadwalMenu,
@@ -273,11 +272,74 @@ class Jadwal extends BaseController
         $this->jadwalModel->insertDetailJadwalMenu($data);
       }
     }
+    // $maxIdJadwal = 72;
+    $dataPelangganWithSisaJadwal = $this->pesananModel->getPelangganWithSisaJadwal()->getResultArray();
+    $jadwalMenuBuka = $this->jadwalModel->getJadwalMenuBukaByIdJadwal($maxIdJadwal)->getResultArray();
+    $tes = [];
+    $tes1 = [];
+    $tes2 = [];
+    for ($i = 0; $i < count($dataPelangganWithSisaJadwal); $i++) {
+      $idPesanan = $dataPelangganWithSisaJadwal[$i]['id_pesanan'];
+      $idAkun = $dataPelangganWithSisaJadwal[$i]['id_akun'];
+      for ($j = 0; $j < count($jadwalMenuBuka); $j++) {
+        // insert data to table menu pesanan
+        if ($j == $dataPelangganWithSisaJadwal[$i]['sisa_jadwal']) break;
+        $data = [
+          'id_pesanan' => $idPesanan,
+          'id_jadwal_menu' => $jadwalMenuBuka[$j]['id_jadwal_menu'],
+          'created_at' => $date
+        ];
+        array_push($tes, $data);
+        $this->pesananModel->insertMenuPesanan($data);
 
-    $dataPelangganPaketan = $this->pesananModel->getAllPelangganPaketan()->getResultArray();
+        // insert table detail menu pesanan
+        $idMenuPesanan = $this->pesananModel->getMaxIdMenuPesanan()->getRowArray()['id_menu_pesanan'];
+        $detailJadwalMenu = $this->jadwalModel->getDetailJadwalMenu($jadwalMenuBuka[$j]['id_jadwal_menu'])->getResultArray();
+        array_push($tes1, $detailJadwalMenu);
+        $dataDetailCatatanPelanggan = $this->pesananModel->getCatatanPaketMenuBy($idAkun, $idPesanan)->getResultArray();
+        foreach ($detailJadwalMenu as $detail) {
+          foreach ($dataDetailCatatanPelanggan as $dataDetailCatatan) {
+
+            $namaPaketMenu = ($detail['nama_paket_menu'] != NULL) ? $detail['nama_paket_menu'] : "infuse";
+
+            if ($dataDetailCatatan['nama_paket_menu'] == $namaPaketMenu) {
+              $data = [
+                'id_detail_jadwal_menu' => $detail['id_detail_jadwal_menu'],
+                // 'id_menu_pesanan' => 1,
+                'id_menu_pesanan' => $idMenuPesanan,
+                'id_karbo' => ($dataDetailCatatan['nama_paket_menu'] == "lunch") ? $dataPelangganWithSisaJadwal[$i]['id_karbo'] : NULL,
+                'qty_menu' => ($dataDetailCatatan['nama_paket_menu'] != "infuse") ? 1 : NULL,
+                'qty_infuse' => ($dataDetailCatatan['nama_paket_menu'] == "infuse") ? 1 : NULL,
+                'pantangan_pesanan' => (!empty($dataPelangganWithSisaJadwal[$i]['pantangan_paketan'])) ? $dataPelangganWithSisaJadwal[$i]['pantangan_paketan'] : NULL,
+                'created_at' => $date
+              ];
+              array_push($tes2, $data);
+              $this->pesananModel->insertDetailMenuPesanan($data);
+
+              // insert table status detail menu pesanan
+              $idDetailMenuPesanan = $this->pesananModel->getMaxIdDetailMenuPesanan()->getRowArray()['id_detail_menu_pesanan'];
+              $data = [
+                'id_detail_menu_pesanan' => $idDetailMenuPesanan,
+                'id_status_pesanan' => 2, // terbayar
+                'created_at' => $date
+              ];
+              $this->pesananModel->insertStatusDetailMenuPesanan($data);
+            }
+          }
+        }
+      }
+    }
+
+    // $dataPelangganPaketan = $this->pesananModel->getAllPelangganPaketan()->getResultArray();
     $result = array(
-      'data' => $dataJadwal,
-      'dataPelanggan' => $dataPelangganPaketan
+      'dataJadwal' => $dataJadwal,
+      'dataMenuPesanan' => $tes,
+      'dataDetailMenuPesanan' => $tes2,
+      'dataPelangganWithSisaJadwal' => $dataPelangganWithSisaJadwal,
+      'detailCatatanPelanggan' => $dataDetailCatatanPelanggan,
+      // 'idMenuPesanan' => $idMenuPesanan,
+      'jadwalMenuBuka' => $jadwalMenuBuka,
+      'detailJadwalMenu' => $tes1,
     );
     echo json_encode($result);
   }

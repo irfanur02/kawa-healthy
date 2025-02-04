@@ -242,4 +242,25 @@ class JadwalModel extends Model
     $query = $builder->get();
     return $query;
   }
+
+  public function getJadwalMenuBukaByIdJadwal($idJadwal)
+  {
+    $builder = $this->db->table('jadwal_menu');
+    $builder->select('id_jadwal_menu, status_libur');
+    $builder->where('id_jadwal', $idJadwal);
+    $builder->where('status_libur', 'b');
+    $query = $builder->get();
+    return $query;
+  }
+
+  public function getDetailJadwalMenu($idJadwalMenu)
+  {
+    $builder = $this->db->table('detail_jadwal_menu djm');
+    $builder->select('djm.id_detail_jadwal_menu, djm.id_jadwal_menu, pm.id_paket_menu, pm.nama_paket_menu');
+    $builder->join('menu m', 'm.id_menu = djm.id_menu', 'left');
+    $builder->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left');
+    $builder->where('djm.id_jadwal_menu', $idJadwalMenu);
+    $query = $builder->get();
+    return $query;
+  }
 }

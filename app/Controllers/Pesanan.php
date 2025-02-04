@@ -333,7 +333,7 @@ class Pesanan extends BaseController
     $dataDetailPesananPaketan = $this->pesananModel->getDetailPesananPaketanBy($idAkun, $idPesanan)->getResultArray();
     $sisaPesananPaketan = $this->pesananModel->getSisaPesananPaketanBy($idAkun, $idPesanan)->getRowArray();
     $pesananTerkirim = $this->pesananModel->getPesananPaketanTerkirimBy($idAkun, $idPesanan)->getRowArray();
-    // dd($pesananTerkirim);
+    // dd($catatanPaketan);
     $data = [
       'title' => 'Detail PesananKu',
       'session' => $this->session,

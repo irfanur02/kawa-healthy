@@ -995,7 +995,7 @@ $(document).ready(function() {
             console.log(data);
           }
         });
-        window.location.href = base_url + '/dadmin/jadwal';
+        // window.location.href = base_url + '/dadmin/jadwal';
       } else { // update jadwal personal
         console.log("update jadwal");
         var contentJadwal = $(".content-jadwal-personal")
