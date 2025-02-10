@@ -139,6 +139,8 @@
               } else {
                 $sisa = $sisaPesananPaketan['sisa_pesanan_paketan'];
               }
+            } else if ($sisaPesananPaketan['sisa_pesanan_paketan'] < 0) {
+              $sisa = 0;
             } else {
               if (!empty($catatanPaketan['jumlah_tunda'])) {
                 $sisa = 0 + $catatanPaketan['jumlah_tunda'];

@@ -42,6 +42,22 @@ class JadwalModel extends Model
     $builder->update();
   }
 
+  public function updateJadwalMenu($data, $where)
+  {
+    $builder = $this->db->table('jadwal_menu');
+    $builder->set($data);
+    $builder->where('id_jadwal_menu', $where);
+    $builder->update();
+  }
+
+  public function updateDetailJadwalMenu($dataMenu, $where)
+  {
+    $builder = $this->db->table('detail_jadwal_menu');
+    $builder->set($dataMenu);
+    $builder->where($where);
+    $builder->update();
+  }
+
   public function getMaxIdJadwal()
   {
     $builder = $this->db->table('jadwal');
@@ -98,8 +114,9 @@ class JadwalModel extends Model
               jm.id_jadwal_menu,
               jm.tanggal_menu,
               dmp.batal,
-              dmp.id_menu_pesanan,
+              mp.id_menu_pesanan,
               jm.status_libur,
+              p.id_catatan_pesanan,
               CASE 
                   WHEN SUM(CASE WHEN dmp.batal = 'b' THEN 1 ELSE 0 END) > 0 THEN 'b'
                   ELSE NULL
@@ -109,10 +126,13 @@ class JadwalModel extends Model
                   ELSE NULL
               END AS berhenti_paketan
           ");
+    $builder->join('menu_pesanan as mp', 'mp.id_jadwal_menu = jm.id_jadwal_menu', 'left');
+    $builder->join('pesanan as p', 'p.id_pesanan = mp.id_pesanan', 'left');
     $builder->join('detail_jadwal_menu as djm', 'jm.id_jadwal_menu = djm.id_jadwal_menu', 'left');
     $builder->join('detail_menu_pesanan as dmp', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left');
     $builder->join('status_detail_menu_pesanan as sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left');
     $builder->where('jm.id_jadwal', $id);
+    $builder->where('jm.deleted_at', null);
     $builder->groupBy('jm.tanggal_menu');
     $query = $builder->get();
     return $query;
@@ -136,6 +156,7 @@ class JadwalModel extends Model
       ->join('pack as p', 'p.id_pack = m.id_pack', 'left')
       ->join('paket_menu as pm', 'pm.id_paket_menu = m.id_paket_menu', 'left')
       ->where('jm.id_jadwal', $id)
+      ->where('djm.deleted_at', null)
       ->groupStart() // Mulai grup kondisi OR
       ->where('p.nama_pack', $pack)
       ->orWhereIn('jm.status_libur', ['L', 'B'])
@@ -185,6 +206,7 @@ class JadwalModel extends Model
     $builder->where('jm.id_jadwal IN(' . $subQuery->getCompiledSelect() . ')', null, false);
     $builder->where('p.nama_pack', $pack);
     $builder->where('djm.deleted_at', null);
+    $builder->where('jm.deleted_at', null);
     $builder->groupBy('jm.tanggal_menu');
     $builder->orderBy('jm.tanggal_menu', 'ASC');
     $query = $builder->get();
@@ -256,10 +278,11 @@ class JadwalModel extends Model
   public function getDetailJadwalMenu($idJadwalMenu)
   {
     $builder = $this->db->table('detail_jadwal_menu djm');
-    $builder->select('djm.id_detail_jadwal_menu, djm.id_jadwal_menu, pm.id_paket_menu, pm.nama_paket_menu');
+    $builder->select('djm.id_detail_jadwal_menu, djm.id_jadwal_menu, djm.id_menu, pm.id_paket_menu, pm.nama_paket_menu');
     $builder->join('menu m', 'm.id_menu = djm.id_menu', 'left');
     $builder->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left');
     $builder->where('djm.id_jadwal_menu', $idJadwalMenu);
+    $builder->where('djm.deleted_at', null);
     $query = $builder->get();
     return $query;
   }

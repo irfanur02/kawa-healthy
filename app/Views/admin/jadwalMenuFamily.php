@@ -17,11 +17,11 @@
         <?php if ($case == 'update') : ?>
           <input type="hidden" name="case" value="updateJadwalMenu"></input>
           <?php foreach ($dataJadwalMenu as $dataJadwal) : ?>
-            <ul class="list-group list-content-jadwal fw-medium <?php echo ($dataJadwal['tanggal_menu'] > date("Y-m-d") && $dataJadwal['id_menu_pesanan'] != null) ? "updateListMenu" : ""; ?>" data-id=" <?php echo $dataJadwal['id_jadwal_menu']; ?>" style="width: 13em;">
+            <ul class="list-group list-content-jadwal fw-medium bacaJadwalMenu" data-id=" <?php echo $dataJadwal['id_jadwal_menu']; ?>" style="width: 13em;">
               <li class="list-group-item border border-black text-center">
                 <div class="mb-2">
                   <label for="exampleFormControlInput1" class="form-label">Mulai</label>
-                  <input type="date" class="form-control form-control-sm my-border-input txtDate jadwalFamily" style="width: fit-content; margin: auto;" value="<?php echo $dataJadwal['tanggal_menu']; ?>" min="<?php echo $dataJadwal['tanggal_menu']; ?>" <?php echo ($dataJadwal['tanggal_menu'] < date("Y-m-d") || $dataJadwal['id_menu_pesanan'] != null) ? "disabled" : ""; ?>>
+                  <input type="date" class="form-control form-control-sm my-border-input txtDate jadwalFamily" style="width: fit-content; margin: auto;" value="<?php echo $dataJadwal['tanggal_menu']; ?>" min="<?php echo $dataJadwal['tanggal_menu']; ?>" <?php echo ($dataJadwal['tanggal_menu'] <= date("Y-m-d")) ? "disabled" : ""; ?>>
                 </div>
                 <?php if ($dataJadwal['tanggal_menu'] <= date("Y-m-d")) : ?>
                   <span>Jadwal Kadaluarsa</span>
@@ -108,18 +108,20 @@
         <?php endif ?>
       </div>
 
-      <div class="row mt-4">
-        <div class="col text-center">
-          <button class="btn btn-sm my-btn-main rounded-pill my-border-btn mb-2" id="btnTambahHariFamily">Tambah
-            Hari</button><br>
-          <?php if ($case == 'update') : ?>
-            <button class="btn btn-sm btn-success rounded-pill my-border-btn mb-2 btnPostMenuFamily" data-id="<?php echo $idJadwal; ?>">Update Jadwal</button><br>
-          <?php else : ?>
-            <button class="btn btn-sm btn-success rounded-pill my-border-btn mb-2 btnPostMenuFamily">Luncurkan Jadwal</button><br>
-          <?php endif ?>
-          <a href="/dadmin/jadwalMenu" class="btn btn-sm btn-danger rounded-pill my-border-btn mb-2" role="button">Batal</a>
+      <?php if ($jadwalKadaluarsa == true) : ?>
+        <div class="row mt-4">
+          <div class="col text-center">
+            <button class="btn btn-sm my-btn-main rounded-pill my-border-btn mb-2" id="btnTambahHariFamily">Tambah
+              Hari</button><br>
+            <?php if ($case == 'update') : ?>
+              <button class="btn btn-sm btn-success rounded-pill my-border-btn mb-2 btnPostMenuFamily" data-id="<?php echo $idJadwal; ?>">Update Jadwal</button><br>
+            <?php else : ?>
+              <button class="btn btn-sm btn-success rounded-pill my-border-btn mb-2 btnPostMenuFamily">Luncurkan Jadwal</button><br>
+            <?php endif ?>
+            <a href="/dadmin/jadwalMenu" class="btn btn-sm btn-danger rounded-pill my-border-btn mb-2" role="button">Batal</a>
+          </div>
         </div>
-      </div>
+      <?php endif; ?>
     </div>
   </div>
 </div>

@@ -54,6 +54,7 @@ $routes->post('/dadmin/jadwal/cariMenu', 'Admin\Jadwal::cariMenu');
 $routes->post('/dadmin/jadwal/save/family', 'Admin\Jadwal::saveJadwalFamily');
 $routes->post('/dadmin/jadwal/save/personal', 'Admin\Jadwal::saveJadwalPersonal');
 $routes->post('/dadmin/jadwal/update/family', 'Admin\Jadwal::updateJadwalFamily');
+$routes->post('/dadmin/jadwal/update/personal', 'Admin\Jadwal::updateJadwalPersonal');
 $routes->get('/dadmin/jadwal/(:num)/family', 'Admin\Jadwal::editMenuFamily/$1');
 $routes->get('/dadmin/jadwal/(:num)/personal', 'Admin\Jadwal::editMenuPersonal/$1');
 

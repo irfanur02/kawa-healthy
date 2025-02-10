@@ -17,7 +17,7 @@
         <?php if ($case == 'update') : ?> <!-- case update jadwal -->
           <input type="hidden" name="case" value="updateJadwalMenu"></input>
           <?php foreach ($dataJadwalMenu as $index => $dataJadwal) : ?>
-            <div class="list-jadwal mt-4 text-center <?php echo ($dataJadwal['tanggal_menu'] > date("Y-m-d") && $dataJadwal['id_menu_pesanan'] == null) ? "updateListMenu" : ""; ?>" data-id="<?php echo $dataJadwal['id_jadwal_menu']; ?>">
+            <div class="list-jadwal mt-4 text-center bacaJadwalMenu" data-id="<?php echo $dataJadwal['id_jadwal_menu']; ?>">
               <div class="sublist-jadwal border border-black rounded-start ">
                 <div class="mb-2">
                   <label for="exampleFormControlInput1" class="form-label">Mulai</label>
@@ -27,7 +27,7 @@
                   <span>Jadwal Kadaluarsa</span>
                 <?php else : ?>
                   <?php if (empty($dataJadwal['id_menu_pesanan']) || !empty($dataJadwal['id_menu_pesanan'])) : ?>
-                    <?php if (!empty($dataJadwal['batal']) && !empty($dataJadwal['berhenti_paketan'])) : ?>
+                    <?php if (!empty($dataJadwal['batal']) && !empty($dataJadwal['berhenti_paketan']) || $dataJadwal['id_menu_pesanan'] != null) : ?>
                       <span>Sudah Dipesan</span>
                     <?php else : ?>
                       <div class="form-check form-check-inline">
@@ -50,7 +50,7 @@
                           <div class="body-list my-form-jadwal-personal">
                             <div class="mb-3">
                               <label for="txtMenuLunch" class="form-label">Cari</label>
-                              <input type="text" class="form-control form-control-sm my-border-input txtMenuLunch" name="menuLunch" list="datalistOptionsLunch<?php echo $index + 1; ?>" placeholder="Ketik Menu" data-idMenu="<?php echo $dataDetail['id_menu']; ?>" value="<?php echo $dataDetail['nama_menu']; ?>" <?php echo ($dataJadwal['tanggal_menu'] < date("Y-m-d") || $dataJadwal['id_menu_pesanan'] != null) ? "disabled" : ""; ?>>
+                              <input type="text" class="form-control form-control-sm my-border-input txtMenuLunch" name="menuLunch" list="datalistOptionsLunch<?php echo $index + 1; ?>" placeholder="Ketik Menu" data-idMenuLunch="<?php echo $dataDetail['id_menu']; ?>" value="<?php echo $dataDetail['nama_menu']; ?>" <?php echo ($dataJadwal['tanggal_menu'] < date("Y-m-d") || $dataJadwal['id_menu_pesanan'] != null) ? "disabled" : ""; ?>>
                               <datalist id="datalistOptionsLunch<?php echo $index + 1; ?>">
                               </datalist>
                             </div>
@@ -61,7 +61,7 @@
                           <div class="header-list">Dinner</div>
                           <div class="body-list my-form-jadwal-personal">
                             <label for="txtMenuDinner" class="form-label">Cari</label>
-                            <input type="text" class="form-control form-control-sm my-border-input txtMenuDinner" name="menuDinner" list="datalistOptionsDinner<?php echo $index + 1; ?>" placeholder="Ketik Menu" data-idMenu="<?php echo $dataDetail['id_menu']; ?>" value="<?php echo $dataDetail['nama_menu']; ?>" <?php echo ($dataJadwal['tanggal_menu'] < date("Y-m-d") || $dataJadwal['id_menu_pesanan'] != null) ? "disabled" : ""; ?>>
+                            <input type="text" class="form-control form-control-sm my-border-input txtMenuDinner" name="menuDinner" list="datalistOptionsDinner<?php echo $index + 1; ?>" placeholder="Ketik Menu" data-idMenuDinner="<?php echo $dataDetail['id_menu']; ?>" value="<?php echo $dataDetail['nama_menu']; ?>" <?php echo ($dataJadwal['tanggal_menu'] < date("Y-m-d") || $dataJadwal['id_menu_pesanan'] != null) ? "disabled" : ""; ?>>
                             <datalist id="datalistOptionsDinner<?php echo $index + 1; ?>">
                             </datalist>
                           </div>
@@ -112,14 +112,20 @@
         <?php endif ?>
       </div>
 
-      <div class="row mt-4">
-        <div class="col text-center">
-          <button class="btn btn-sm my-btn-main rounded-pill my-border-btn mb-2" id="btnTambahHariPersonal">Tambah
-            Hari</button><br>
-          <button class="btn btn-sm btn-success rounded-pill my-border-btn mb-2 btnPostMenuPersonal">Luncurkan Jadwal</button><br>
-          <a href="/dadmin/jadwal" class="btn btn-sm btn-danger rounded-pill my-border-btn mb-2" role="button">Batal</a>
+      <?php if ($jadwalKadaluarsa == true) : ?>
+        <div class="row mt-4">
+          <div class="col text-center">
+            <button class="btn btn-sm my-btn-main rounded-pill my-border-btn mb-2" id="btnTambahHariPersonal">Tambah
+              Hari</button><br>
+            <?php if ($case == 'update') : ?>
+              <button class="btn btn-sm btn-success rounded-pill my-border-btn mb-2 btnPostMenuPersonal" data-idJadwal=<?php echo $idJadwal; ?>>Update Jadwal</button><br>
+            <?php else : ?>
+              <button class="btn btn-sm btn-success rounded-pill my-border-btn mb-2 btnPostMenuPersonal">Luncurkan Jadwal</button><br>
+            <?php endif ?>
+            <a href="/dadmin/jadwal" class="btn btn-sm btn-danger rounded-pill my-border-btn mb-2" role="button">Batal</a>
+          </div>
         </div>
-      </div>
+      <?php endif; ?>
     </div>
   </div>
 </div>

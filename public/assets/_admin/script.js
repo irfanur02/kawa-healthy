@@ -486,9 +486,9 @@ $(document).ready(function() {
 
       // Add or remove the date from the list of selected dates
       if (!isDuplicate) {
-          if (!selectedDates.includes(selectedDate)) {
-            selectedDates.push(selectedDate);
-          }
+        if (!selectedDates.includes(selectedDate)) {
+          selectedDates.push(selectedDate);
+        }
       } else {
         $(this).val(''); // Clear the input
         $(this).parent().append(`<span class="notifTanggal text-danger">sudah digunakan</span>`);
@@ -501,11 +501,12 @@ $(document).ready(function() {
 
   $(".content-jadwal-family").on('change', '.cbLibur', function(e) {
     var listContentJadwal = e.target.parentElement.parentElement.parentElement;
-    if($(this).is(':checked')) {
-      $(this).parent().parent().parent().find('li:nth-child(2)').remove();
-    } else {
-      jadwalNotifMenu = false;
-      $(this).parent().parent().parent().append(`
+    var aksiJadwal = $(".content-jadwal-family input[name=case]").val();
+    if(aksiJadwal == "saveJadwalMenu") {
+      if($(this).is(':checked')) {
+        $(this).parent().parent().parent().find('li:nth-child(2)').remove();
+      } else {
+        $(this).parent().parent().parent().append(`
         <li class="list-group-item border border-top-0 border-black">
           <div class="my-form-jadwal-family">
             <input class="form-control form-control-sm rounded-0 my-border-input" type="text" name="itemMenu" id="txtMenu"
@@ -517,6 +518,28 @@ $(document).ready(function() {
           <ul class="list-group list-tambah-menu mt-2">
           </ul>
         </li>`);
+      }
+    } else if(aksiJadwal == "updateJadwalMenu") {
+      if($(this).is(':checked')) {
+        $(this).parent().parent().parent().find('li:nth-child(2)').css("display", "none");
+      } else {
+        if($(this).parent().parent().parent().find('li:nth-child(2)').length > 0) {
+          $(this).parent().parent().parent().find('li:nth-child(2)').css("display", "block");
+        } else {
+          $(this).parent().parent().parent().append(`
+              <li class="list-group-item border border-top-0 border-black">
+                <div class="my-form-jadwal-family">
+                  <input class="form-control form-control-sm rounded-0 my-border-input" type="text" name="itemMenu" id="txtMenu"
+                    list="datalistOptions" placeholder="Ketik Menu">
+                  <datalist id="datalistOptions">
+                  </datalist>
+                  <button disabled class="btn btn-sm btn-primary rounded-0 my-border-btn btnTambahMenu">Tambahkan</button>
+                </div>
+                <ul class="list-group list-tambah-menu mt-2">
+                </ul>
+              </li>`);  
+        }
+      }
     }
   })
 
@@ -561,6 +584,8 @@ $(document).ready(function() {
   })
 
   $(".content-jadwal-family").on('click', '.btnTambahMenu', function() {
+    var aksiJadwal = $(".content-jadwal-family input[name=case]").val();
+    var listJadwalMenu = $(this).parent().parent().parent();
     var menu = $(this).parent().find("input").val();
     var idMenu = $(this).parent().find("datalist option[value='" + menu + "']").data('id');
     $(this).parent().parent().find(".list-tambah-menu").append(
@@ -586,11 +611,14 @@ $(document).ready(function() {
   })
 
   $(".content-jadwal-family").on('click', '.btnHapusListMenu', function(e) {
-    var listMenu = e.target.parentElement.parentElement.parentElement.parentElement.parentElement;
+    var listJadwalMenu = $(this).parent().parent().parent().parent().parent().parent();
+    var listMenu = $(this).parent().parent().parent();
+    listJadwalMenu.addClass("updateListMenu");
     listMenu.remove();
   })
 
   $("#btnTambahHariFamily").on('click', function() {
+    var aksiJadwal = $(".content-jadwal-family input[name=case]").val();
     var cekLibur = $(".content-jadwal-family").find('ul.list-content-jadwal:last-child').find('input[type=checkbox]').is(':checked');
     var cardFormJadwal = $(".content-jadwal-family").find(".list-content-jadwal");
     var tanggal = $(".content-jadwal-family").find("ul.list-content-jadwal:last-child").find("input[type=date]").val();
@@ -604,7 +632,7 @@ $(document).ready(function() {
       }
     } else if (cekLibur || listItemMenu.length > 0) {
       $(".content-jadwal-family").append(`
-                  <ul class="list-group list-content-jadwal fw-medium" style="width: 13em;">
+                  <ul class="list-group list-content-jadwal fw-medium ${(aksiJadwal == "updateJadwalMenu") ? "tambahListHari" : ""}" style="width: 13em;">
                     <li class="list-group-item border border-black text-center">
                       <div class="mb-2">
                         <label for="exampleFormControlInput1" class="form-label">Mulai</label>
@@ -640,24 +668,31 @@ $(document).ready(function() {
   });
 
   $(".content-jadwal-family").on('click', '.btnListHapusJadwal', function(e) {
-    if ($(".content-jadwal-family").find('ul.list-content-jadwal').length != 1) {
-      var listJadwalMenu = e.target.parentElement.parentElement;
-      listJadwalMenu.remove();
+    var aksiJadwal = $(".content-jadwal-family input[name=case]").val();
+    var listJadwalMenu = $(this).parent().parent();
+    if (aksiJadwal == "saveJadwalMenu") {
+      if ($(".content-jadwal-family").find('ul.list-content-jadwal').length != 1) {
+        listJadwalMenu.remove();
+      }
+    } else {
+      listJadwalMenu.css("display", "none");
+      listJadwalMenu.addClass("hapusJadwalMenu");
     }
   })
 
   $(".my-content .btnPostMenuFamily").on('click', function() {
     var tanggal = $(".content-jadwal-family").find("ul.list-content-jadwal:last-child").find("input[type=date]").val();
     var listItemMenu = $(".content-jadwal-family").find('ul.list-content-jadwal:last-child').find('ul.list-tambah-menu li');
+    console.log(listItemMenu);
     var cekLibur = $(".content-jadwal-family").find('ul.list-content-jadwal:last-child').find('input[type=checkbox]').is(':checked');
-    var updateJadwalMenu = $(".content-jadwal-family").find('.updateJadwalMenu');
+    var aksiJadwal = $(".content-jadwal-family input[name=case]").val();
     if (tanggal === '') {
       if (jadwalNotifTanggal == false) {
         jadwalNotifTanggal = true;
         $(".content-jadwal-family ul.list-content-jadwal:last-child").find("li:first-child div:first-child").append(`<span class="notifTanggal text-danger">Tanggal masih kosong</span>`);
       }
     } else if (cekLibur || listItemMenu.length > 0) {
-      if (updateJadwalMenu.length == 0) { // save jadwal family
+      if (aksiJadwal == "saveJadwalMenu") { // save jadwal family
         var contentJadwal = $(".content-jadwal-family")
         var dataJadwal = [];
         contentJadwal.find("ul.list-content-jadwal").each(function (index, element) {
@@ -687,38 +722,69 @@ $(document).ready(function() {
           }
         });
       } else { // update jadwal family
-        var contentJadwal = $(".content-jadwal-family")
         var idJadwal = $(this).data('id');
+        var contentJadwal = $(".content-jadwal-family");
         var dataJadwal = [];
+
         contentJadwal.find("ul.list-content-jadwal").each(function (index, element) {
-          var itemsMenu = [];
-          var idJadwalMenu = $(element).data('id');
+          var idJadwalMenu = $(element).data('id') || null;
           var tanggal = $(element).find('input[type=date]').val();
           var cbLibur = $(element).find('input[type=checkbox]').is(':checked');
+          var itemsMenuUpdate = [];
+          var itemsMenuAdd = [];
           var listItemMenu = $(element).find('.list-tambah-menu');
-          listItemMenu.find("li").each(function (index, element) {
-            var idMenu = $(element).find('input').val();
-            itemsMenu.push(idMenu);
-          })
-          dataJadwal.push({
-            idJadwalMenu: idJadwalMenu,
-            tanggal: tanggal,
-            cbLibur: cbLibur,
-            itemsMenu: itemsMenu
+          listItemMenu.find("li").each(function (index, el) {
+            var idMenu = $(el).find('input').val();
+            if (idMenu) {
+              if ($(element).hasClass("tambahListHari")) {
+                itemsMenuAdd.push(idMenu);
+              } else {
+                itemsMenuUpdate.push(idMenu);
+              }
+            }
           });
+          var jadwalType = 
+              $(element).hasClass("hapusJadwalMenu") ? "hapus" :
+              $(element).hasClass("updateListMenu") ? "update" : 
+              $(element).hasClass("bacaJadwalMenu") ? "baca" : 
+              $(element).hasClass("tambahListHari") ? "tambah" : null;
+          if (jadwalType && (itemsMenuUpdate.length > 0 || itemsMenuAdd.length > 0)) {
+            var jadwalData = {
+              idJadwalMenu: idJadwalMenu,
+              jadwal: jadwalType,
+              tanggal: tanggal,
+              cbLibur: cbLibur
+            };
+            if (jadwalType === "tambah") {
+              jadwalData.itemsMenuAdd = itemsMenuAdd;
+            } else {
+              jadwalData.itemsMenuUpdate = itemsMenuUpdate;
+            }
+            dataJadwal.push(jadwalData);
+          }
         });
+
+        console.log(dataJadwal);
+        console.log(idJadwal);
         $.ajax({
           url: base_url + '/dadmin/jadwal/update/family',
           type: 'POST',
           data: {
             idJadwal: idJadwal,
-            dataJadwal: dataJadwal
+            dataJadwal: dataJadwal,
           },
           dataType: 'json',
           success: function (data) {
+            console.log(data);
             window.location.href = base_url + '/dadmin/jadwal';
           }
         });
+      }
+    } else {
+      console.log($(".content-jadwal-family ul.list-content-jadwal:last-child").find("li:last-child div:first-child"));
+      if (jadwalNotifMenu == false) {
+        jadwalNotifMenu = true;
+        $(".content-jadwal-family ul.list-content-jadwal:last-child").find("li:last-child div:first-child").append(`<span class="notifMenu text-danger">Menu masih kosong</span>`);
       }
     }
   })
@@ -756,39 +822,88 @@ $(document).ready(function() {
 
   $(".list-jadwal-personal").on('change', '.cbLibur', function(e) {
     var listContentJadwal = $(this).parent().parent().parent();
-    if($(this).is(":checked") == true) {
-      for (var i = 3; i >= 2; i--) {
-        listContentJadwal.find(`.sublist-jadwal:nth-child(${i})`).remove();
-      }
-    } else {
-      jadwalNotifMenu = false;
-      listContentJadwal.append(`
-          <div class="sublist-jadwal border-top border-bottom border-black">
-            <div class="header-list my-form-jadwal-personal">Lunch</div>
-            <div class="body-list">
-              <div class="mb-3">
-                <label for="txtMenuLunch" class="form-label">Cari</label>
-                <input type="text" class="form-control form-control-sm my-border-input" id="txtMenuLunch" name="itemMenu" list="datalistOptionsLunch" placeholder="Ketik Menu">
-                <datalist id="datalistOptionsLunch">
-                </datalist>
+    var aksiJadwal = $(".content-jadwal-personal input[name=case]").val();
+    if(aksiJadwal == "saveJadwalMenu") {
+      if($(this).is(":checked") == true) {
+        for (var i = 3; i >= 2; i--) {
+          listContentJadwal.find(`.sublist-jadwal:nth-child(${i})`).remove();
+        }
+      } else {
+        jadwalNotifMenu = false;
+        listContentJadwal.append(`
+            <div class="sublist-jadwal border-top border-bottom border-black">
+              <div class="header-list my-form-jadwal-personal">Lunch</div>
+              <div class="body-list">
+                <div class="mb-3">
+                  <label for="txtMenuLunch" class="form-label">Cari</label>
+                  <input type="text" class="form-control form-control-sm my-border-input" id="txtMenuLunch" name="itemMenu" list="datalistOptionsLunch" placeholder="Ketik Menu">
+                  <datalist id="datalistOptionsLunch">
+                  </datalist>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="sublist-jadwal border border-black rounded-end">
-            <div class="header-list my-form-jadwal-personal">Dinner</div>
-            <div class="body-list">
-              <label for="txtMenuDinner" class="form-label">Cari</label>
-              <input type="text" class="form-control form-control-sm my-border-input" id="txtMenuDinner" name="itemMenu" list="datalistOptionsDinner" placeholder="Ketik Menu">
-              <datalist id="datalistOptionsDinner">
-              </datalist>
+            <div class="sublist-jadwal border border-black rounded-end">
+              <div class="header-list my-form-jadwal-personal">Dinner</div>
+              <div class="body-list">
+                <label for="txtMenuDinner" class="form-label">Cari</label>
+                <input type="text" class="form-control form-control-sm my-border-input" id="txtMenuDinner" name="itemMenu" list="datalistOptionsDinner" placeholder="Ketik Menu">
+                <datalist id="datalistOptionsDinner">
+                </datalist>
+              </div>
+            </div>`);
+      }
+    } else if(aksiJadwal == "updateJadwalMenu") {
+      if($(this).is(":checked") == true) {
+        for (var i = 3; i >= 2; i--) {
+          listContentJadwal.find(`.sublist-jadwal:nth-child(${i})`).css("display", "none");
+        }
+      } else {
+        if(listContentJadwal.find(`.sublist-jadwal`).length != 1) {
+          // $(this).parent().parent().parent().find('li:nth-child(2)').css("display", "block");
+          for (var i = 3; i >= 2; i--) {
+            listContentJadwal.find(`.sublist-jadwal:nth-child(${i})`).css("display", "block");
+          }
+        } else {
+          listContentJadwal.append(`
+            <div class="sublist-jadwal border-top border-bottom border-black">
+              <div class="header-list my-form-jadwal-personal">Lunch</div>
+              <div class="body-list">
+                <div class="mb-3">
+                  <label for="txtMenuLunch" class="form-label">Cari</label>
+                  <input type="text" class="form-control form-control-sm my-border-input" id="txtMenuLunch" name="itemMenu" list="datalistOptionsLunch" placeholder="Ketik Menu">
+                  <datalist id="datalistOptionsLunch">
+                  </datalist>
+                </div>
+              </div>
             </div>
-          </div>`);
+            <div class="sublist-jadwal border border-black rounded-end">
+              <div class="header-list my-form-jadwal-personal">Dinner</div>
+              <div class="body-list">
+                <label for="txtMenuDinner" class="form-label">Cari</label>
+                <input type="text" class="form-control form-control-sm my-border-input" id="txtMenuDinner" name="itemMenu" list="datalistOptionsDinner" placeholder="Ketik Menu">
+                <datalist id="datalistOptionsDinner">
+                </datalist>
+              </div>
+            </div>`);
+        }
+      }
     }
   });
   
   $(".list-jadwal-personal").on('click', '.btnListHapusJadwal', function(e) {
-    var listJadwalMenu = e.target.parentElement.parentElement;
-    listJadwalMenu.remove();
+    var aksiJadwal = $(".content-jadwal-personal input[name=case]").val();
+    var listJadwalMenu = $(this).parent().parent();
+    if (aksiJadwal == "saveJadwalMenu") {
+      if ($(".content-jadwal-personal").find('.list-jadwal').length != 1) {
+        listJadwalMenu.remove();
+      }
+    } else {
+      listJadwalMenu.css("display", "none");
+      listJadwalMenu.addClass("hapusJadwalMenu");
+    }
+
+    // var listJadwalMenu = e.target.parentElement.parentElement;
+    // listJadwalMenu.remove();
   });
 
   $(".content-jadwal-personal").on('keydown', '.my-form-jadwal-personal .txtMenuLunch', function(e) {
@@ -798,7 +913,10 @@ $(document).ready(function() {
   $(".content-jadwal-personal").on('keydown', '.my-form-jadwal-personal .txtMenuLunch', function(e) {
     if (eventSource === 'clicked') {
       $(this).attr('data-menuLunch', true);
-      console.log("lunch");
+      var cekData = $(this).parent().parent().parent().parent();
+      if (cekData.hasClass("bacaJadwalMenu")) {
+        $(this).closest(".list-jadwal").addClass("updateListMenu");
+      }
     } else {
       $(this).attr('data-menuLunch', false);
     }
@@ -811,7 +929,10 @@ $(document).ready(function() {
   $(".content-jadwal-personal").on('keydown', '.my-form-jadwal-personal .txtMenuDinner', function(e) {
     if (eventSource === 'clicked') {
       $(this).attr('data-menuDinner', true);
-      console.log("dinner");
+      var cekData = $(this).parent().parent().parent();
+      if (cekData.hasClass("bacaJadwalMenu")) {
+        $(this).closest(".list-jadwal").addClass("updateListMenu");
+      }
     } else {
       $(this).attr('data-menuDinner', false);
     }
@@ -894,7 +1015,7 @@ $(document).ready(function() {
       }
     } else if (cekLibur || itemMenuLunch.val() != '' && itemMenuDinner.val() != '') {
       $(".list-jadwal-personal").append(`
-        <div class="list-jadwal mt-4 text-center ${aksiJadwal == "updateJadwalMenu" ? "updateListMenu" : ""}" ${aksiJadwal == "updateJadwalMenu" ? "data-id='-'" : ""}>
+        <div class="list-jadwal mt-4 text-center ${aksiJadwal == "updateJadwalMenu" ? "tambahListHari" : ""}" ${aksiJadwal == "updateJadwalMenu" ? "data-id='-'" : ""}>
           <div class="sublist-jadwal border border-black rounded-start ">
             <div class="mb-2" >
               <label for="exampleFormControlInput1" class="form-label">Mulai</label>
@@ -995,47 +1116,56 @@ $(document).ready(function() {
             console.log(data);
           }
         });
-        // window.location.href = base_url + '/dadmin/jadwal';
+        window.location.href = base_url + '/dadmin/jadwal';
       } else { // update jadwal personal
         console.log("update jadwal");
-        var contentJadwal = $(".content-jadwal-personal")
-        var idJadwal = $(this).data('id');
+        var contentJadwal = $(".content-jadwal-personal");
+        var idJadwal = $(this).attr('data-idJadwal');
         var dataJadwal = [];
         contentJadwal.find(".list-jadwal").each(function (index, element) {
-          if ($(element).hasClass("updateListMenu")) {
-            var itemsMenu = [];
-            var idJadwalMenu = $(element).data('id');
-            var tanggal = $(element).find('input[type=date]').val();
-            var cbLibur = $(element).find('input[type=checkbox]').is(':checked');
-            var idMenuLunch = $(element).find("input[nama=menuLunch]").data("idMenu");
-            var idMenuDinner = $(element).find("input.txtMenuDinner").data("idMenu");
-            // var listItemMenu = $(element).find('.list-tambah-menu');
-            // listItemMenu.find("li").each(function (index, element) {
-            //   var idMenu = $(element).find('input').val();
-            //   itemsMenu.push(idMenu);
-            // })
-            dataJadwal.push({
-              idJadwalMenu: idJadwalMenu,
-              tanggal: tanggal,
-              cbLibur: cbLibur,
-              idMenuLunch: idMenuLunch,
-              idMenuDinner: idMenuDinner
-            });
+          var idJadwalMenu = $(element).data('id') || null;
+          var tanggal = $(element).find('input[type=date]').val();
+          var cbLibur = $(element).find('input[type=checkbox]').is(':checked');
+          var menuLunch = $(element).find(".txtMenuLunch").val();
+          var menuDinner = $(element).find(".txtMenuDinner").val();
+          var idMenuLunch = $(element).find(".txtMenuLunch").attr("data-idMenuLunch");
+          var idMenuDinner = $(element).find(".txtMenuDinner").attr("data-idMenuDinner");
+          var idMenuLunchBaru = $(element).find("#datalistOptionsLunch" + (index+1) + " option[value='" + menuLunch + "']").data('id');
+          var idMenuDinnerBaru = $(element).find("#datalistOptionsDinner" + (index+1) + " option[value='" + menuDinner + "']").data('id');
+          var jadwalType = 
+              $(element).hasClass("hapusJadwalMenu") ? "hapus" :
+              $(element).hasClass("updateListMenu") ? "update" : 
+              $(element).hasClass("bacaJadwalMenu") ? "baca" : 
+              $(element).hasClass("tambahListHari") ? "tambah" : null;
+
+          dataJadwal.push({
+            idJadwalMenu: idJadwalMenu,
+            jadwal: jadwalType,
+            tanggal: tanggal,
+            cbLibur: cbLibur,
+            idMenuLunch: idMenuLunch,
+            idMenuDinner: idMenuDinner,
+            idMenuLunchBaru: idMenuLunchBaru,
+            idMenuDinnerBaru: idMenuDinnerBaru
+          });
+        });
+
+        console.log(dataJadwal);
+        console.log(idJadwal);
+
+        $.ajax({
+          url: base_url + '/dadmin/jadwal/update/personal',
+          type: 'POST',
+          data: {
+            idJadwal: idJadwal,
+            dataJadwal: dataJadwal
+          },
+          dataType: 'json',
+          success: function (data) {
+            console.log(data);
+            // window.location.href = base_url + '/dadmin/jadwal';
           }
         });
-        console.log(dataJadwal);
-        // $.ajax({
-        //   url: base_url + '/dadmin/jadwal/update/personal',
-        //   type: 'POST',
-        //   data: {
-        //     idJadwal: idJadwal,
-        //     dataJadwal: dataJadwal
-        //   },
-        //   dataType: 'json',
-        //   success: function (data) {
-        //     window.location.href = base_url + '/dadmin/jadwal';
-        //   }
-        // });
       }
     } else {
       if (itemMenuLunch.val() == '') {

@@ -165,14 +165,20 @@ class Jadwal extends BaseController
 
   public function editMenuFamily($id = '')
   {
+    $date = date("Y-m-d");
     $dataJadwalMenu = $this->jadwalModel->getJadwalMenuById($id)->getResultArray();
     $dataDetailJadwal = $this->jadwalModel->getDetailJadwalByIdByPack($id, 'family')->getResultArray();
+    $jadwalKadaluarsa = false;
+    foreach ($dataJadwalMenu as $tanggal) {
+      ($tanggal['tanggal_menu'] > $date) ? $jadwalKadaluarsa = true : $jadwalKadaluarsa = false;
+    }
     // dd($dataJadwalMenu);
     $data = [
       'title' => 'Edit Jadwal Personal Family',
       'sidebar' => 'kelolaJadwalMenu',
       'case' => 'update',
       'idJadwal' => $id,
+      'jadwalKadaluarsa' => $jadwalKadaluarsa,
       'dataJadwalMenu' => $dataJadwalMenu,
       'dataDetailJadwal' => $dataDetailJadwal
     ];
@@ -183,43 +189,141 @@ class Jadwal extends BaseController
   {
     $idJadwal = $this->request->getVar('idJadwal');
     $dataJadwal = $this->request->getVar('dataJadwal');
-
     $date = date("Y-m-d") . ' ' . date("H:i:s");
+    $tanggalAwal = '';
+    $tanggalAkhir = '';
 
-    // update data to table jadwal
-    $data = [
-      'tanggal_mulai' => $dataJadwal[0]['tanggal'],
-      'tanggal_akhir' => $dataJadwal[count($dataJadwal) - 1]['tanggal'],
-      'updated_at' => $date
-    ];
-    $this->jadwalModel->updateJadwal($data, $idJadwal);
-
-    // update data to table jadwal menu
-    $maxIdJadwal = $this->jadwalModel->getMaxIdJadwal()->getRowArray()['id_jadwal'];
-    for ($i = 0; $i < count($dataJadwal); $i++) {
-      $data = [
-        'id_jadwal' => $maxIdJadwal,
-        'tanggal_menu' => $dataJadwal[$i]['tanggal'],
-        'status_libur' => ($dataJadwal[$i]['cbLibur'] == 'true') ? "L" : "B",
+    if (!empty($dataJadwal)) {
+      for ($i = 0; $i < count($dataJadwal); $i++) {
+        if ($dataJadwal[$i]['jadwal'] != "hapus") {
+          $tanggalAwal = $dataJadwal[$i]['tanggal'];
+          break;
+        }
+      }
+      for ($i = count($dataJadwal) - 1; $i >= 0; $i--) {
+        if (
+          $dataJadwal[$i]['jadwal'] == "update" ||
+          $dataJadwal[$i]['jadwal'] == "tambah" ||
+          $dataJadwal[$i]['jadwal'] == "baca"
+        ) {
+          $tanggalAkhir = $dataJadwal[$i]['tanggal'];
+          break;
+        }
+      }
+      $dataTanggal = [
+        'tanggal_mulai' => $tanggalAwal,
+        'tanggal_akhir' => $tanggalAkhir,
         'updated_at' => $date
       ];
-      $this->jadwalModel->insertJadwalMenu($data);
+      $this->jadwalModel->updateJadwal($dataTanggal, $idJadwal);
 
-      // update data to detail jadwal menu
-      $maxIdJadwalMenu = $this->jadwalModel->getMaxIdJadwalMenu()->getRowArray()['id_jadwal_menu'];
-      if ($dataJadwal[$i]['cbLibur'] == 'false') {
-        for ($j = 0; $j < count($dataJadwal[$i]['itemsMenu']); $j++) {
+      $tesHapus = [];
+      $tesUpdate = [];
+      $dataMenuAsli = [];
+      $dataMenuBaru = [];
+      foreach ($dataJadwal as $index => $jadwalMenu) {
+        if ($jadwalMenu['cbLibur'] == 'false') {
           $data = [
-            'id_jadwal_menu' => $maxIdJadwalMenu,
-            'id_menu' => $dataJadwal[$i]['itemsMenu'][$j],
+            'status_libur' => 'B',
             'updated_at' => $date
           ];
-          $this->jadwalModel->insertDetailJadwalMenu($data);
+          $where = $jadwalMenu['idJadwalMenu'];
+          $this->jadwalModel->updateJadwalMenu($data, $where);
+
+          if ($jadwalMenu['jadwal'] == 'hapus') {
+            array_push($tesHapus, $jadwalMenu['idJadwalMenu']);
+            $dataDeleteJadwalMenu = [
+              'deleted_at' => $date
+            ];
+            $where = $jadwalMenu['idJadwalMenu'];
+            $this->jadwalModel->updateJadwalMenu($dataDeleteJadwalMenu, $where);
+          }
+
+          if ($jadwalMenu['jadwal'] == 'update') {
+            array_push($tesUpdate, $jadwalMenu['idJadwalMenu']);
+            $dataDetailJadwalMenu = $this->jadwalModel->getDetailJadwalMenu($jadwalMenu['idJadwalMenu'])->getResultArray();
+            foreach ($dataDetailJadwalMenu as $index => $data) {
+              array_push($dataMenuAsli, $data['id_menu']);
+            }
+            for ($i = 0; $i < count($jadwalMenu['itemsMenuUpdate']); $i++) {
+              array_push($dataMenuBaru, $jadwalMenu['itemsMenuUpdate'][$i]);
+            }
+
+            $menuTambah = array_values(array_diff($dataMenuBaru, $dataMenuAsli));
+            $menuHapus = array_values(array_diff($dataMenuAsli, $dataMenuBaru));
+
+            // update data to detail jadwal menu
+            if (!empty($menuTambah)) {
+              // insert
+              for ($i = 0; $i < count($menuTambah); $i++) {
+                $dataMenuTambah = [
+                  'id_jadwal_menu' => $jadwalMenu['idJadwalMenu'],
+                  'id_menu' => $menuTambah[$i],
+                  'created_at' => $date
+                ];
+                $this->jadwalModel->insertDetailJadwalMenu($dataMenuTambah);
+              }
+            }
+            if (!empty($menuHapus)) {
+              // hapus soft
+              for ($i = 0; $i < count($menuHapus); $i++) {
+                $dataMenuHapus = [
+                  'deleted_at' => $date
+                ];
+                $where = [
+                  'id_jadwal_menu' => $jadwalMenu['idJadwalMenu'],
+                  'id_menu' => $menuHapus[$i],
+                ];
+                $this->jadwalModel->updateDetailJadwalMenu($dataMenuHapus, $where);
+              }
+            }
+          }
+
+          if ($jadwalMenu['jadwal'] == 'tambah') {
+            // insert data to table jadwal menu
+            $dataTambahHari = [
+              'id_jadwal' => $idJadwal,
+              'tanggal_menu' => $jadwalMenu['tanggal'],
+              'status_libur' => ($jadwalMenu['cbLibur'] == 'true') ? "L" : "B",
+              'created_at' => $date
+            ];
+            $this->jadwalModel->insertJadwalMenu($dataTambahHari);
+
+            // insert data to detail jadwal menu
+            $maxIdJadwalMenu = $this->jadwalModel->getMaxIdJadwalMenu()->getRowArray()['id_jadwal_menu'];
+            if ($jadwalMenu['cbLibur'] == 'false') {
+              for ($j = 0; $j < count($jadwalMenu['itemsMenuAdd']); $j++) {
+                $data = [
+                  'id_jadwal_menu' => $maxIdJadwalMenu,
+                  'id_menu' => $jadwalMenu['itemsMenuAdd'][$j],
+                  'created_at' => $date
+                ];
+                $this->jadwalModel->insertDetailJadwalMenu($data);
+              }
+            }
+          }
+        } else {
+          $data = [
+            'status_libur' => 'L',
+            'updated_at' => $date
+          ];
+          $where = $jadwalMenu['idJadwalMenu'];
+          $this->jadwalModel->updateJadwalMenu($data, $where);
         }
       }
     }
     $result = array(
-      'data' => $dataJadwal
+      // 'dataTambahHari' => $dataTambahHari,
+      'dataJadwal' => $dataJadwal,
+      'dataTanggal' => $dataTanggal,
+      'tanggalAwal' => $tanggalAwal,
+      'tanggalAkhir' => $tanggalAkhir,
+      'tesHapus' => $tesHapus,
+      'tesUpdate' => $tesUpdate,
+      'dataMenuAsli' => $dataMenuAsli,
+      'dataMenuBaru' => $dataMenuBaru,
+      'dataMenuTambah' => (empty($menuTambah)) ? 'kosong' : $menuTambah,
+      'dataMenuHapus' => (empty($menuHapus)) ? 'kosong' : $menuHapus,
     );
     echo json_encode($result);
   }
@@ -346,18 +450,176 @@ class Jadwal extends BaseController
 
   public function editMenuPersonal($id = '')
   {
+    $date = date("Y-m-d");
     $dataJadwalMenu = $this->jadwalModel->getJadwalMenuById($id)->getResultArray();
     $dataDetailJadwal = $this->jadwalModel->getDetailJadwalByIdByPack($id, 'personal')->getResultArray();
+    $jadwalKadaluarsa = false;
     // dd($dataJadwalMenu);
+    foreach ($dataJadwalMenu as $tanggal) {
+      ($tanggal['tanggal_menu'] > $date) ? $jadwalKadaluarsa = true : $jadwalKadaluarsa = false;
+    }
     $data = [
       'title' => 'Edit Jadwal Personal Personak',
       'sidebar' => 'kelolaJadwalMenu',
       'case' => 'update',
       'idJadwal' => $id,
+      'jadwalKadaluarsa' => $jadwalKadaluarsa,
       'dataJadwalMenu' => $dataJadwalMenu,
       'dataDetailJadwal' => $dataDetailJadwal
     ];
     // dd($data);
     return view('admin/jadwalMenuPersonal', $data);
+  }
+
+  public function updateJadwalPersonal()
+  {
+    $idJadwal = $this->request->getVar('idJadwal');
+    $dataJadwal = $this->request->getVar('dataJadwal');
+    $date = date("Y-m-d") . ' ' . date("H:i:s");
+    $tanggalAwal = '';
+    $tanggalAkhir = '';
+
+    if (!empty($dataJadwal)) {
+      for ($i = 0; $i < count($dataJadwal); $i++) {
+        if ($dataJadwal[$i]['jadwal'] != "hapus") {
+          $tanggalAwal = $dataJadwal[$i]['tanggal'];
+          break;
+        }
+      }
+      for ($i = count($dataJadwal) - 1; $i >= 0; $i--) {
+        if (
+          $dataJadwal[$i]['jadwal'] == "update" ||
+          $dataJadwal[$i]['jadwal'] == "tambah" ||
+          $dataJadwal[$i]['jadwal'] == "baca"
+        ) {
+          $tanggalAkhir = $dataJadwal[$i]['tanggal'];
+          break;
+        }
+      }
+      $dataTanggal = [
+        'tanggal_mulai' => $tanggalAwal,
+        'tanggal_akhir' => $tanggalAkhir,
+        'updated_at' => $date
+      ];
+      $this->jadwalModel->updateJadwal($dataTanggal, $idJadwal);
+
+      $tesHapus = [];
+      $tesUpdate = [];
+      $dataMenuAsli = [];
+      $dataMenuBaru = [];
+      foreach ($dataJadwal as $index => $jadwalMenu) {
+        if ($jadwalMenu['cbLibur'] == 'false') {
+          $data = [
+            'status_libur' => 'B',
+            'updated_at' => $date
+          ];
+          $where = $jadwalMenu['idJadwalMenu'];
+          $this->jadwalModel->updateJadwalMenu($data, $where);
+
+          if ($jadwalMenu['jadwal'] == 'hapus') {
+            array_push($tesHapus, $jadwalMenu['idJadwalMenu']);
+            $dataDeleteJadwalMenu = [
+              'deleted_at' => $date
+            ];
+            $where = $jadwalMenu['idJadwalMenu'];
+            $this->jadwalModel->updateJadwalMenu($dataDeleteJadwalMenu, $where);
+          }
+
+          if ($jadwalMenu['jadwal'] == 'update') {
+            array_push($tesUpdate, $jadwalMenu['idJadwalMenu']);
+            $dataDetailJadwalMenu = $this->jadwalModel->getDetailJadwalMenu($jadwalMenu['idJadwalMenu'])->getResultArray();
+            foreach ($dataDetailJadwalMenu as $index => $data) {
+              array_push($dataMenuAsli, $data['id_menu']);
+              // Update Lunch & Dinner Menu jika ada perubahan
+              if (isset($jadwalMenu['idMenuLunchBaru'])) {
+                if ($jadwalMenu['idMenuLunch'] == $data['id_menu']) {
+                  $dataMenuLunch = [
+                    'id_menu' => $jadwalMenu['idMenuLunchBaru'],
+                    'updated_at' => $date
+                  ];
+                  $where = [
+                    'id_menu' => $jadwalMenu['idMenuLunch'],
+                    'id_detail_jadwal_menu' => $data['id_detail_jadwal_menu'],
+                  ];
+                  $this->jadwalModel->updateDetailJadwalMenu($dataMenuLunch, $where);
+                }
+              }
+              if (isset($jadwalMenu['idMenuDinnerBaru'])) {
+                if ($jadwalMenu['idMenuDinner'] == $data['id_menu']) {
+                  $dataMenuDinner = [
+                    'id_menu' => $jadwalMenu['idMenuDinnerBaru'],
+                    'updated_at' => $date
+                  ];
+                  $where = [
+                    'id_menu' => $jadwalMenu['idMenuDinner'],
+                    'id_detail_jadwal_menu' => $data['id_detail_jadwal_menu'],
+                  ];
+                  $this->jadwalModel->updateDetailJadwalMenu($dataMenuDinner, $where);
+                }
+              }
+            }
+          }
+
+          if ($jadwalMenu['jadwal'] == 'tambah') {
+            // insert data to table jadwal menu
+            $dataTambahHari = [
+              'id_jadwal' => $idJadwal,
+              'tanggal_menu' => $jadwalMenu['tanggal'],
+              'status_libur' => ($jadwalMenu['cbLibur'] == 'true') ? "L" : "B",
+              'infuse' => 'Y',
+              'created_at' => $date
+            ];
+            $this->jadwalModel->insertJadwalMenu($dataTambahHari);
+
+            // insert data to detail jadwal menu
+            $maxIdJadwalMenu = $this->jadwalModel->getMaxIdJadwalMenu()->getRowArray()['id_jadwal_menu'];
+            if ($jadwalMenu['cbLibur'] == 'false') {
+              if ($jadwalMenu['cbLibur'] == 'false') {
+                $data = [
+                  'id_jadwal_menu' => $maxIdJadwalMenu,
+                  'id_menu' => $jadwalMenu['idMenuLunchBaru'],
+                  'created_at' => $date
+                ];
+                $this->jadwalModel->insertDetailJadwalMenu($data);
+                $data = [
+                  'id_jadwal_menu' => $maxIdJadwalMenu,
+                  'id_menu' => $jadwalMenu['idMenuDinnerBaru'],
+                  'created_at' => $date
+                ];
+                $this->jadwalModel->insertDetailJadwalMenu($data);
+                $data = [
+                  'id_jadwal_menu' => $maxIdJadwalMenu,
+                  'id_menu' => null,
+                  'created_at' => $date
+                ];
+                $this->jadwalModel->insertDetailJadwalMenu($data);
+              }
+            }
+          }
+        } else {
+          $data = [
+            'status_libur' => 'L',
+            'updated_at' => $date
+          ];
+          $where = $jadwalMenu['idJadwalMenu'];
+          $this->jadwalModel->updateJadwalMenu($data, $where);
+        }
+      }
+    }
+    $result = array(
+      // 'dataTambahHari' => $dataTambahHari,
+      'idJadwal' => $idJadwal,
+      'dataJadwal' => $dataJadwal,
+      'dataTanggal' => $dataTanggal,
+      // 'tanggalAwal' => $tanggalAwal,
+      // 'tanggalAkhir' => $tanggalAkhir,
+      'tesHapus' => $tesHapus,
+      'tesUpdate' => $tesUpdate,
+      'dataMenuAsli' => $dataMenuAsli,
+      // 'dataMenuBaru' => $dataMenuBaru,
+      // 'dataMenuTambah' => (empty($menuTambah)) ? 'kosong' : $menuTambah,
+      // 'dataMenuHapus' => (empty($menuHapus)) ? 'kosong' : $menuHapus,
+    );
+    echo json_encode($result);
   }
 }
