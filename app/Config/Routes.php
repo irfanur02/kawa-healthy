@@ -110,10 +110,11 @@ $routes->post('/pesanan/terima', 'Pesanan::terimaPesanan');
 $routes->post('/pesanan/bayar', 'Pesanan::bayarPesanan');
 $routes->post('/pesanan/batal', 'Pesanan::batalPesanan');
 $routes->post('/pesanan/berhentiPaketan', 'Pesanan::berhentiPaketan');
-$routes->post('/pesanan/reviewPesanan', 'Pesanan::reviewPesanan');
 $routes->post('/pesanan/gantiMasaHariPaketan', 'Pesanan::gantiMasaHariPaketan');
 $routes->post('/pesanan/tundaPesanan', 'Pesanan::tundaPesanan');
 $routes->post('/pesananPaketan/bayar', 'Pesanan::bayarPesananPaketan');
+
+$routes->post('/review/reviewPesanan', 'Review::reviewPesanan');
 
 $routes->get('/pesananKu', 'Pesanan::pesananku');
 $routes->get('/pesananDetailPaketan/(:num)', 'Pesanan::detailPesananPaketan/$1');

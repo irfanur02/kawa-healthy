@@ -1997,7 +1997,7 @@ $( document ).ready(function() {
     var review = $("#modalReview input").val();
     
     $.ajax({
-      url: base_url + '/pesanan/reviewPesanan',
+      url: base_url + '/review/reviewPesanan',
       type: 'POST',
       data: {
         idPesanan: idPesanan,

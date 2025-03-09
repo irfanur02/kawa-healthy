@@ -26,4 +26,26 @@ class Review extends BaseController
     ];
     return view('admin/review', $data);
   }
+
+  public function reviewPesanan()
+  {
+    $idPesanan = $this->request->getVar('idPesanan');
+    $idMenuPesanan = $this->request->getVar('idMenuPesanan');
+    $review = $this->request->getVar('review');
+    $date = date("Y-m-d") . ' ' . date('H-i-s');
+
+    $data = [
+      'id_pesanan' => $idPesanan,
+      'id_menu_pesanan' => $idMenuPesanan,
+      'keterangan_review' => $review,
+      'created_at' => $date
+    ];
+
+    $this->reviewModel->insertReviewPesanan($data);
+
+    $result = array(
+      'data' => $idPesanan
+    );
+    echo json_encode($result);
+  }
 }
