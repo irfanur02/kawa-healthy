@@ -29,6 +29,7 @@ $routes->get('/dadmin/review', 'Admin\Review::index');
 
 // menu
 $routes->get('/dadmin/menu', 'Admin\Menu::index');
+$routes->post('/dadmin/menu/halaman/(:num)', 'Admin\Menu::pageMenu/$1');
 $routes->get('/dadmin/createMenu', 'Admin\Menu::createMenu');
 $routes->get('/dadmin/menu/edit/(:num)', 'Admin\Menu::editMenu/$1');
 $routes->post('/dadmin/menu/save', 'Admin\Menu::save');

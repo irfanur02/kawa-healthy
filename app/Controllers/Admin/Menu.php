@@ -29,14 +29,41 @@ class Menu extends BaseController
 
   public function index()
   {
-    $dataMenu = $this->menuModel->getAllMenu()->getResultArray();
+    $jumlahDataPerhalaman = 7;
+    $dataSemuaMenu = $this->menuModel->getAllMenu()->getResultArray();
+    $halamanAktif = 1;
+    $jumlahHalaman = ceil(count($dataSemuaMenu) / $jumlahDataPerhalaman);
+    $awalData = ($jumlahDataPerhalaman * $halamanAktif) - $jumlahDataPerhalaman;
+    $dataMenu = $this->menuModel->getAllMenuLimit($jumlahDataPerhalaman, $awalData)->getResultArray();
 
     $data = [
       'title' => 'Kelola Menu',
       'sidebar' => 'kelolaMenu',
-      'dataMenu' => $dataMenu
+      'dataMenu' => $dataMenu,
+      'jumlahHalaman' => $jumlahHalaman,
+      'halamanAktif' => $halamanAktif,
+      'no' => $halamanAktif
     ];
     return view('admin/menu', $data);
+  }
+
+  public function pageMenu($halaman = '')
+  {
+    $jumlahDataPerhalaman = 7;
+    $dataSemuaMenu = $this->menuModel->getAllMenu()->getResultArray();
+    $halamanAktif = $halaman;
+    $jumlahHalaman = ceil(count($dataSemuaMenu) / $jumlahDataPerhalaman);
+    // Hitung nomor awal untuk halaman aktif
+    $no = ($halamanAktif - 1) * $jumlahDataPerhalaman + 1;
+    $awalData = ($jumlahDataPerhalaman * $halamanAktif) - $jumlahDataPerhalaman;
+    $dataMenu = $this->menuModel->getAllMenuLimit($jumlahDataPerhalaman, $awalData)->getResultArray();
+
+    $htmlContent = view('admin/datatable/dataTableMenu', ['dataMenu' => $dataMenu, 'halamanAktif' => $halamanAktif, 'jumlahHalaman' => $jumlahHalaman, 'no' => $no]);
+
+    $result = array(
+      'element' => $htmlContent
+    );
+    echo json_encode($result);
   }
 
   public function createMenu()
@@ -195,7 +222,10 @@ class Menu extends BaseController
     ];
     $this->menuModel->deleteMenu($data, $id);
     session()->setFlashdata('notif', 'deleteMenu');
-    return redirect()->to('/dadmin/menu');
+    $result = array(
+      'status' => 200,
+    );
+    echo json_encode($result);
   }
 
   public function cari()

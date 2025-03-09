@@ -57,10 +57,6 @@ class Homepage extends BaseController
       $dataDetailJadwalFamily = $this->jadwalModel->getDetailJadwalByTanggal($today, 'family')->getResultArray();
     }
 
-    // d($dataJadwalFamily);
-    // d($dataJadwalPersonal);
-    // die();
-
     $dataPaketMenu = $this->paketMenuModel->getPaketMenu('infuse')->getRowArray();
     $dataAllPaketMenu = $this->paketMenuModel->getAllPaketMenu()->getResultArray();
 

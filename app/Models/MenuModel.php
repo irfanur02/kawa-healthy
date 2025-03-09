@@ -34,7 +34,18 @@ class MenuModel extends Model
     $builder->join('pack', 'pack.id_pack = menu.id_pack', 'left');
     $builder->join('paket_menu', 'paket_menu.id_paket_menu = menu.id_paket_menu', 'left');
     $builder->where('menu.deleted_at', null);
-    // $builder->limit(7);
+    $query = $builder->get();
+    return $query;
+  }
+
+  public function getAllMenuLimit($limit, $awalData)
+  {
+    $builder = $this->db->table('menu');
+    $builder->select('menu.id_menu, menu.gambar_menu, menu.nama_menu, pack.nama_pack, paket_menu.nama_paket_menu, menu.harga_menu');
+    $builder->join('pack', 'pack.id_pack = menu.id_pack', 'left');
+    $builder->join('paket_menu', 'paket_menu.id_paket_menu = menu.id_paket_menu', 'left');
+    $builder->where('menu.deleted_at', null);
+    $builder->limit($limit, $awalData);
     $query = $builder->get();
     return $query;
   }

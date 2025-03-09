@@ -422,6 +422,87 @@ $(document).ready(function() {
   // view biaya ongkir
 
 
+  // view menu
+  const modalHapusMenu = document.getElementById('modalHapusMenu')
+  if (modalHapusMenu) {
+    modalHapusMenu.addEventListener('show.bs.modal', event => {
+      // Button that triggered the modal
+      const button = event.relatedTarget;
+      const modalBtnHapusMenu = modalHapusMenu.querySelector('#modalBtnHapusMenu');
+      const indexBarix = button.getAttribute('data-indexBaris');
+      const idMenu = button.getAttribute('data-id');        
+      modalBtnHapusMenu.setAttribute('data-indexBaris', indexBarix);
+      modalBtnHapusMenu.setAttribute('data-idMenu', idMenu);
+    })
+    
+    modalHapusMenu.addEventListener('hide.bs.modal', event => {
+      modalHapusMenu.removeAttribute('data-idMenuPesanan');
+    })
+  }
+
+  $("#modalBtnHapusMenu").on('click', function() {
+    var idMenu = $(this).attr("data-idMenu");
+    console.log(idMenu);
+    $.ajax({
+      url: base_url + '/dadmin/menu/delete/' + idMenu,
+      type: 'POST',
+      dataType: 'json',
+      success: function (data) {
+        window.location.href = base_url + '/dadmin/menu';
+      }
+    });
+  })
+
+  $(".content-menu .btnModalHapusMenu").on('click', function() {
+    var halaman = $(this).attr("data-id");
+    $.ajax({
+      url: base_url + '/dadmin/menu/halaman/' + halaman,
+      type: 'POST',
+      dataType: 'json',
+      success: function (data) {
+        $("#tabelMenu").html(data.element)
+      }
+    });
+  })
+
+  $(".content-menu").on('click', '#tabelMenu .btnLinkNumber', function() {
+    var halaman = $(this).attr("data-halaman");
+    $.ajax({
+      url: base_url + '/dadmin/menu/halaman/' + halaman,
+      type: 'POST',
+      dataType: 'json',
+      success: function (data) {
+        $("#tabelMenu").html(data.element)
+      }
+    });
+  })
+
+  $(".content-menu").on('click', '#tabelMenu .btnNext', function() {
+    var halaman = $(this).attr("data-halamanAktif");
+    $.ajax({
+      url: base_url + '/dadmin/menu/halaman/' + halaman,
+      type: 'POST',
+      dataType: 'json',
+      success: function (data) {
+        $("#tabelMenu").html(data.element)
+      }
+    });
+  })
+  
+  $(".content-menu").on('click', '#tabelMenu .btnPrev', function() {
+    var halaman = $(this).attr("data-halamanAktif");
+    $.ajax({
+      url: base_url + '/dadmin/menu/halaman/' + halaman,
+      type: 'POST',
+      dataType: 'json',
+      success: function (data) {
+        $("#tabelMenu").html(data.element)
+      }
+    });
+  })
+  // view menu
+
+
   // view jadwal menu
   $(".content-jadwal-menu #btnBuatJadwal").on('click', function() {
     var pack = $("#selectJenisPack").val();
@@ -1288,7 +1369,9 @@ $(document).ready(function() {
       const button = event.relatedTarget;
       const modalBtnKembalikanUang = modalKonfirmasiRefund.querySelector('#modalBtnKembalikanUang');
       const indexBarix = button.getAttribute('data-indexBaris');
+      const nohp = button.getAttribute('data-nohp');
       modalBtnKembalikanUang.setAttribute('data-indexBaris', indexBarix);
+      modalBtnKembalikanUang.setAttribute('data-nohp', nohp);
       
       if (button.classList.contains('batalMenuPesanan')) {
         const idMenuPesanan = button.getAttribute('data-idMenuPesanan');        
@@ -1319,6 +1402,7 @@ $(document).ready(function() {
   $("#modalKonfirmasiRefund #modalBtnKembalikanUang").on("click", function() {
     var dataStatus = $("#modalKonfirmasiRefund").attr("data-status");
 
+    var nohp = $(this).attr('data-nohp');
     var idPesanan = $(this).attr('data-idPesanan');
     var idMenuPesanan = $(this).attr('data-idMenuPesanan');
     var idMasaHariBatal = $(this).attr('data-idMasaHariBatal');
@@ -1347,6 +1431,8 @@ $(document).ready(function() {
     var btnKembalikanUang = $("#tabelPesananBatal tr").find(`.${dataStatus}[data-indexBaris="${indexBaris}"]`); // Ambil baris berdasarkan index
     btnKembalikanUang.after("Sudah Dikembalikan");
     btnKembalikanUang.remove();
+
+    window.open("https://wa.me/"+ nohp +"?text=Kakak%20ini%20uangnya%20mau%20dikirim%20lewat%20apa%20?");
   })
 
   $(".btnHapusPesanan").on('click', function(e) {

@@ -52,7 +52,7 @@
           </a>
         </div>
       </div>
-      <div class="table-responsive">
+      <div class="table-responsive" id="tabelMenu">
         <table class="table my-table-admin table-hover text-center mt-3">
           <thead>
             <tr class="align-middle">
@@ -66,7 +66,7 @@
           </thead>
           <tbody id="dataTableMenu">
             <?php $no = 1;
-            foreach ($dataMenu as $data) : ?>
+            foreach ($dataMenu as $index => $data) : ?>
               <tr class="align-middle text-wrap">
                 <td scope="row"><?php echo $no++; ?>.</td>
                 <td class="text-start"><img src="/assets/img/menu/<?php echo $data['gambar_menu']; ?>" class="gambar-menu lihatFotoMenu" alt="..." data-bs-toggle="modal" data-bs-target="#modalLihatFotoMenu"><?php echo $data['nama_menu']; ?></td>
@@ -76,12 +76,29 @@
                 <td>
                   <a class="btn btn-sm btn-warning rounded-pill my-border-btn" href="/dadmin/menu/edit/<?php echo $data['id_menu']; ?>" role="button">Edit
                   </a>
-                  <button type="button" data-id="<?php echo $data['id_menu']; ?>" class="btn btn-sm btn-danger rounded-pill my-border-btn btnModalHapusMenu" data-bs-toggle="modal" data-bs-target="#modalHapusMenu">Hapus</button>
+                  <button type="button" data-id="<?php echo $data['id_menu']; ?>" data-indexBaris="<?php echo $index; ?>" class="btn btn-sm btn-danger rounded-pill my-border-btn btnModalHapusMenu" data-bs-toggle="modal" data-bs-target="#modalHapusMenu">Hapus</button>
                 </td>
               </tr>
             <?php endforeach ?>
           </tbody>
         </table>
+        <nav id="paginationTabelMenu" style="color: black;">
+          <ul class="pagination pagination-sm">
+            <li class="page-item border border-black">
+              <button class="page-link btnPrev" style="color: black;" data-halamanAktif="<?php echo ($halamanAktif != 1) ? ($halamanAktif - 1) : ""; ?>" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </button>
+            </li>
+            <?php for ($i = 1; $i <= $jumlahHalaman; $i++) : ?>
+              <li class="page-item border border-black"><button class="page-link btnLinkNumber <?php echo ($halamanAktif == $i) ? "active-page" : ""; ?>" style="color: black;" data-halaman="<?php echo $i; ?>"><?php echo $i; ?></button></li>
+            <?php endfor; ?>
+            <li class="page-item border border-black">
+              <button class="page-link btnNext" style="color: black;" data-halamanAktif="<?php echo ($halamanAktif != $jumlahHalaman) ? ($halamanAktif + 1) : ""; ?>" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
   </div>
@@ -101,8 +118,8 @@
             <span>Apakah Anda Yakin ?</span>
             <div class="row mt-4">
               <div class="col d-grid">
-                <form method="post">
-                  <button type="submit" class="btn w-100 btn-danger my-border-btn rounded-pill">iya</button>
+                <form>
+                  <button type="button" class="btn w-100 btn-danger my-border-btn rounded-pill" id="modalBtnHapusMenu">iya</button>
                 </form>
               </div>
               <div class="col d-grid">

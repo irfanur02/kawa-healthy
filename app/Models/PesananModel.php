@@ -209,6 +209,7 @@ class PesananModel extends Model
     $builder->where('jm.tanggal_menu', $tanggalMenu);
     $builder->where('dmp.deleted_at IS NULL', null, false);
     $builder->where('dmp.batal IS NULL', null, false);
+    $builder->where('tp.jumlah_tunda', null);
     $builder->where('pe.approved', 'y');
     $builder->groupBy('
                   m.nama_menu, dmp.qty_menu, dmp.qty_infuse, p.nama_pack, k.nama_karbo, 
@@ -765,7 +766,7 @@ class PesananModel extends Model
     // Query utama
     $builder = $this->db->table('pesanan as p');
     $builder->select("
-            p.id_pesanan, pel.nama_pelanggan, o.biaya_ongkir, sdmp.id_status_pesanan,
+            p.id_pesanan, pel.nama_pelanggan, o.biaya_ongkir, sdmp.id_status_pesanan, pel.notelp_pelanggan,
             COALESCE(cp.periode_hari_baru, cp.periode_hari_paketan) AS masa_paketan,
             ($subQueryBelumDikirim) AS jumlah_pesanan_belum_dikirim,
             ($subQuerySisaJadwal) AS sisa_jadwal,
@@ -796,7 +797,7 @@ class PesananModel extends Model
   {
     $builder = $this->db->table('masa_hari_batal as mhb');
     $builder->select('
-                  p.id_pesanan, mhb.id_masa_hari_batal, pel.nama_pelanggan, o.biaya_ongkir, 
+                  p.id_pesanan, mhb.id_masa_hari_batal, pel.nama_pelanggan, o.biaya_ongkir, pel.notelp_pelanggan,
                   mhb.masa_hari, mhb.uang_dikembalikan, p.berhenti_paketan, 
                   (mhb.masa_hari * o.biaya_ongkir) AS total_ongkir,
                   (mhb.masa_hari * SUM(pm.harga_paket_menu)) AS total_harga');
@@ -821,7 +822,7 @@ class PesananModel extends Model
   {
     $builder = $this->db->table('menu_pesanan mp');
     $builder->select("
-                mp.id_menu_pesanan, mp.id_pesanan, mp.id_jadwal_menu, sdmp.id_status_pesanan, p.id_catatan_pesanan,
+                mp.id_menu_pesanan, mp.id_pesanan, mp.id_jadwal_menu, sdmp.id_status_pesanan, p.id_catatan_pesanan, pel.notelp_pelanggan,
                 sdmp.id_status_pesanan, sp.keterangan_status, pel.nama_pelanggan, dmp.batal, p.berhenti_paketan,
                 o.biaya_ongkir, dmp.qty_menu, dmp.qty_infuse, m.harga_menu, pm.harga_paket_menu,
                 SUM(

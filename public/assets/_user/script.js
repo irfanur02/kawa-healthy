@@ -823,7 +823,7 @@ $( document ).ready(function() {
           if ($(element).find("input[type=checkbox]").prop("checked") == true && index == 3) {
             $("#modalPilihMenu ul").append(
               `<li class="list-group-item">
-                <input type="text" name="optionInfuse"  value="${optionInfuse}">
+                <input type="hidden" name="optionInfuse"  value="${optionInfuse}">
                 <div class="row align-items-center">
                   <div class="col">
                     <p class="lh-sm m-0"><span class="fw-bold">` + jenisPaketMenu + ` ` + hargaMenu + `</span></p>
@@ -840,7 +840,7 @@ $( document ).ready(function() {
           } else if ($(element).find("input[type=checkbox]").prop("checked") == true) {
             var element = `
                 <li class="list-group-item">
-                  <input type="text" name="idDetailJadwalMenu" value="${idDetailJadwalMenu}">
+                  <input type="hidden" name="idDetailJadwalMenu" value="${idDetailJadwalMenu}">
                   <div class="row align-items-center">
                     <div class="col">
                       <p class="lh-sm m-0"><span class="fw-bold">` + jenisPaketMenu + ` ` + hargaMenu + `</span><br>` + menu + `</p>

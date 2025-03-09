@@ -425,7 +425,6 @@ class Pesanan extends BaseController
       ];
       $where = $data['id_detail_menu_pesanan'];
       $this->pesananModel->updateMenuPesananBy($where, $updateData);
-      // $this->pesananModel->updatePesananBy($data['id_detail_menu_pesanan'], 9, $date); // berhenti paketan
     }
 
     $updateDataPesanan = [
@@ -451,74 +450,6 @@ class Pesanan extends BaseController
 
     $listIdMenuPesanan = [];
     $idDetailMenuPesanan = $this->pesananModel->getIdMenuPesananPaketan($idPesanan)->getResultArray();
-    // * code di bawah kurang efisien, code yang baru ada di bawahnya
-    // if (count($idDetailMenuPesanan) >= $masaHariBaru) {
-    //   $dataIdMenuPesanan = $this->pesananModel->getIdMenuPesananWithLimit($idPesanan, $masaHariBaru)->getResultArray();
-    //   foreach ($dataIdMenuPesanan as $data) {
-    //     array_push($listIdMenuPesanan, $data['id_menu_pesanan']);
-    //   }
-    //   $idMenuPesananWillBatal = $this->pesananModel->getIdMenuPesananWillBatal($idPesanan, $listIdMenuPesanan)->getResultArray();
-    //   foreach ($idMenuPesananWillBatal as $data) {
-    //     $updateData = [
-    //       'batal' => "b",
-    //       'updated_at' => $date
-    //     ];
-    //     $where = $data['id_detail_menu_pesanan'];
-    //     $this->pesananModel->updateMenuPesananBy($where, $updateData);
-    //   }
-
-    //   // $masaHari = $masaHariBaru;
-
-    //   $cekIdPesananInMasaHariBatal = $this->pesananModel->getIdPesananInMasaHariBatal($idPesanan)->getRowArray();
-    //   if (empty($cekIdPesananInMasaHariBatal)) {
-    //     $data = [
-    //       'id_pesanan' => $idPesanan,
-    //       'masa_hari' => $masaHariBaru
-    //     ];
-    //     $this->pesananModel->insertMasaHariBatal($data);
-    //   } else {
-    //     $data = [
-    //       'masa_hari' => $cekIdPesananInMasaHariBatal['masa_hari'] + $masaHariBaru
-    //     ];
-    //     $where = $idPesanan;
-    //     $this->pesananModel->updateMasaHariBatal($data, $where);
-    //   }
-    // } else {
-    //   $dataCatatanPesanan = $this->pesananModel->getCatatanPaketanBy($idAkun, $idPesanan)->getRowArray();
-    //   $masaPaketan = (!empty($dataCatatanPesanan['periode_hari_baru']) ? $dataCatatanPesanan['periode_hari_baru'] : $dataCatatanPesanan['periode_hari_paketan']);
-    //   $masaHariBatal = $masaPaketan - $masaHariBaru;
-
-    //   // $masaHari = $masaHariBatal;
-
-    //   if ($masaPaketan != $masaHariBaru) {
-    //     // !! not used agai
-    //     // $data = [
-    //     //   'masa_hari_batal' => (empty($dataCatatanPesanan['masa_hari_batal']) ? $masaHariBatal : $dataCatatanPesanan['masa_hari_batal'] + $masaHariBatal),
-    //     //   'updated_at' => $date
-    //     // ];
-    //     // $where = $idPesanan;
-    //     // $this->pesananModel->updateDataPesananBy($data, $where);
-
-    //     $cekIdPesananInMasaHariBatal = $this->pesananModel->getIdPesananInMasaHariBatal($idPesanan)->getRowArray();
-    //     if (empty($cekIdPesananInMasaHariBatal)) {
-    //       $data = [
-    //         'id_pesanan' => $idPesanan,
-    //         'masa_hari' => $masaHariBatal
-    //       ];
-    //       $this->pesananModel->insertMasaHariBatal($data);
-    //     } else {
-    //       $data = [
-    //         'masa_hari' => $cekIdPesananInMasaHariBatal['masa_hari'] + $masaHariBatal
-    //       ];
-    //       $where = $idPesanan;
-    //       $this->pesananModel->updateMasaHariBatal($data, $where);
-    //     }
-    //   }
-
-    //   if (count($idDetailMenuPesanan) >= $masaHariBaru) {
-    //   } else {
-    //   }
-    // }
 
     if (count($idDetailMenuPesanan) >= $masaHariBaru) {
       // Ambil data id_menu_pesanan dengan limit

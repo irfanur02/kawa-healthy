@@ -16,8 +16,8 @@
         <div class="card mt-4 border border-dark p-3 form-editMenu" style="width: 60vw;">
           <div class="card-body">
             <form action="" method="post" id="formMenuEdit">
-              <input type="text" value="<?php echo $dataMenuId['gambar_menu']; ?>" name="gambarLama" id="gambarLama">
-              <input type="text" value="<?php echo $dataMenuId['id_menu']; ?>" name="idMenu" id="idMenu">
+              <input type="hidden" value="<?php echo $dataMenuId['gambar_menu']; ?>" name="gambarLama" id="gambarLama">
+              <input type="hidden" value="<?php echo $dataMenuId['id_menu']; ?>" name="idMenu" id="idMenu">
               <div class="mb-3 row">
                 <label for="namaMenu" class="col-md-3 col-form-label">Nama Menu</label>
                 <div class="col-md-9">

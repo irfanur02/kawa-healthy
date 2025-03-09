@@ -40,13 +40,6 @@ class AuthUser extends BaseController
       if ($akun['password_akun'] == $password) {
         $statusLogin = "sukses";
 
-        // $loginAkun = [
-        //   'id_akun' => $akun['id_akun'],
-        //   'logged_in' => true,
-        // ];
-
-        // $this->session->set($loginAkun);
-
         setSession($this->session, $akun['id_akun']);
       }
     }

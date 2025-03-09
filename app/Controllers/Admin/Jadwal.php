@@ -60,6 +60,7 @@ class Jadwal extends BaseController
       'title' => 'Buat Jadwal Family Pack',
       'sidebar' => 'kelolaJadwalMenu',
       'case' => 'save',
+      'jadwalKadaluarsa' => true,
       'maxTanggalAkhir' => $maxTanggalAkhir
     ];
     return view('admin/jadwalMenuFamily', $data);
@@ -73,6 +74,7 @@ class Jadwal extends BaseController
       'title' => 'Buat Jadwal Personal Pack',
       'sidebar' => 'kelolaJadwalMenu',
       'case' => 'save',
+      'jadwalKadaluarsa' => true,
       'maxTanggalAkhir' => $maxTanggalAkhir
     ];
     return view('admin/jadwalMenuPersonal', $data);

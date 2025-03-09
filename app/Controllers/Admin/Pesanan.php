@@ -135,7 +135,7 @@ class Pesanan extends BaseController
     $getAllPaketanPesananGantiMasa = $this->pesananModel->getAllPaketanPesananGantiMasa()->getResultArray();
     $getAllPaketanPesananBerhenti = $this->pesananModel->getAllPaketanPesananBerhenti()->getResultArray();
     $dataAllPesananBatal = $this->pesananModel->getAllBatalPesanan()->getResultArray();
-    // dd($getAllPaketanPesananBerhenti);
+    // dd($dataAllPesananBatal);
     $data = [
       'title' => 'Pesanan Batal',
       'sidebar' => 'pesanan',

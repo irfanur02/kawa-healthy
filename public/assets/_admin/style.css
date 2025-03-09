@@ -119,6 +119,11 @@ table.my-table-admin tr {
   border-bottom: 1px solid black;
 }
 
+.content-menu .active-page {
+  background-color: #055160 !important;
+  color: white !important;
+}
+
 .content-pesanan table.my-table-admin tr {
   border: 1px solid black;
 }

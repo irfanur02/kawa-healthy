@@ -50,7 +50,7 @@
                 </td>
                 <td>
                   <?php if (empty($data['uang_dikembalikan'])) : ?>
-                    <button type="button" class="btn btn-sm btn-warning rounded-pill my-border-btn btnKembalikanUang gantiMasaHari" data-idMasaHariBatal="<?php echo $data['id_masa_hari_batal']; ?>" data-indexBaris="<?php echo $index + 1; ?>" data-bs-toggle="modal" data-bs-target="#modalKonfirmasiRefund">Balikkan Uang</button>
+                    <button type="button" class="btn btn-sm btn-warning rounded-pill my-border-btn btnKembalikanUang gantiMasaHari" data-idMasaHariBatal="<?php echo $data['id_masa_hari_batal']; ?>" data-indexBaris="<?php echo $index + 1; ?>" data-nohp="<?php echo $data['notelp_pelanggan']; ?>" data-bs-toggle="modal" data-bs-target="#modalKonfirmasiRefund">Balikkan Uang</button>
                   <?php else : ?>
                     Sudah Dikembalikan
                   <?php endif; ?>
@@ -67,7 +67,7 @@
                 </td>
                 <td>
                   <?php if ($data['id_status_pesanan'] != 9) : ?>
-                    <button type="button" class="btn btn-sm btn-warning rounded-pill my-border-btn btnKembalikanUang berhentiPaketan" data-idPesanan="<?php echo $data['id_pesanan']; ?>" data-indexBaris="<?php echo $index + 1; ?>" data-bs-toggle="modal" data-bs-target="#modalKonfirmasiRefund">Balikkan Uang</button>
+                    <button type="button" class="btn btn-sm btn-warning rounded-pill my-border-btn btnKembalikanUang berhentiPaketan" data-idPesanan="<?php echo $data['id_pesanan']; ?>" data-indexBaris="<?php echo $index + 1; ?>" data-nohp="<?php echo $data['notelp_pelanggan']; ?>" data-bs-toggle="modal" data-bs-target="#modalKonfirmasiRefund">Balikkan Uang</button>
                   <?php else : ?>
                     Sudah Dikembalikan
                   <?php endif; ?>
@@ -83,7 +83,7 @@
                 </td>
                 <td>
                   <?php if ($data['id_status_pesanan'] != 4) : ?>
-                    <button type="button" class="btn btn-sm btn-warning rounded-pill my-border-btn btnKembalikanUang batalMenuPesanan" data-idMenuPesanan="<?php echo $data['id_menu_pesanan']; ?>" data-indexBaris="<?php echo $index + 1; ?>" data-bs-toggle="modal" data-bs-target="#modalKonfirmasiRefund">Balikkan Uang</button>
+                    <button type="button" class="btn btn-sm btn-warning rounded-pill my-border-btn btnKembalikanUang batalMenuPesanan" data-idMenuPesanan="<?php echo $data['id_menu_pesanan']; ?>" data-indexBaris="<?php echo $index + 1; ?>" data-nohp="<?php echo $data['notelp_pelanggan']; ?>" data-bs-toggle="modal" data-bs-target="#modalKonfirmasiRefund">Balikkan Uang</button>
                   <?php else : ?>
                     Sudah Dikembalikan
                   <?php endif; ?>
