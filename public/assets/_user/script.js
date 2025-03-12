@@ -1,4 +1,4 @@
-$( document ).ready(function() {
+$(document).ready(function() {
 
   // var base_url = "http://localhost:81/kawa-healthy/";
   // var base_url = "http://localhost:8080";
