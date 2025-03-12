@@ -85,7 +85,7 @@
                         <input type="text" name="idDetailJadwalMenu" hidden value="<?php echo $dataDetail['id_detail_jadwal_menu']; ?>">
                         <div class="row m-0">
                           <div class="col-1 p-0">
-                            <img src="/menu1.jpg" class="gambar-menu lihatFotoMenu" alt="..." data-bs-toggle="modal" data-bs-target="#modalLihatFotoMenu">
+                            <img src="/assets/img/menu/<?php echo $dataDetail['gambar_menu']; ?>" class="gambar-menu lihatFotoMenu" alt="..." data-bs-toggle="modal" data-bs-target="#modalLihatFotoMenu">
                           </div>
                           <div class="col p-0 text-start">
                             <span class="menuPersonal"><?php echo $dataDetail['nama_menu']; ?></span>
@@ -166,7 +166,7 @@
                         <p class="lh-1 m-0"><span class="menuFamily"><?php echo $dataDetail['nama_menu']; ?></span></p>
                         <p class="lh-1 m-0 fw-bold">
                           <span class="hargaMenuFamily"><?php echo formatRupiah($dataDetail['harga_menu']); ?></span>
-                          <span><button type="button" class="btn btn-sm btn-link p-0 text-black lihatFotoMenu" data-gambar="/menu1.jpg" data-bs-toggle="modal" data-bs-target="#modalLihatFotoMenu">Lihat Gambar</button></span>
+                          <span><button type="button" class="btn btn-sm btn-link p-0 text-black lihatFotoMenu" data-gambar="/assets/img/menu/<?php echo $dataDetail['gambar_menu']; ?>" data-bs-toggle="modal" data-bs-target="#modalLihatFotoMenu">Lihat Gambar</button></span>
                         </p>
                       </div>
                       <div class="my-form-checkbox d-flex align-items-center">

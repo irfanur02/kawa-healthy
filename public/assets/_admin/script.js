@@ -159,7 +159,7 @@ $(document).ready(function() {
 
 
   // view menu
-  $(".content-menu .lihatFotoMenu").on("click", function() {
+  $(".content-menu").on("click", ".lihatFotoMenu", function() {
     const detailMenu = $(this).parent();
 
     $("#modalLihatFotoMenu h1").text(detailMenu.text());
@@ -209,7 +209,7 @@ $(document).ready(function() {
         for (var i = 0; i < data.dataPencarian.length; i++) {
           element += `<tr class="align-middle">
                         <td scope="row">${i+1}.</td>
-                        <td>${data.dataPencarian[i].nama_menu}</td>
+                        <td class="text-start"><img src="/assets/img/menu/${data.dataPencarian[i].gambar_menu}" class="gambar-menu lihatFotoMenu" alt="..." data-bs-toggle="modal" data-bs-target="#modalLihatFotoMenu">${data.dataPencarian[i].nama_menu}</td>
                         <td>${data.dataPencarian[i].nama_pack}</td>
                         <td>${data.dataPencarian[i].nama_paket_menu != null ? data.dataPencarian[i].nama_paket_menu : '-'}</td>
                         <td>${data.dataPencarian[i].harga_menu != null ? 'Rp. ' + data.dataPencarian[i].harga_menu : '-'}</td>
@@ -241,7 +241,7 @@ $(document).ready(function() {
           $(".content-menu #dataTableMenu").html(`
             <tr class="align-middle">
               <td scope="row">1.</td>
-              <td>${data.dataPencarian.nama_menu}</td>
+              <td class="text-start"><img src="/assets/img/menu/${data.dataPencarian[i].gambar_menu}" class="gambar-menu lihatFotoMenu" alt="..." data-bs-toggle="modal" data-bs-target="#modalLihatFotoMenu">${data.dataPencarian[i].nama_menu}</td>
               <td>${data.dataPencarian.nama_pack}</td>
               <td>${data.dataPencarian.nama_paket_menu != null ? data.dataPencarian.nama_paket_menu : '-'}</td>
               <td>${data.dataPencarian.harga_menu != null ? 'Rp. ' + data.dataPencarian.harga_menu : '-'}</td>
@@ -272,7 +272,7 @@ $(document).ready(function() {
         for (var i = 0; i < data.dataPencarian.length; i++) {
           element += `<tr class="align-middle">
                         <td scope="row">${i+1}.</td>
-                        <td>${data.dataPencarian[i].nama_menu}</td>
+                        <td class="text-start"><img src="/assets/img/menu/${data.dataPencarian[i].gambar_menu}" class="gambar-menu lihatFotoMenu" alt="..." data-bs-toggle="modal" data-bs-target="#modalLihatFotoMenu">${data.dataPencarian[i].nama_menu}</td>
                         <td>${data.dataPencarian[i].nama_pack}</td>
                         <td>${data.dataPencarian[i].nama_paket_menu != null ? data.dataPencarian[i].nama_paket_menu : '-'}</td>
                         <td>${data.dataPencarian[i].harga_menu != null ? 'Rp. ' + data.dataPencarian[i].harga_menu : '-'}</td>

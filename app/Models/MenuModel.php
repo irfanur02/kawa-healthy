@@ -53,7 +53,7 @@ class MenuModel extends Model
   public function getAllMenuByNama($keyword = '')
   {
     $builder = $this->db->table('menu');
-    $builder->select('menu.id_menu, menu.nama_menu, pack.nama_pack, paket_menu.nama_paket_menu, menu.harga_menu');
+    $builder->select('menu.id_menu, menu.gambar_menu, menu.nama_menu, pack.nama_pack, paket_menu.nama_paket_menu, menu.harga_menu');
     $builder->join('pack', 'pack.id_pack = menu.id_pack', 'left');
     $builder->join('paket_menu', 'paket_menu.id_paket_menu = menu.id_paket_menu', 'left');
     $builder->like('menu.nama_menu', $keyword);
