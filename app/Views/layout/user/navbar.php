@@ -1,7 +1,7 @@
 <nav class="navbar my-nav bg-body-tertiary fixed-top my-bg-green" style="padding: .3em 0;">
   <div class="container-fluid">
     <a class="navbar-brand" href="/">
-      <img src="/assets/img/logo-mini.jpg" alt="Logo" width="33" height="33" class="d-inline-block align-text-top rounded-circle">
+      <img src=<?php echo base_url("/assets/img/logo-mini.jpg"); ?> alt="Logo" width="33" height="33" class="d-inline-block align-text-top rounded-circle">
       <span class="fs-6 fw-medium text-white">KAWA HEALTHY</span>
     </a>
     <div class="justify-content-end">
