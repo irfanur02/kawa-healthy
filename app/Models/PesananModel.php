@@ -180,7 +180,7 @@ class PesananModel extends Model
     return $query;
   }
 
-  public function getAllPesananPelanggan($tanggalMenu, $idAkun = null, $statusPesanan)
+  public function getAllPesananPelanggan($tanggalMenu, $idAkun = '', $statusPesanan)
   {
     $builder = $this->db->table('detail_menu_pesanan dmp');
     $builder->select('
