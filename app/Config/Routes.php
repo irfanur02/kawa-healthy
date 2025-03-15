@@ -12,12 +12,12 @@ $routes->post('/dadmin/authLogin', 'Admin\Auth::authLogin');
 
 // pesanan
 $routes->get('/dadmin/dashboard', 'Admin\Dashboard::index');
-$routes->get('/dadmin/pesanan', 'Admin\pesanan::pesananPembayaran');
-$routes->post('/dadmin/pesanan/approved', 'Admin\pesanan::pesananApproved');
-$routes->post('/dadmin/pesanan/notApproved', 'Admin\pesanan::pesananNotApproved');
-$routes->post('/dadmin/pesanan/detailPembayaran', 'Admin\pesanan::pesananDetailPembayaran');
-$routes->post('/dadmin/pesanan/kembalikanUang', 'Admin\pesanan::kembalikanUangPesanan');
-$routes->post('/dadmin/pesanan/kirim', 'Admin\pesanan::kirimPesanan');
+$routes->get('/dadmin/pesanan', 'Admin\Pesanan::pesananPembayaran');
+$routes->post('/dadmin/pesanan/approved', 'Admin\Pesanan::pesananApproved');
+$routes->post('/dadmin/pesanan/notApproved', 'Admin\Pesanan::pesananNotApproved');
+$routes->post('/dadmin/pesanan/detailPembayaran', 'Admin\Pesanan::pesananDetailPembayaran');
+$routes->post('/dadmin/pesanan/kembalikanUang', 'Admin\Pesanan::kembalikanUangPesanan');
+$routes->post('/dadmin/pesanan/kirim', 'Admin\Pesanan::kirimPesanan');
 $routes->get('/dadmin/pesanan/(:any)', 'Admin\Pesanan::pesananDetail/$1');
 $routes->get('/dadmin/pesananMasuk', 'Admin\Pesanan::pesananMasuk');
 $routes->get('/dadmin/pesananPembayaran', 'Admin\Pesanan::pesananPembayaran');
@@ -63,10 +63,10 @@ $routes->get('/dadmin/jadwal/(:num)/personal', 'Admin\Jadwal::editMenuPersonal/$
 $routes->get('/dadmin/biayaOngkir', 'Admin\BiayaOngkir::index');
 $routes->post('/dadmin/biayaOngkir/getAllOngkir', 'Admin\BiayaOngkir::getAllOngkir');
 $routes->post('/dadmin/biayaOngkir/save', 'Admin\biayaOngkir::save');
-$routes->post('/dadmin/biayaOngkir/update/(:num)', 'Admin\biayaOngkir::update/$1');
-$routes->post('/dadmin/biayaOngkir/delete/(:num)', 'Admin\biayaOngkir::delete/$1');
-$routes->post('/dadmin/biayaOngkir/cari/', 'Admin\biayaOngkir::cari');
-$routes->post('/dadmin/biayaOngkir/getDetailPencarian/(:any)', 'Admin\biayaOngkir::getDetailPencarian/$1');
+$routes->post('/dadmin/biayaOngkir/update/(:num)', 'Admin\BiayaOngkir::update/$1');
+$routes->post('/dadmin/biayaOngkir/delete/(:num)', 'Admin\BiayaOngkir::delete/$1');
+$routes->post('/dadmin/biayaOngkir/cari/', 'Admin\BiayaOngkir::cari');
+$routes->post('/dadmin/biayaOngkir/getDetailPencarian/(:any)', 'Admin\BiayaOngkir::getDetailPencarian/$1');
 
 // laporan
 $routes->get('/dadmin/laporan', 'Admin\Laporan::index'); // banar
