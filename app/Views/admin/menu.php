@@ -69,7 +69,7 @@
             foreach ($dataMenu as $index => $data) : ?>
               <tr class="align-middle text-wrap">
                 <td scope="row"><?php echo $no++; ?>.</td>
-                <td class="text-start"><img src="/assets/img/menu/<?php echo $data['gambar_menu']; ?>" class="gambar-menu lihatFotoMenu" alt="..." data-bs-toggle="modal" data-bs-target="#modalLihatFotoMenu"><?php echo $data['nama_menu']; ?></td>
+                <td class="text-start"><img src=<?php echo base_url("/assets/img/menu/". echo $data['gambar_menu']); ?> class="gambar-menu lihatFotoMenu" alt="..." data-bs-toggle="modal" data-bs-target="#modalLihatFotoMenu"><?php echo $data['nama_menu']; ?></td>
                 <td><?php echo $data['nama_pack'] != NULL ? $data['nama_pack'] : "-"; ?></td>
                 <td><?php echo $data['nama_paket_menu'] != NULL ? $data['nama_paket_menu'] : "-"; ?></td>
                 <td><?php echo $data['harga_menu'] != NULL ? "Rp. " . $data['harga_menu'] : "-"; ?></td>
@@ -141,7 +141,7 @@
         <h1 class="modal-title fs-5" id="modalLihatFotoMenuLabel"></h1>
       </div>
       <div class="modal-body">
-        <img src="" class="rounded mx-auto d-block" alt="...">
+        <img src=<?php echo base_url(""); ?> class="rounded mx-auto d-block" alt="...">
       </div>
       <div class="modal-footer my-bg-vanilla">
         <button type="button" class="btn btn-light btn-sm px-4 border rounded-pill border-black my-border-btn fw-medium" data-bs-dismiss="modal">Tutup</button>

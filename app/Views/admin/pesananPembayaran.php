@@ -117,7 +117,7 @@
           <h1 class="modal-title fs-5" id="modalLihatGambarLabel">Konfirmasi</h1>
         </div>
         <div class="modal-body text-center">
-          <img src="" class="border rounded" alt="..." style="width: 13em">
+          <img src=<?php echo base_url(""); ?> class="border rounded" alt="..." style="width: 13em">
           <div class="card">
             <div class="card-body">
               <p class="m-0 lh-1">Nama Penransfer: <span class="nama"></span></p>

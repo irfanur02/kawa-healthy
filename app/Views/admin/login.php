@@ -3,7 +3,7 @@
 <?php echo $this->section('content'); ?>
 <nav class="navbar shadow p-2 mb-5 bg-body-tertiary rounded">
   <div class="container-fluid justify-content-center flex-column">
-    <img src="/assets/img/logo-big.jpg" alt="logo_kawa_healthy.jpg" class="rounded-circle">
+    <img src=<?php echo base_url("/assets/img/logo-big.jpg"); ?> alt="logo_kawa_healthy.jpg" class="rounded-circle">
     <h6 class="text-center mt-2 m-0 lh-base my-text-main">KAWA HEALTHY</br>ADMIN</h6>
   </div>
 </nav>

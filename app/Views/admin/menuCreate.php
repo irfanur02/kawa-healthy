@@ -57,7 +57,7 @@
                 <div class="col-md-7">
                   <input type="file" style="color: transparent; width: 110px;" class="my-file-input mx-auto" id="fileGambar" required>
                   <!-- Elemen untuk preview gambar -->
-                  <img id="previewGambar" src="" alt="Preview Gambar" style="max-width: 100%; margin-top: 10px; display: none;">
+                  <img id="previewGambar" src=<?php echo base_url(""); ?> alt="Preview Gambar" style="max-width: 100%; margin-top: 10px; display: none;">
                 </div>
               </div>
               <!-- <div class="mb-5 row">
