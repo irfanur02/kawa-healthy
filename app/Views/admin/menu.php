@@ -69,7 +69,7 @@
             foreach ($dataMenu as $index => $data) : ?>
               <tr class="align-middle text-wrap">
                 <td scope="row"><?php echo $no++; ?>.</td>
-                <td class="text-start"><img src=<?php echo base_url("/assets/img/menu/". echo $data['gambar_menu']); ?> class="gambar-menu lihatFotoMenu" alt="..." data-bs-toggle="modal" data-bs-target="#modalLihatFotoMenu"><?php echo $data['nama_menu']; ?></td>
+                <td class="text-start"><img src=<?php echo base_url("/assets/img/menu/". $data['gambar_menu']); ?> class="gambar-menu lihatFotoMenu" alt="..." data-bs-toggle="modal" data-bs-target="#modalLihatFotoMenu"><?php echo $data['nama_menu']; ?></td>
                 <td><?php echo $data['nama_pack'] != NULL ? $data['nama_pack'] : "-"; ?></td>
                 <td><?php echo $data['nama_paket_menu'] != NULL ? $data['nama_paket_menu'] : "-"; ?></td>
                 <td><?php echo $data['harga_menu'] != NULL ? "Rp. " . $data['harga_menu'] : "-"; ?></td>
