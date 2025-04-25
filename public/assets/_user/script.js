@@ -2,7 +2,7 @@ $(document).ready(function() {
 
   // var base_url = "http://localhost:81/kawa-healthy/";
   // var base_url = "http://localhost:8080";
-  var base_url = "https://orange-chimpanzee-880112.hostingersite.com";
+  var base_url = "https://kawahealthy.store/";
   var urlCek;
   var nilaiHargaPaket = 0;
 
