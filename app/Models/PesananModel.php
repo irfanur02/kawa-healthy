@@ -212,7 +212,7 @@ class PesananModel extends Model
     $builder->where('tp.jumlah_tunda', null);
     $builder->where('pe.approved', 'y');
     $builder->groupBy('
-                  m.nama_menu, dmp.qty_menu, dmp.qty_infuse, p.nama_pack, k.nama_karbo, 
+                  pe.id_pesanan, pe.id_catatan_pesanan, m.nama_menu, dmp.qty_menu, dmp.qty_infuse, p.nama_pack, k.nama_karbo, 
                   dmp.pantangan_pesanan, dmp.keterangan_pedas');
     $builder->orderBy('mp.id_menu_pesanan', 'ASC');
     $query = $builder->get();
@@ -326,7 +326,7 @@ class PesananModel extends Model
     $builder->where('p.approved', 'y');
     $builder->groupBy('jm.tanggal_menu');
     $builder->groupBy('m.nama_menu');
-    $builder->groupBy('mp.id_menu_pesanan');
+    // $builder->groupBy('mp.id_menu_pesanan');
     $builder->orderBy('jm.tanggal_menu', 'ASC');
     $builder->orderBy('m.nama_menu', 'ASC');
     $query = $builder->get();
@@ -354,7 +354,7 @@ class PesananModel extends Model
     $builder->where('pe.approved', 'y');
     $builder->groupBy('jm.tanggal_menu');
     $builder->groupBy('p.nama_pack');
-    $builder->groupBy('mp.id_menu_pesanan');
+    // $builder->groupBy('mp.id_menu_pesanan');
     $builder->orderBy('jm.tanggal_menu', 'ASC');
     $query = $builder->get();
     return $query;
@@ -380,7 +380,7 @@ class PesananModel extends Model
     $builder->where('p.approved', 'y');
     $builder->groupBy('jm.tanggal_menu');
     $builder->groupBy('k.nama_karbo');
-    $builder->groupBy('mp.id_menu_pesanan');
+    // $builder->groupBy('mp.id_menu_pesanan');
     $builder->orderBy('jm.tanggal_menu', 'ASC');
     $query = $builder->get();
     return $query;
