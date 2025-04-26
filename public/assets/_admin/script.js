@@ -233,11 +233,14 @@ $(document).ready(function() {
   })
 
   $(".content-menu #formCariMenu #txtCariMenuAdmin").on('input', function() {
+    var menu = $(this).val();
     if (eventSource === 'clicked') {
       $.ajax({
-        url: base_url + '/dadmin/menu/getDetailPencarian/' + $(this).val(),
+        url: base_url + '/dadmin/menu/getDetailPencarian/',
+        data: {
+          keyword: menu
+        },
         type: 'POST',
-        dataType: 'json',
         success: function (data) {
           $(".content-menu #dataTableMenu").html(`
             <tr class="align-middle">

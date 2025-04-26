@@ -36,7 +36,7 @@ $routes->post('/dadmin/menu/save', 'Admin\Menu::save');
 $routes->post('/dadmin/menu/update/', 'Admin\Menu::update');
 $routes->post('/dadmin/menu/delete/(:num)', 'Admin\Menu::delete/$1');
 $routes->post('/dadmin/menu/cari', 'Admin\Menu::cari');
-$routes->post('/dadmin/menu/getDetailPencarian/(:any)', 'Admin\Menu::getDetailPencarian/$1');
+$routes->post('/dadmin/menu/getDetailPencarian/', 'Admin\Menu::getDetailPencarian');
 
 // paket menu
 $routes->get('/dadmin/paketMenu', 'Admin\PaketMenu::index');

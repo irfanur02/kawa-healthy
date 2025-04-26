@@ -245,9 +245,10 @@ class Menu extends BaseController
     echo json_encode($result);
   }
 
-  public function getDetailPencarian($dataPencarian = '')
+  public function getDetailPencarian()
   {
-    $dataPencarian = $this->menuModel->getMenuByNama($dataPencarian)->getResult();
+    $keyword = $this->request->getVar('keyword');
+    $dataPencarian = $this->menuModel->getMenuByNama($keyword)->getResult();
     $result = array(
       'dataPencarian' => $dataPencarian[0]
     );
