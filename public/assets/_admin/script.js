@@ -241,6 +241,7 @@ $(document).ready(function() {
           keyword: menu
         },
         type: 'POST',
+        dataType: 'json',
         success: function (data) {
           $(".content-menu #dataTableMenu").html(`
             <tr class="align-middle">
