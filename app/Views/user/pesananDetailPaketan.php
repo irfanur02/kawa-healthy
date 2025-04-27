@@ -35,7 +35,7 @@
                   <?php echo $data['nama_paket_menu']; ?>
                 <?php endforeach; ?>
             </p>
-            <p><span class="fw-bold">Harga: </span>Rp. <?php echo $totalHargaPaketan['total_harga']; ?>(+ongkir)</p>
+            <p><span class="fw-bold">Harga: </span><?php echo formatRupiah($totalHargaPaketan['total_harga']); ?>(+ongkir)</p>
             <?php if (!empty($catatanPaketan['id_karbo'])) : ?>
               <p><span class="fw-bold">Karbo: </span><?php echo $catatanPaketan['nama_karbo']; ?></p>
             <?php endif; ?>

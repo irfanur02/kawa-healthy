@@ -73,7 +73,7 @@
               <?php foreach ($dataLaporan as $data) : ?>
                 <tr class="align-middle fw-medium">
                   <td><?php echo $data['tanggal_menu']; ?></td>
-                  <td>Rp. <?php echo $data['total_harga'] + $data['biaya_ongkir']; ?></td>
+                  <td><?php echo formatRupiah($data['total_harga'] + $data['biaya_ongkir']); ?></td>
                   <td>
                     <span class="d-block">family pack: <?php echo (!empty($data['jumlah_family']) ? $data['jumlah_family'] : "-"); ?></span>
                     <span class="d-block">personal pack: <?php echo (!empty($data['jumlah_personal']) ? $data['jumlah_personal'] : "-"); ?></span>

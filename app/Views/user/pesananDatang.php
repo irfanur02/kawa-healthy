@@ -43,7 +43,7 @@
               <li class="list-group-item boder border-black">
                 <div class="row align-items-center lh-sm">
                   <?php if ($data['nama_pack'] == "family") : ?>
-                    <div class="col-9"><?php echo $data['nama_menu']; ?><br>Rp. <?php echo $data['harga_menu']; ?></div>
+                    <div class="col-9"><?php echo $data['nama_menu']; ?><br><?php echo formatRupiah($data['harga_menu']); ?></div>
                     <div class="col-3 text-end">Qty <span class="badge text-bg-light border border-black"><?php echo $data['qty_menu']; ?></span> <?php echo ($data['keterangan_pedas'] == "p") ? "Pedas" : ""; ?></div>
                   <?php else : ?>
                     <?php if (!empty($data['nama_menu'])) : ?>

@@ -46,7 +46,7 @@
                 <td>
                   <p class="fw-normal m-0 lh-1 text-decoration-underline">Ganti Masa Hari</p>
                   <p class="fw-light m-0 lh-1"><?php echo $data['masa_hari']; ?> Hari Jadwal Menu Batal</p>
-                  Rp. <?php echo $data['total_harga'] + $data['total_ongkir']; ?>
+                  <?php echo formatRupiah($data['total_harga'] + $data['total_ongkir']); ?>
                 </td>
                 <td>
                   <?php if (empty($data['uang_dikembalikan'])) : ?>
@@ -63,7 +63,7 @@
                 <td>
                   <p class="fw-normal m-0 lh-1 text-decoration-underline">Berhenti Paketan</p>
                   <p class="fw-light m-0 lh-1"><?php echo $data['jumlah_hari']; ?> Hari Jadwal Menu Batal</p>
-                  Rp. <?php echo $data['total_harga_keseluruhan']; ?>
+                  <?php echo formatRupiah($data['total_harga_keseluruhan']); ?>
                 </td>
                 <td>
                   <?php if ($data['id_status_pesanan'] != 9) : ?>
@@ -79,7 +79,7 @@
                 <td><?php echo $data['nama_pelanggan']; ?></td>
                 <td>
                   <p class="fw-normal m-0 lh-1">Batal Menu Pesanan</p>
-                  Rp. <?php echo $data['total_harga'] + $data['biaya_ongkir']; ?>
+                  <?php echo formatRupiah($data['total_harga'] + $data['biaya_ongkir']); ?>
                 </td>
                 <td>
                   <?php if ($data['id_status_pesanan'] != 4) : ?>

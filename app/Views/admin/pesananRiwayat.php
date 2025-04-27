@@ -79,7 +79,7 @@
                     </ul>
                   <?php endforeach; ?>
                 </td>
-                <td class="text-center">Rp. <?php echo $data['total_harga'] + $data['biaya_ongkir']; ?></td>
+                <td class="text-center"><?php echo formatRupiah($data['total_harga'] + $data['biaya_ongkir']); ?></td>
                 <!-- <td class="text-center">
                     <button type="button" class="btn btn-sm btn-primary rounded-pill my-border-btn" data-bs-toggle="modal" data-bs-target="#modalLihatGambar">Lihat Bukti Transfer</button>
                   </td> -->

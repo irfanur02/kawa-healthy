@@ -32,7 +32,7 @@ echo $this->extend('layout/user/template'); ?>
       <li class="list-group-item boder border-0 border-top border-bottom border-black rounded-0 lh-sm p-1">
         <div class="row">
           <div class="col-md-5">
-            <p><span class="fw-bold">Harga: </span>Rp. <?php echo $dataTransaksi['total_semua_harga']; ?>(+ongkir)</p>
+            <p><span class="fw-bold">Harga: </span><?php echo formatRupiah($dataTransaksi['total_semua_harga']); ?>(+ongkir)</p>
           </div>
           <div class="col-auto">
             <p><span class="fw-bold">Tanggal Transaksi: </span><?php echo formatTanggal($dataTransaksi['tanggal_transaksi'], false, false, true); ?></p>
@@ -58,7 +58,7 @@ echo $this->extend('layout/user/template'); ?>
                     <tr>
                       <td>
                         <div class="row align-items-center lh-sm">
-                          <div class="col-9"><?php echo $data['nama_menu']; ?><br>Rp. <?php echo $data['harga_menu']; ?></div>
+                          <div class="col-9"><?php echo $data['nama_menu']; ?><br><?php echo formatRupiah($data['harga_menu']); ?></div>
                           <div class="col-3 text-end"><span class="badge text-bg-light border border-black"><?php echo $data['qty_menu']; ?></span> <?php echo !empty($data['keterangan_pedas']) ? ($data['keterangan_pedas'] == "p" ? "pedas" : "") : ""; ?></div>
                         </div>
                       </td>
@@ -68,10 +68,10 @@ echo $this->extend('layout/user/template'); ?>
                       <td>
                         <div class="row align-items-center lh-sm">
                           <?php if ($data['qty_infuse'] == NULL) : ?>
-                            <div class="col-9"><?php echo $data['nama_menu']; ?><br><?php echo $data['nama_paket_menu']; ?> Rp. <?php echo $data['harga_paket_menu']; ?><br>Karbo: <?php echo $data['nama_karbo']; ?> | Pantangan: <?php echo ($data['pantangan_pesanan'] != NULL) ? $data['pantangan_pesanan'] : "-"; ?></div>
+                            <div class="col-9"><?php echo $data['nama_menu']; ?><br><?php echo $data['nama_paket_menu']; ?> <?php echo formatRupiah($data['harga_paket_menu']); ?><br>Karbo: <?php echo $data['nama_karbo']; ?> | Pantangan: <?php echo ($data['pantangan_pesanan'] != NULL) ? $data['pantangan_pesanan'] : "-"; ?></div>
                             <div class="col-3 text-end"><span class="badge text-bg-light border border-black"><?php echo $data['qty_menu']; ?></span></div>
                           <?php else : ?>
-                            <div class="col-9"><?php echo $dataPaketMenu['nama_paket_menu']; ?><br>Rp. <?php echo $dataPaketMenu['harga_paket_menu']; ?></div>
+                            <div class="col-9"><?php echo $dataPaketMenu['nama_paket_menu']; ?><br><?php echo formatRupiah($dataPaketMenu['harga_paket_menu']); ?></div>
                             <div class="col-3 text-end"><span class="badge text-bg-light border border-black"><?php echo $data['qty_infuse']; ?></span></div>
                           <?php endif; ?>
                         </div>

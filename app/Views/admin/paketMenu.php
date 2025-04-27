@@ -75,7 +75,7 @@
               <tr class="align-middle">
                 <td scope="row"><?php echo $no++;?>.</td>
                 <td><?php echo $key['nama_paket_menu']; ?></td>
-                <td>Rp. <?php echo $key['harga_paket_menu']; ?></td>
+                <td><?php echo formatRupiah($key['harga_paket_menu']); ?></td>
                 <td>
                   <button type="button" data-id="<?php echo $key['id_paket_menu']; ?>" class="btn btn-sm btn-warning rounded-pill my-border-btn btnModalEditPaketMenu" data-bs-toggle="modal"
                     data-bs-target="#modalEditPaketMenu">Edit</button>

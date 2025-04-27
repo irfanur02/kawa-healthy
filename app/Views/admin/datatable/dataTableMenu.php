@@ -17,7 +17,7 @@
         <td class="text-start"><img src=<?php echo base_url("/assets/img/menu/". $data['gambar_menu']); ?> class="gambar-menu lihatFotoMenu" alt="..." data-bs-toggle="modal" data-bs-target="#modalLihatFotoMenu"><?php echo $data['nama_menu']; ?></td>
         <td><?php echo $data['nama_pack'] != NULL ? $data['nama_pack'] : "-"; ?></td>
         <td><?php echo $data['nama_paket_menu'] != NULL ? $data['nama_paket_menu'] : "-"; ?></td>
-        <td><?php echo $data['harga_menu'] != NULL ? "Rp. " . $data['harga_menu'] : "-"; ?></td>
+        <td><?php echo $data['harga_menu'] != NULL ? formatRupiah($data['harga_menu']) : "-"; ?></td>
         <td>
           <a class="btn btn-sm btn-warning rounded-pill my-border-btn" href="/dadmin/menu/edit/<?php echo $data['id_menu']; ?>" role="button">Edit
           </a>

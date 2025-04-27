@@ -54,9 +54,9 @@
                 </td>
                 <td class="text-center">
                   <?php if (empty($data['id_catatan_pesanan'])) : ?>
-                    Rp. <?php echo $data['total_harga'] + ($data['jumlah_hari'] * $data['biaya_ongkir']); ?>
+                    <?php echo formatRupiah($data['total_harga'] + ($data['jumlah_hari'] * $data['biaya_ongkir'])); ?>
                   <?php else : ?>
-                    Rp. <?php echo $data['total_harga_paketan_keseluruhan']; ?>
+                    <?php echo formatRupiah($data['total_harga_paketan_keseluruhan']); ?>
                   <?php endif; ?>
                 </td>
                 <td>

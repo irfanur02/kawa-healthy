@@ -57,7 +57,7 @@
                 <?php echo formatTanggal($data['tanggal_menu']); ?>
               </td>
               <td><?php echo (empty($data['periode_hari_baru']) ? $data['periode_hari_paketan'] : $data['periode_hari_baru']); ?> Hari<br>(Berjalan <?php echo (!empty($data['pesanan_terkirim']) ? $data['pesanan_terkirim'] : "0"); ?> hari)</td>
-              <td>Rp. <?php echo $data['total_harga']; ?></td>
+              <td><?php echo formatRupiah($data['total_harga']); ?></td>
               <td>
                 <a class="btn btn-sm my-btn-orange my-border-btn rounded-pill fw-medium lh-1" href="/pesananDetailPaketan/<?php echo $data['id_pesanan']; ?>" role="button">Detail</a>
                 <?php if ($data['approved'] == "y" || $data['approved'] == NULL) : ?>
@@ -80,7 +80,7 @@
               <td><?php echo formatTanggal($data['tanggal_transaksi'], false, false, true); ?></td>
               <td><?php echo formatTanggal($data['tanggal_menu']); ?></td>
               <td>-</td>
-              <td>Rp. <?php echo $data['total_semua_harga']; ?></td>
+              <td><?php echo formatRupiah($data['total_semua_harga']); ?></td>
               <td class="text-end">
                 <a class="btn btn-sm my-btn-orange my-border-btn rounded-pill fw-medium lh-1" href="/pesananDetailBiasa/<?php echo $data['id_pesanan']; ?>/<?php echo $data['id_jadwal_menu']; ?>" role="button">Detail</a>
                 <?php if ($data['batal'] != "b") : ?>

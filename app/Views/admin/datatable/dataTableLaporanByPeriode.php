@@ -22,7 +22,7 @@
         <?php foreach ($dataLaporan as $data) : ?>
           <tr class="align-middle fw-medium">
             <td><?php echo $data['tanggal_menu']; ?></td>
-            <td>Rp. <?php echo $data['total_harga'] + $data['biaya_ongkir']; ?></td>
+            <td><?php echo formatRupiah($data['total_harga'] + $data['biaya_ongkir']); ?></td>
             <td>
               <span class="d-block">family pack: <?php echo (!empty($data['jumlah_family']) ? $data['jumlah_family'] : "-"); ?></span>
               <span class="d-block">personal pack: <?php echo (!empty($data['jumlah_personal']) ? $data['jumlah_personal'] : "-"); ?></span>
@@ -34,11 +34,11 @@
       <?php foreach ($dataLaporanPerBulan as $index => $data) : ?>
         <tr class="align-middle fw-medium">
           <td><?php echo $data['tanggal_menu']; ?></td>
-          <td>Rp.
+          <td>
             <?php $totalOngkir = ($data['bulan_tahun'] == $dataTotalOngkir[$index]['bulan_tahun']) ? $dataTotalOngkir[$index]['total_ongkir'] : ""; ?>
-            <?php echo $data['total_harga_family'] +
+            <?php echo formatRupiah($data['total_harga_family'] +
               $data['total_harga_personal'] +
-              $data['total_harga_infuse'] + $totalOngkir; ?></td>
+              $data['total_harga_infuse'] + $totalOngkir); ?></td>
           <td>
             <span class="d-block">family pack: <?php echo (!empty($data['total_jumlah_family']) ? $data['total_jumlah_family'] : "-"); ?></span>
             <span class="d-block">personal pack: <?php echo (!empty($data['total_jumlah_personal']) ? $data['total_jumlah_personal'] : "-"); ?></span>

@@ -39,7 +39,7 @@
             <tr class="text-center align-middle">
               <td><?php echo formatTanggal($data['tanggal_transaksi'], false, false, true); ?></td>
               <td><?php echo formatTanggal($data['tanggal_menu']); ?></td>
-              <td>Rp. <?php echo $data['total_harga'] + $data['biaya_ongkir']; ?></td>
+              <td><?php echo formatRupiah($data['total_harga'] + $data['biaya_ongkir']); ?></td>
               <td>
                 <a class="btn btn-sm my-btn-tosca my-border-btn rounded-pill fw-medium lh-1" href="/pesananDetailBiasa/selesai/<?php echo $data['id_pesanan']; ?>/<?php echo $data['id_jadwal_menu']; ?>" role="button">Detail</a>
                 <?php if (empty($data['keterangan_review'])) : ?>

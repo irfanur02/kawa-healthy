@@ -54,7 +54,7 @@ if (!function_exists('formatTanggal')) {
 if (!function_exists('formatRupiah')) {
   function formatRupiah($angka)
   {
-    return "Rp " . number_format($angka, 0, ',', '.');
+    return "Rp. " . number_format($angka, 0, ',', '.');
   }
 }
 
