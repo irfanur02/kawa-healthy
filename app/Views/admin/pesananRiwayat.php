@@ -64,7 +64,7 @@
                           </li>
                         <?php endif; ?>
                       <?php else : ?>
-                        <?php if ($data['id_pesanan'] == $detail['id_pesanan']) : ?>
+                        <?php if ($data['id_menu_pesanan'] == $detail['id_menu_pesanan']) : ?>
                           <li class="list-group-item align-items-center">
                             <?php if (!empty($detail['nama_menu'])) : ?>
                               <?php echo $detail['nama_menu']; ?>

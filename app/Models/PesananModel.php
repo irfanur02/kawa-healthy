@@ -905,7 +905,7 @@ class PesananModel extends Model
                   pel.nama_pelanggan, 
                   t.alamat_pengiriman, 
                   o.ongkir_kota, 
-                  m.nama_menu,
+                  COALESCE(m.nama_menu, '') AS nama_menu,
                   SUM(dmp.qty_menu) AS qty_menu, 
                   SUM(dmp.qty_infuse) AS qty_infuse, 
                   m.harga_menu, 
@@ -923,7 +923,7 @@ class PesananModel extends Model
     $builder->join('menu as m', 'm.id_menu = djm.id_menu', 'left');
     $builder->join('paket_menu as pm', 'pm.id_paket_menu = m.id_paket_menu', 'left');
     $builder->whereIn('sdmp.id_status_pesanan', [5, 6]);
-    $builder->groupBy(['m.nama_menu', 'pel.nama_pelanggan', 'p.id_pesanan']);
+    $builder->groupBy(['pel.nama_pelanggan', 'm.nama_menu', 'jm.tanggal_menu']);
     $builder->orderBy('jm.tanggal_menu', 'DESC');
     $builder->orderBy('pel.nama_pelanggan', 'ASC');
     $builder->orderBy('m.nama_menu', 'ASC');
