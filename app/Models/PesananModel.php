@@ -1512,7 +1512,7 @@ class PesananModel extends Model
       $builder->where('jm.tanggal_menu >=', $tanggalAwal);
       $builder->where('jm.tanggal_menu <=', $tanggalAkhir);
     }
-    ->where('dmp1.deleted_at IS NULL', null, false)
+    $builder->where('dmp1.deleted_at IS NULL', null, false)
     $builder->groupBy('jm.tanggal_menu');
     $builder->orderBy('jm.tanggal_menu', 'DESC');
     $query = $builder->get();
