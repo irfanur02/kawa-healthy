@@ -1554,101 +1554,98 @@ class PesananModel extends Model
 
   public function getDataLaporanBulan()
   {
-    $builder = $this->db->table('pesanan p')
-      ->select('jm.tanggal_menu, DATE_FORMAT(jm.tanggal_menu, "%Y-%m") AS bulan_tahun');
+    $builder = $this->db->table('pesanan p');
+    $builder->select('
+        jm.tanggal_menu,
+        DATE_FORMAT(jm.tanggal_menu, "%Y-%m") AS bulan_tahun,
+        SUM(o.biaya_ongkir) AS total_biaya_ongkir
+    ');
 
-    // Subquery untuk total_harga_family
+    // Subquery total_harga_family
     $subqueryFamily = $this->db->table('pesanan p')
-      ->select('COALESCE(SUM(dmp.qty_menu), SUM(dmp.qty_infuse)) * COALESCE(SUM(m.harga_menu), SUM(pm.harga_paket_menu), 10000)', false)
-      ->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left')
-      ->join('jadwal_menu jm', 'jm.id_jadwal_menu = mp.id_jadwal_menu', 'left')
-      ->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left')
-      ->join('detail_jadwal_menu djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left')
-      ->join('menu m', 'm.id_menu = djm.id_menu', 'left')
-      ->join('pack pa', 'pa.id_pack = m.id_pack', 'left')
-      ->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left')
-      ->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left')
-      ->where('sdmp.id_status_pesanan IN (5,6)')
-      ->where('pa.nama_pack', 'family')
-      ->where('DATE_FORMAT(jm.tanggal_menu, "%Y-%m") = bulan_tahun')
-      ->where('dmp.deleted_at IS NULL', null, false)
-      ->groupBy('m.nama_menu')
-      ->limit(1);
+        ->select('SUM(COALESCE(dmp.qty_menu, dmp.qty_infuse, 0) * COALESCE(m.harga_menu, pm.harga_paket_menu, 0))', false)
+        ->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left')
+        ->join('jadwal_menu jm1', 'jm1.id_jadwal_menu = mp.id_jadwal_menu', 'left')
+        ->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left')
+        ->join('detail_jadwal_menu djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left')
+        ->join('menu m', 'm.id_menu = djm.id_menu', 'left')
+        ->join('pack pa', 'pa.id_pack = m.id_pack', 'left')
+        ->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left')
+        ->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left')
+        ->where('sdmp.id_status_pesanan IN (5,6)', null, false)
+        ->where('pa.nama_pack', 'family')
+        ->where('DATE_FORMAT(jm1.tanggal_menu, "%Y-%m") = DATE_FORMAT(jm.tanggal_menu, "%Y-%m")', null, false)
+        ->where('dmp.deleted_at IS NULL', null, false);
     $builder->selectSubquery($subqueryFamily, 'total_harga_family');
 
-    // Subquery untuk total_harga_personal
+    // Subquery total_harga_personal
     $subqueryPersonal = $this->db->table('pesanan p')
-      ->select('COALESCE(SUM(dmp.qty_menu), SUM(dmp.qty_infuse)) * COALESCE(SUM(m.harga_menu), SUM(pm.harga_paket_menu), 10000)', false)
-      ->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left')
-      ->join('jadwal_menu jm', 'jm.id_jadwal_menu = mp.id_jadwal_menu', 'left')
-      ->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left')
-      ->join('detail_jadwal_menu djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left')
-      ->join('menu m', 'm.id_menu = djm.id_menu', 'left')
-      ->join('pack pa', 'pa.id_pack = m.id_pack', 'left')
-      ->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left')
-      ->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left')
-      ->where('sdmp.id_status_pesanan IN (5,6)')
-      ->where('pa.nama_pack', 'personal')
-      ->where('DATE_FORMAT(jm.tanggal_menu, "%Y-%m") = bulan_tahun')
-      ->groupBy('DATE_FORMAT(jm.tanggal_menu, "%Y-%m")')
-      ->where('dmp.deleted_at IS NULL', null, false)
-      ->limit(1);
+        ->select('SUM(COALESCE(dmp.qty_menu, dmp.qty_infuse, 0) * COALESCE(m.harga_menu, pm.harga_paket_menu, 0))', false)
+        ->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left')
+        ->join('jadwal_menu jm1', 'jm1.id_jadwal_menu = mp.id_jadwal_menu', 'left')
+        ->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left')
+        ->join('detail_jadwal_menu djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left')
+        ->join('menu m', 'm.id_menu = djm.id_menu', 'left')
+        ->join('pack pa', 'pa.id_pack = m.id_pack', 'left')
+        ->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left')
+        ->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left')
+        ->where('sdmp.id_status_pesanan IN (5,6)', null, false)
+        ->where('pa.nama_pack', 'personal')
+        ->where('DATE_FORMAT(jm1.tanggal_menu, "%Y-%m") = DATE_FORMAT(jm.tanggal_menu, "%Y-%m")', null, false)
+        ->where('dmp.deleted_at IS NULL', null, false);
     $builder->selectSubquery($subqueryPersonal, 'total_harga_personal');
 
-    // Subquery untuk total jumlah personal
-    $subQueryJumlahPersonal = $this->db->table('pesanan AS p')
-      ->select('SUM(dmp.qty_menu)')
-      ->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left')
-      ->join('jadwal_menu jm', 'jm.id_jadwal_menu = mp.id_jadwal_menu', 'left')
-      ->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left')
-      ->join('detail_jadwal_menu djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left')
-      ->join('menu m', 'm.id_menu = djm.id_menu', 'left')
-      ->join('pack pa', 'pa.id_pack = m.id_pack', 'left')
-      ->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left')
-      ->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left')
-      ->where('sdmp.id_status_pesanan IN (5,6)')
-      ->where('pa.nama_pack', 'personal')
-      ->where('DATE_FORMAT(jm.tanggal_menu, "%Y-%m") = bulan_tahun')
-      ->groupBy('DATE_FORMAT(jm.tanggal_menu, "%Y-%m")')
-      ->where('dmp.deleted_at IS NULL', null, false)
-      ->limit(1);
-    $builder->selectSubquery($subQueryJumlahPersonal, 'total_jumlah_personal');
+    // Subquery total_jumlah_personal
+    $subqueryJumlahPersonal = $this->db->table('pesanan p')
+        ->select('SUM(dmp.qty_menu)', false)
+        ->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left')
+        ->join('jadwal_menu jm1', 'jm1.id_jadwal_menu = mp.id_jadwal_menu', 'left')
+        ->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left')
+        ->join('detail_jadwal_menu djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left')
+        ->join('menu m', 'm.id_menu = djm.id_menu', 'left')
+        ->join('pack pa', 'pa.id_pack = m.id_pack', 'left')
+        ->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left')
+        ->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left')
+        ->where('sdmp.id_status_pesanan IN (5,6)', null, false)
+        ->where('pa.nama_pack', 'personal')
+        ->where('DATE_FORMAT(jm1.tanggal_menu, "%Y-%m") = DATE_FORMAT(jm.tanggal_menu, "%Y-%m")', null, false)
+        ->where('dmp.deleted_at IS NULL', null, false)
+        ->limit(1);
+    $builder->selectSubquery($subqueryJumlahPersonal, 'total_jumlah_personal');
 
-    // Subquery untuk total jumlah family
-    $subQueryJumlahPersonal = $this->db->table('pesanan AS p')
-      ->select('SUM(dmp.qty_menu)')
-      ->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left')
-      ->join('jadwal_menu jm', 'jm.id_jadwal_menu = mp.id_jadwal_menu', 'left')
-      ->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left')
-      ->join('detail_jadwal_menu djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left')
-      ->join('menu m', 'm.id_menu = djm.id_menu', 'left')
-      ->join('pack pa', 'pa.id_pack = m.id_pack', 'left')
-      ->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left')
-      ->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left')
-      ->where('sdmp.id_status_pesanan IN (5,6)')
-      ->where('pa.nama_pack', 'family')
-      ->where('DATE_FORMAT(jm.tanggal_menu, "%Y-%m") = bulan_tahun')
-      ->groupBy('DATE_FORMAT(jm.tanggal_menu, "%Y-%m")')
-      ->where('dmp.deleted_at IS NULL', null, false)
-      ->limit(1);
-    $builder->selectSubquery($subQueryJumlahPersonal, 'total_jumlah_family');
+    // Subquery total_jumlah_family
+    $subqueryJumlahFamily = $this->db->table('pesanan p')
+        ->select('SUM(dmp.qty_menu)', false)
+        ->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left')
+        ->join('jadwal_menu jm1', 'jm1.id_jadwal_menu = mp.id_jadwal_menu', 'left')
+        ->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left')
+        ->join('detail_jadwal_menu djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left')
+        ->join('menu m', 'm.id_menu = djm.id_menu', 'left')
+        ->join('pack pa', 'pa.id_pack = m.id_pack', 'left')
+        ->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left')
+        ->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left')
+        ->where('sdmp.id_status_pesanan IN (5,6)', null, false)
+        ->where('pa.nama_pack', 'family')
+        ->where('DATE_FORMAT(jm1.tanggal_menu, "%Y-%m") = DATE_FORMAT(jm.tanggal_menu, "%Y-%m")', null, false)
+        ->where('dmp.deleted_at IS NULL', null, false)
+        ->limit(1);
+    $builder->selectSubquery($subqueryJumlahFamily, 'total_jumlah_family');
 
-    // Subquery untuk total_harga_infuse
+    // Subquery total_harga_infuse
     $subqueryInfuse = $this->db->table('pesanan p')
-      ->select('COALESCE(SUM(dmp.qty_menu), SUM(dmp.qty_infuse)) * COALESCE(SUM(m.harga_menu), SUM(pm.harga_paket_menu), 10000)', false)
-      ->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left')
-      ->join('jadwal_menu jm', 'jm.id_jadwal_menu = mp.id_jadwal_menu', 'left')
-      ->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left')
-      ->join('detail_jadwal_menu djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left')
-      ->join('menu m', 'm.id_menu = djm.id_menu', 'left')
-      ->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left')
-      ->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left')
-      ->where('sdmp.id_status_pesanan IN (5,6)')
-      ->where('m.nama_menu IS NULL')
-      ->where('dmp.deleted_at IS NULL', null, false)
-      ->groupBy('m.nama_menu')
-      ->orderBy('p.id_akun', 'ASC')
-      ->limit(1);
+        ->select('SUM(dmp.qty_infuse) * 10000', false)
+        ->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left')
+        ->join('jadwal_menu jm1', 'jm1.id_jadwal_menu = mp.id_jadwal_menu', 'left')
+        ->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left')
+        ->join('detail_jadwal_menu djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left')
+        ->join('menu m', 'm.id_menu = djm.id_menu', 'left')
+        ->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left')
+        ->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left')
+        ->where('sdmp.id_status_pesanan IN (5,6)', null, false)
+        ->where('m.nama_menu IS NULL', null, false)
+        ->where('DATE_FORMAT(jm1.tanggal_menu, "%Y-%m") = DATE_FORMAT(jm.tanggal_menu, "%Y-%m")', null, false)
+        ->where('dmp.deleted_at IS NULL', null, false)
+        ->orderBy('p.id_akun', 'ASC');
     $builder->selectSubquery($subqueryInfuse, 'total_harga_infuse');
 
     // Join tabel utama
@@ -1658,9 +1655,14 @@ class PesananModel extends Model
     $builder->join('jadwal_menu jm', 'jm.id_jadwal_menu = mp.id_jadwal_menu', 'left');
     $builder->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left');
     $builder->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left');
+
     $builder->whereIn('sdmp.id_status_pesanan', [5, 6]);
-    $builder->groupBy('bulan_tahun');
     $builder->where('dmp.deleted_at IS NULL', null, false);
+
+    // Group & Order
+    $builder->groupBy('bulan_tahun');
+    $builder->orderBy('bulan_tahun', 'DESC');
+
     $query = $builder->get();
     return $query;
   }

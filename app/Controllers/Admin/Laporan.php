@@ -51,24 +51,11 @@ class Laporan extends BaseController
   public function laporanByBulan()
   {
     $dataLaporanPerBulan = $this->pesananModel->getDataLaporanBulan()->getResultArray();
-    $dataTotalHargaOngkirBulan = $this->pesananModel->getTotalHargaOngkirBulan()->getResultArray();
-    $dataTotalOngkirBulan = [];
-    foreach ($dataLaporanPerBulan as $data) {
-      $totalOngkir = 0;
-      foreach ($dataTotalHargaOngkirBulan as $dataOngkir) {
-        if ($data['bulan_tahun'] == $dataOngkir['bulan_tahun']) {
-          $totalOngkir += $dataOngkir['biaya_ongkir'];
-        }
-      }
-      array_push($dataTotalOngkirBulan, ['bulan_tahun' => $data['bulan_tahun'], 'total_ongkir' => $totalOngkir]);
-    }
-    $htmlContent = view('admin/datatable/dataTableLaporanByPeriode', ['dataLaporanPerBulan' => $dataLaporanPerBulan, 'dataTotalOngkir' => $dataTotalOngkirBulan, 'laporan' => "bulan"]);
-
-    $htmlContent = view('admin/datatable/dataTableLaporanByPeriode');
+    $htmlContent = view('admin/datatable/dataTableLaporanByPeriode', ['dataLaporanPerBulan' => $dataLaporanPerBulan, 'laporan' => "bulan"]);
 
     $result = array(
       'element' => $htmlContent,
-      'data' => $dataTotalOngkirBulan,
+      'data' => $dataLaporanPerBulan,
       'laporan' => "bulan"
     );
     echo json_encode($result);

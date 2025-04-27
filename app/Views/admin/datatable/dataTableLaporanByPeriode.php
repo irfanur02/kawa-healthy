@@ -35,10 +35,9 @@
         <tr class="align-middle fw-medium">
           <td><?php echo $data['tanggal_menu']; ?></td>
           <td>
-            <?php $totalOngkir = ($data['bulan_tahun'] == $dataTotalOngkir[$index]['bulan_tahun']) ? $dataTotalOngkir[$index]['total_ongkir'] : ""; ?>
             <?php echo formatRupiah($data['total_harga_family'] +
               $data['total_harga_personal'] +
-              $data['total_harga_infuse'] + $totalOngkir); ?></td>
+              $data['total_harga_infuse'] + $data['total_biaya_ongkir']); ?></td>
           <td>
             <span class="d-block">family pack: <?php echo (!empty($data['total_jumlah_family']) ? $data['total_jumlah_family'] : "-"); ?></span>
             <span class="d-block">personal pack: <?php echo (!empty($data['total_jumlah_personal']) ? $data['total_jumlah_personal'] : "-"); ?></span>
