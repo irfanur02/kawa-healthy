@@ -1452,7 +1452,7 @@ class PesananModel extends Model
   public function getDataLaporan($tanggalAwal = '', $tanggalAkhir = '')
   {
     $subQueryJumlahFamily = $this->db->table('pesanan AS p1')
-      ->select('COUNT(pa1.nama_pack)')
+      ->select('SUM(dmp1.qty_menu)')
       ->join('menu_pesanan AS mp1', 'mp1.id_pesanan = p1.id_pesanan', 'left')
       ->join('jadwal_menu AS jm1', 'jm1.id_jadwal_menu = mp1.id_jadwal_menu', 'left')
       ->join('detail_menu_pesanan AS dmp1', 'dmp1.id_menu_pesanan = mp1.id_menu_pesanan', 'left')
@@ -1463,10 +1463,11 @@ class PesananModel extends Model
       ->whereIn('sdmp1.id_status_pesanan', [5, 6])
       ->where('pa1.nama_pack', 'family')
       ->where('jm1.tanggal_menu = jm.tanggal_menu', null, false)
+      ->where('dmp1.deleted_at IS NULL', null, false)
       ->groupBy('jm1.tanggal_menu');
 
     $subQueryJumlahPersonal = $this->db->table('pesanan AS p1')
-      ->select('COUNT(pa1.nama_pack)')
+      ->select('SUM(dmp1.qty_menu)')
       ->join('menu_pesanan AS mp1', 'mp1.id_pesanan = p1.id_pesanan', 'left')
       ->join('jadwal_menu AS jm1', 'jm1.id_jadwal_menu = mp1.id_jadwal_menu', 'left')
       ->join('detail_menu_pesanan AS dmp1', 'dmp1.id_menu_pesanan = mp1.id_menu_pesanan', 'left')
@@ -1477,6 +1478,7 @@ class PesananModel extends Model
       ->whereIn('sdmp1.id_status_pesanan', [5, 6])
       ->where('pa1.nama_pack', 'personal')
       ->where('jm1.tanggal_menu = jm.tanggal_menu', null, false)
+      ->where('dmp1.deleted_at IS NULL', null, false)
       ->groupBy('jm1.tanggal_menu');
 
     $builder = $this->db->table('pesanan AS p');
@@ -1510,6 +1512,7 @@ class PesananModel extends Model
       $builder->where('jm.tanggal_menu >=', $tanggalAwal);
       $builder->where('jm.tanggal_menu <=', $tanggalAkhir);
     }
+    ->where('dmp1.deleted_at IS NULL', null, false)
     $builder->groupBy('jm.tanggal_menu');
     $builder->orderBy('jm.tanggal_menu', 'DESC');
     $query = $builder->get();
@@ -1568,6 +1571,7 @@ class PesananModel extends Model
       ->where('sdmp.id_status_pesanan IN (5,6)')
       ->where('pa.nama_pack', 'family')
       ->where('DATE_FORMAT(jm.tanggal_menu, "%Y-%m") = bulan_tahun')
+      ->where('dmp.deleted_at IS NULL', null, false)
       ->groupBy('m.nama_menu')
       ->limit(1);
     $builder->selectSubquery($subqueryFamily, 'total_harga_family');
@@ -1587,6 +1591,7 @@ class PesananModel extends Model
       ->where('pa.nama_pack', 'personal')
       ->where('DATE_FORMAT(jm.tanggal_menu, "%Y-%m") = bulan_tahun')
       ->groupBy('DATE_FORMAT(jm.tanggal_menu, "%Y-%m")')
+      ->where('dmp.deleted_at IS NULL', null, false)
       ->limit(1);
     $builder->selectSubquery($subqueryPersonal, 'total_harga_personal');
 
@@ -1605,6 +1610,7 @@ class PesananModel extends Model
       ->where('pa.nama_pack', 'personal')
       ->where('DATE_FORMAT(jm.tanggal_menu, "%Y-%m") = bulan_tahun')
       ->groupBy('DATE_FORMAT(jm.tanggal_menu, "%Y-%m")')
+      ->where('dmp.deleted_at IS NULL', null, false)
       ->limit(1);
     $builder->selectSubquery($subQueryJumlahPersonal, 'total_jumlah_personal');
 
@@ -1623,6 +1629,7 @@ class PesananModel extends Model
       ->where('pa.nama_pack', 'family')
       ->where('DATE_FORMAT(jm.tanggal_menu, "%Y-%m") = bulan_tahun')
       ->groupBy('DATE_FORMAT(jm.tanggal_menu, "%Y-%m")')
+      ->where('dmp.deleted_at IS NULL', null, false)
       ->limit(1);
     $builder->selectSubquery($subQueryJumlahPersonal, 'total_jumlah_family');
 
@@ -1638,6 +1645,7 @@ class PesananModel extends Model
       ->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left')
       ->where('sdmp.id_status_pesanan IN (5,6)')
       ->where('m.nama_menu IS NULL')
+      ->where('dmp.deleted_at IS NULL', null, false)
       ->groupBy('m.nama_menu')
       ->orderBy('p.id_akun', 'ASC')
       ->limit(1);
@@ -1652,6 +1660,7 @@ class PesananModel extends Model
     $builder->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left');
     $builder->whereIn('sdmp.id_status_pesanan', [5, 6]);
     $builder->groupBy('bulan_tahun');
+    $builder->where('dmp.deleted_at IS NULL', null, false);
     $query = $builder->get();
     return $query;
   }
