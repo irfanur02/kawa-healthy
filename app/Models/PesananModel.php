@@ -886,6 +886,7 @@ class PesananModel extends Model
     $builder->join('menu as m', 'm.id_menu = djm.id_menu', 'left');
     $builder->join('paket_menu as pm', 'pm.id_paket_menu = m.id_paket_menu', 'left');
     $builder->whereIn('sdmp.id_status_pesanan', [5, 6]);
+    $builder->where('dmp.deleted_at', NULL);
     $builder->groupBy(['pel.nama_pelanggan', 'jm.tanggal_menu', 'mp.id_pesanan']);
     $builder->orderBy('jm.tanggal_menu', 'DESC');
     $builder->orderBy('pel.nama_pelanggan', 'ASC');
@@ -923,6 +924,7 @@ class PesananModel extends Model
     $builder->join('menu as m', 'm.id_menu = djm.id_menu', 'left');
     $builder->join('paket_menu as pm', 'pm.id_paket_menu = m.id_paket_menu', 'left');
     $builder->whereIn('sdmp.id_status_pesanan', [5, 6]);
+    $builder->where('dmp.deleted_at', NULL);
     $builder->groupBy(['pel.nama_pelanggan', 'm.nama_menu', 'jm.tanggal_menu']);
     $builder->orderBy('jm.tanggal_menu', 'DESC');
     $builder->orderBy('pel.nama_pelanggan', 'ASC');
