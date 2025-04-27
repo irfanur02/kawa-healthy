@@ -8,7 +8,7 @@
   </thead>
   <tbody>
     <?php if ($laporan == 'periode') : ?>
-      <?php if (empty($datalaporan)) : ?>
+      <?php if (empty($dataLaporan)) : ?>
         <tr class="text-center align-middle">
           <td colspan="5">
             <div class="card my-bg-pinklight border border-black InfoDaftarPesanan" style="display: block;">

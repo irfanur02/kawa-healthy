@@ -1568,7 +1568,8 @@ class PesananModel extends Model
       ->where('sdmp.id_status_pesanan IN (5,6)')
       ->where('pa.nama_pack', 'family')
       ->where('DATE_FORMAT(jm.tanggal_menu, "%Y-%m") = bulan_tahun')
-      ->groupBy('m.nama_menu');
+      ->groupBy('m.nama_menu')
+      ->limit(1);
     $builder->selectSubquery($subqueryFamily, 'total_harga_family');
 
     // Subquery untuk total_harga_personal
@@ -1585,7 +1586,8 @@ class PesananModel extends Model
       ->where('sdmp.id_status_pesanan IN (5,6)')
       ->where('pa.nama_pack', 'personal')
       ->where('DATE_FORMAT(jm.tanggal_menu, "%Y-%m") = bulan_tahun')
-      ->groupBy('DATE_FORMAT(jm.tanggal_menu, "%Y-%m")');
+      ->groupBy('DATE_FORMAT(jm.tanggal_menu, "%Y-%m")')
+      ->limit(1);
     $builder->selectSubquery($subqueryPersonal, 'total_harga_personal');
 
     // Subquery untuk total jumlah personal
@@ -1602,7 +1604,8 @@ class PesananModel extends Model
       ->where('sdmp.id_status_pesanan IN (5,6)')
       ->where('pa.nama_pack', 'personal')
       ->where('DATE_FORMAT(jm.tanggal_menu, "%Y-%m") = bulan_tahun')
-      ->groupBy('DATE_FORMAT(jm.tanggal_menu, "%Y-%m")');
+      ->groupBy('DATE_FORMAT(jm.tanggal_menu, "%Y-%m")')
+      ->limit(1);
     $builder->selectSubquery($subQueryJumlahPersonal, 'total_jumlah_personal');
 
     // Subquery untuk total jumlah family
@@ -1619,7 +1622,8 @@ class PesananModel extends Model
       ->where('sdmp.id_status_pesanan IN (5,6)')
       ->where('pa.nama_pack', 'family')
       ->where('DATE_FORMAT(jm.tanggal_menu, "%Y-%m") = bulan_tahun')
-      ->groupBy('DATE_FORMAT(jm.tanggal_menu, "%Y-%m")');
+      ->groupBy('DATE_FORMAT(jm.tanggal_menu, "%Y-%m")')
+      ->limit(1);
     $builder->selectSubquery($subQueryJumlahPersonal, 'total_jumlah_family');
 
     // Subquery untuk total_harga_infuse
@@ -1635,7 +1639,8 @@ class PesananModel extends Model
       ->where('sdmp.id_status_pesanan IN (5,6)')
       ->where('m.nama_menu IS NULL')
       ->groupBy('m.nama_menu')
-      ->orderBy('p.id_akun', 'ASC');
+      ->orderBy('p.id_akun', 'ASC')
+      ->limit(1);
     $builder->selectSubquery($subqueryInfuse, 'total_harga_infuse');
 
     // Join tabel utama
