@@ -1485,7 +1485,7 @@ class PesananModel extends Model
     $builder->select("
             mp.id_menu_pesanan,
             jm.tanggal_menu, 
-            o.biaya_ongkir,
+            SUM(o.biaya_ongkir) AS 'biaya_ongkir',
             SUM(dmp.qty_menu) AS qty_menu, 
             SUM(dmp.qty_infuse) AS qty_infuse,
             SUM(
