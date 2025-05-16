@@ -157,6 +157,7 @@ class JadwalModel extends Model
       ->join('paket_menu as pm', 'pm.id_paket_menu = m.id_paket_menu', 'left')
       ->where('jm.id_jadwal', $id)
       ->where('djm.deleted_at', null)
+      ->where('jm.deleted_at', null)
       ->groupStart() // Mulai grup kondisi OR
       ->where('p.nama_pack', $pack)
       ->orWhereIn('jm.status_libur', ['L', 'B'])
@@ -246,6 +247,7 @@ class JadwalModel extends Model
     $builder->where('jm.id_jadwal IN(' . $subQuery->getCompiledSelect() . ')', null, false);
     $builder->where('p.nama_pack', $pack);
     $builder->where('djm.deleted_at', null);
+    $builder->where('jm.deleted_at', null);
     $builder->orderBy("jm.tanggal_menu", "ASC");
     $builder->orderBy("pm.id_paket_menu", "ASC");
     $query = $builder->get();

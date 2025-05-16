@@ -679,7 +679,18 @@ $(document).ready(function() {
 
   $(".content-jadwal-family").on('click', '.btnTambahMenu', function() {
     var aksiJadwal = $(".content-jadwal-family input[name=case]").val();
-    var listJadwalMenu = $(this).parent().parent().parent();
+    var listJadwalMenu = $(this).closest(".listJadwalMenu");
+    // Debugging: tampilkan di console
+    console.log(listJadwalMenu);
+    // Periksa aksi
+    if (aksiJadwal === "updateJadwalMenu") {
+      if (listJadwalMenu.hasClass("tambahListHari")) {
+        listJadwalMenu.removeClass("updateListMenu");
+      } else {
+        listJadwalMenu.addClass("updateListMenu");
+      }
+      listJadwalMenu.removeClass("bacaJadwalMenu");
+    }
     var menu = $(this).parent().find("input").val();
     var idMenu = $(this).parent().find("datalist option[value='" + menu + "']").data('id');
     $(this).parent().parent().find(".list-tambah-menu").append(
@@ -1257,7 +1268,7 @@ $(document).ready(function() {
           dataType: 'json',
           success: function (data) {
             console.log(data);
-            // window.location.href = base_url + '/dadmin/jadwal';
+            window.location.href = base_url + '/dadmin/jadwal';
           }
         });
       }
