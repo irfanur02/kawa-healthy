@@ -118,7 +118,7 @@
             <?php else : ?>
               <button class="btn btn-sm btn-success rounded-pill my-border-btn mb-2 btnPostMenuFamily">Luncurkan Jadwal</button><br>
             <?php endif ?>
-            <a href="/dadmin/jadwalMenu" class="btn btn-sm btn-danger rounded-pill my-border-btn mb-2" role="button">Batal</a>
+            <a href="/dadmin/jadwal" class="btn btn-sm btn-danger rounded-pill my-border-btn mb-2" role="button">Batal</a>
           </div>
         </div>
       <?php endif; ?>
