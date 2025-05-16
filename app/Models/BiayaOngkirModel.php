@@ -36,6 +36,16 @@ class BiayaOngkirModel extends Model
     return $query;
   }
 
+  public function getOngkir($data = '')
+  {
+    $builder = $this->db->table('ongkir');
+    $builder->select('*');
+    $builder->where('ongkir_kota', $data);
+    $builder->where('deleted_at', null);
+    $query = $builder->get();
+    return $query;
+  }
+
   public function insertOngkir($data = '')
   {
     $builder = $this->db->table('ongkir');

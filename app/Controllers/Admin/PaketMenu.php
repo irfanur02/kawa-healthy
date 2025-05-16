@@ -96,9 +96,10 @@ class PaketMenu extends BaseController
     echo json_encode($result);
   }
 
-  public function getDetailPencarian($dataPencarian = '')
+  public function getDetailPencarian()
   {
-    $detailData = $this->paketMenuModel->where('nama_paket_menu', $dataPencarian)->find();
+    $keyword = $this->request->getVar('keyword');
+    $detailData = $this->paketMenuModel->getPaketMenu($keyword)->getResult();
     $result = array(
       'detailData' => $detailData[0]
     );

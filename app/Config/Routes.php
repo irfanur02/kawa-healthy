@@ -44,7 +44,7 @@ $routes->post('/dadmin/paketMenu/save', 'Admin\PaketMenu::save');
 $routes->post('/dadmin/paketMenu/update/(:num)', 'Admin\PaketMenu::update/$1');
 $routes->post('/dadmin/paketMenu/delete/(:num)', 'Admin\PaketMenu::delete/$1');
 $routes->post('/dadmin/paketMenu/cari/', 'Admin\PaketMenu::cari');
-$routes->post('/dadmin/paketMenu/getDetailPencarian/(:any)', 'Admin\PaketMenu::getDetailPencarian/$1');
+$routes->post('/dadmin/paketMenu/getDetailPencarian/', 'Admin\PaketMenu::getDetailPencarian');
 
 // jadwal Menu
 $routes->get('/dadmin/jadwal', 'Admin\Jadwal::index');
@@ -62,11 +62,11 @@ $routes->get('/dadmin/jadwal/(:num)/personal', 'Admin\Jadwal::editMenuPersonal/$
 // ongkir
 $routes->get('/dadmin/biayaOngkir', 'Admin\BiayaOngkir::index');
 $routes->post('/dadmin/biayaOngkir/getAllOngkir', 'Admin\BiayaOngkir::getAllOngkir');
-$routes->post('/dadmin/biayaOngkir/save', 'Admin\biayaOngkir::save');
+$routes->post('/dadmin/biayaOngkir/save', 'Admin\BiayaOngkir::save');
 $routes->post('/dadmin/biayaOngkir/update/(:num)', 'Admin\BiayaOngkir::update/$1');
 $routes->post('/dadmin/biayaOngkir/delete/(:num)', 'Admin\BiayaOngkir::delete/$1');
 $routes->post('/dadmin/biayaOngkir/cari/', 'Admin\BiayaOngkir::cari');
-$routes->post('/dadmin/biayaOngkir/getDetailPencarian/(:any)', 'Admin\BiayaOngkir::getDetailPencarian/$1');
+$routes->post('/dadmin/biayaOngkir/getDetailPencarian/', 'Admin\BiayaOngkir::getDetailPencarian');
 
 // laporan
 $routes->get('/dadmin/laporan', 'Admin\Laporan::index'); // banar

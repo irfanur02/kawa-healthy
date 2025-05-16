@@ -104,10 +104,14 @@ $(document).ready(function() {
   })
 
   $(".content-paket-menu #formCariPaketMenu #txtCariPaketMenu").on('input', function() {
+    var paketMenu = $(this).val();
     if (eventSource === 'clicked') {
       $.ajax({
-        url: base_url + '/dadmin/paketMenu/getDetailPencarian/' + $(this).val(),
+        url: base_url + 'dadmin/paketMenu/getDetailPencarian/',
         type: 'POST',
+        data: {
+          keyword: paketMenu,
+        },
         dataType: 'json',
         success: function (data) {
           $(".content-paket-menu #dataTablePaketMenu").html(`
@@ -372,9 +376,13 @@ $(document).ready(function() {
   })
 
   $(".content-biaya-ongkir #formCariOngkirKota #txtCariKotaAdmin").on('input', function() {
+    var kota = $(this).val();
     if (eventSource === 'clicked') {
       $.ajax({
-        url: base_url + '/dadmin/biayaOngkir/getDetailPencarian/' + $(this).val(),
+        url: base_url + '/dadmin/biayaOngkir/getDetailPencarian/',
+        data: {
+          keyword: kota
+        },
         type: 'POST',
         dataType: 'json',
         success: function (data) {

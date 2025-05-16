@@ -103,9 +103,10 @@ class BiayaOngkir extends BaseController
     echo json_encode($result);
   }
 
-  public function getDetailPencarian($dataPencarian = '')
+  public function getDetailPencarian()
   {
-    $detailData = $this->biayaOngkirModel->where('ongkir_kota', $dataPencarian)->find();
+    $keyword = $this->request->getVar('keyword');
+    $detailData = $this->biayaOngkirModel->getOngkir($keyword)->getResult();
     $result = array(
       'detailData' => $detailData[0]
     );
