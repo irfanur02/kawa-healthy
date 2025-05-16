@@ -679,7 +679,7 @@ $(document).ready(function() {
 
   $(".content-jadwal-family").on('click', '.btnTambahMenu', function() {
     var aksiJadwal = $(".content-jadwal-family input[name=case]").val();
-    var listJadwalMenu = $(this).closest(".listJadwalMenu");
+    var listJadwalMenu = $(this).closest(".list-content-jadwal");
     // Debugging: tampilkan di console
     console.log(listJadwalMenu);
     // Periksa aksi
