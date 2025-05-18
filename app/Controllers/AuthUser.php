@@ -44,7 +44,7 @@ class AuthUser extends BaseController
       }
     }
     $result = array(
-      'idAKun' => $akun['id_akun'],
+      'idAkun' => ($akun) ? $akun['id_akun'] : "-",
       'statusLogin' => $statusLogin
     );
     echo json_encode($result);
