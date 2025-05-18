@@ -382,53 +382,54 @@ $(document).ready(function() {
       // Hapus pesan feedback sebelumnya
       $(".invalid-feedback, .valid-feedback").remove();
 
-      const weakRegex = /^[a-zA-Z]{6,}$|^\d{6,}$/; // Password lemah
-      const mediumRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // Password sedang
-      const strongRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/; // Password kuat
+      const strongRegex = /^(?=.*[0-9])(?=.*[^a-zA-Z0-9]).{6,}$/; // Angka + simbol + min 6
+      const mediumRegex = /^(?=.*[0-9])(?=.*[a-zA-Z]).{6,}$/;      // Huruf + angka + min 6
+      const weakRegex = /^.{6,}$/;                                 // Minimal 6 karakter
       
       var password = $("form input[name=password]");
       
       // Validasi password
-      if (strongRegex.test(password.val())) {
-        password.removeClass('is-invalid').addClass('my-border-input');
+      const passwordValue = password.val();
+      if (strongRegex.test(passwordValue)) {
+        password.removeClass('is-invalid').addClass('is-valid');
         password.parent().append(`
-            <div class="valid-feedback valid-password">
+            <div class="valid-feedback">
                 Password kuat
             </div>
         `);
-      } else if (mediumRegex.test(password.val())) {
-          password.removeClass('is-valid').addClass('is-invalid');
-          password.parent().append(`
-              <div class="invalid-feedback invalid-password">
-                  Password sedang (gunakan kombinasi huruf, angka, dan karakter khusus)
-              </div>
-          `);
-          return; // Berhenti jika password tidak kuat
-      } else if (weakRegex.test(password.val())) {
-          password.removeClass('is-valid').addClass('is-invalid');
-          password.parent().append(`
-              <div class="invalid-feedback invalid-password">
-                  Password lemah (gunakan kombinasi huruf dan angka)
-              </div>
-          `);
-          return; // Berhenti jika password lemah
+      } else if (mediumRegex.test(passwordValue)) {
+        password.removeClass('is-valid').addClass('is-invalid');
+        password.parent().append(`
+            <div class="invalid-feedback">
+                Password sedang (tambahkan simbol agar lebih kuat)
+            </div>
+        `);
+        return;
+      } else if (weakRegex.test(passwordValue)) {
+        password.removeClass('is-valid').addClass('is-invalid');
+        password.parent().append(`
+            <div class="invalid-feedback">
+                Password lemah (gunakan huruf dan angka)
+            </div>
+        `);
+        return;
       } else {
-          password.removeClass('is-valid').addClass('is-invalid');
-          password.parent().append(`
-              <div class="invalid-feedback invalid-password">
-                  Password tidak valid (minimal 6 karakter)
-              </div>
-          `);
-          return; // Berhenti jika password tidak valid
+        password.removeClass('is-valid').addClass('is-invalid');
+        password.parent().append(`
+            <div class="invalid-feedback invalid-password">
+                Password tidak valid (minimal 6 karakter)
+            </div>
+        `);
+        return;
       }
     })
 
     $("#formDaftar").on("submit", function(e) {
       e.preventDefault();
       // Regex untuk validasi password
-      const weakRegex = /^[a-zA-Z]{6,}$|^\d{6,}$/; // Password lemah
-      const mediumRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // Password sedang
-      const strongRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/; // Password kuat
+      const strongRegex = /^(?=.*[0-9])(?=.*[^a-zA-Z0-9]).{6,}$/; // Angka + simbol + min 6
+      const mediumRegex = /^(?=.*[0-9])(?=.*[a-zA-Z]).{6,}$/;      // Huruf + angka + min 6
+      const weakRegex = /^.{6,}$/;                                 // Minimal 6 karakter
 
       // Ambil input password dan nomor telepon
       var password = $("form input[name=password]");
@@ -449,37 +450,38 @@ $(document).ready(function() {
       }
 
       // Validasi password
-      if (strongRegex.test(password.val())) {
-          password.removeClass('is-invalid').addClass('is-valid');
-          password.parent().append(`
-              <div class="valid-feedback valid-password">
-                  Password kuat
-              </div>
-          `);
-      } else if (mediumRegex.test(password.val())) {
-          password.removeClass('is-valid').addClass('is-invalid');
-          password.parent().append(`
-              <div class="invalid-feedback invalid-password">
-                  Password sedang (gunakan kombinasi huruf, angka, dan karakter khusus)
-              </div>
-          `);
-          return; // Berhenti jika password tidak kuat
-      } else if (weakRegex.test(password.val())) {
-          password.removeClass('is-valid').addClass('is-invalid');
-          password.parent().append(`
-              <div class="invalid-feedback invalid-password">
-                  Password lemah (gunakan kombinasi huruf dan angka)
-              </div>
-          `);
-          return; // Berhenti jika password lemah
+      const passwordValue = password.val();
+      if (strongRegex.test(passwordValue)) {
+        password.removeClass('is-invalid').addClass('is-valid');
+        password.parent().append(`
+            <div class="valid-feedback">
+                Password kuat
+            </div>
+        `);
+      } else if (mediumRegex.test(passwordValue)) {
+        password.removeClass('is-valid').addClass('is-invalid');
+        password.parent().append(`
+            <div class="invalid-feedback">
+                Password sedang (tambahkan simbol agar lebih kuat)
+            </div>
+        `);
+        return;
+      } else if (weakRegex.test(passwordValue)) {
+        password.removeClass('is-valid').addClass('is-invalid');
+        password.parent().append(`
+            <div class="invalid-feedback">
+                Password lemah (gunakan huruf dan angka)
+            </div>
+        `);
+        return;
       } else {
-          password.removeClass('is-valid').addClass('is-invalid');
-          password.parent().append(`
-              <div class="invalid-feedback invalid-password">
-                  Password tidak valid (minimal 6 karakter)
-              </div>
-          `);
-          return; // Berhenti jika password tidak valid
+        password.removeClass('is-valid').addClass('is-invalid');
+        password.parent().append(`
+            <div class="invalid-feedback invalid-password">
+                Password tidak valid (minimal 6 karakter)
+            </div>
+        `);
+        return;
       }
 
       var formData = new FormData();
