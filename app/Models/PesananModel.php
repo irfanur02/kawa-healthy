@@ -326,7 +326,7 @@ class PesananModel extends Model
     $builder->where('p.approved', 'y');
     $builder->groupBy('jm.tanggal_menu');
     $builder->groupBy('m.nama_menu');
-    // $builder->groupBy('mp.id_menu_pesanan');
+    $builder->groupBy('tp.jumlah_tunda');
     $builder->orderBy('jm.tanggal_menu', 'ASC');
     $builder->orderBy('m.nama_menu', 'ASC');
     $query = $builder->get();

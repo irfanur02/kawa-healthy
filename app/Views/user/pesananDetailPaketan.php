@@ -60,6 +60,9 @@
         </div>
       </li>
     </ul>
+    <?php if ($catatanPaketan['berhenti_paketan'] == "y") : ?>
+      <p class="lh-1 mt-3 fw-bold text-danger text-center">PESANAN DIBATALKAN</p>
+    <?php endif; ?>
     <ul class="list-group list-pesanan border border-black mt-3 mx-auto">
       <li class="list-group-item text-center">Jadwal</li>
       <?php foreach ($dataPesananPaketan as $index => $data) : ?>
