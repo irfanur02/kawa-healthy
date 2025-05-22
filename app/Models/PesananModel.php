@@ -573,6 +573,13 @@ class PesananModel extends Model
     $builder->update($data);
   }
 
+  public function updateDetailMenuPesananBy($where, $data)
+  {
+    $builder = $this->db->table('detail_menu_pesanan');
+    $builder->where('id_detail_menu_pesanan', $where);
+    $builder->update($data);
+  }
+
   public function getIdMenuPesanan($idPesanan)
   {
     // Menggunakan Query Builder

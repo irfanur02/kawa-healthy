@@ -253,6 +253,35 @@ class Pesanan extends BaseController
 
     $fileGambar->move('assets/img/bukti_transfer', $namaGambar);
 
+    foreach($dataPesanan as $data) {
+      if ($data['pack'] == 1) {
+        $dataUpdate = [
+          'keterangan_pedas' => $data['keteranganPedas'],
+          'qty_menu' => $data['textQtyMenu'],
+          'updated_at' => $date
+        ];
+      } elseif ($data['pack'] == 2 && isset($data['karbo'])) {
+        $dataUpdate = [
+          'id_karbo' => $data['karbo'],
+          'pantangan_pesanan' => $data['pantangan'],
+          'qty_menu' => $data['textQtyMenu'],
+          'updated_at' => $date
+        ];
+      } elseif ($data['pack'] == 2 && !isset($data['karbo'])) {
+        $dataUpdate = [
+          'pantangan_pesanan' => $data['pantangan'],
+          'qty_menu' => $data['textQtyMenu'],
+          'updated_at' => $date
+        ];
+      } elseif ($data['pack'] == null) {
+        $dataUpdate = [
+          'qty_infuse' => $data['textQtyMenu'],
+          'updated_at' => $date
+        ];
+      }
+      $this->pesananModel->updateDetailMenuPesananBy($data['idDetailMenuPesanan'], $dataUpdate);
+    }
+
     // insert tabel transaksi
     $idPesanan = $this->pesananModel->getIdPesananBy($idAkun, 1)->getRowArray()['id_pesanan']; // dikeranjang
     // $idPesanan = "121"; // dikeranjang
