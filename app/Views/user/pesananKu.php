@@ -83,12 +83,14 @@
               <td><?php echo formatRupiah($data['total_semua_harga']); ?></td>
               <td class="text-end">
                 <a class="btn btn-sm my-btn-orange my-border-btn rounded-pill fw-medium lh-1" href="/pesananDetailBiasa/<?php echo $data['id_pesanan']; ?>/<?php echo $data['id_jadwal_menu']; ?>" role="button">Detail</a>
-                <?php if ($data['batal'] != "b") : ?>
-                  <button type="button" class="btn btn-sm btn-light my-border-btn rounded-pill fw-medium lh-1 btnBatalPesanan" data-idJadwalMenu="<?php echo $data['id_jadwal_menu']; ?>" data-idPesanan="<?php echo $data['id_pesanan']; ?>" data-indexBaris="<?php echo $index + 1; ?>" data-bs-toggle="modal" data-bs-target="#modalBatalPesan">
-                    Batal
-                  </button>
-                <?php else : ?>
-                  <span class="badge text-bg-danger">Di Batalkan</span>
+                <?php if ($data['tanggal_menu'] != date("Y-m-d")) : ?>
+                  <?php if ($data['batal'] != "b") : ?>
+                    <button type="button" class="btn btn-sm btn-light my-border-btn rounded-pill fw-medium lh-1 btnBatalPesanan" data-idJadwalMenu="<?php echo $data['id_jadwal_menu']; ?>" data-idPesanan="<?php echo $data['id_pesanan']; ?>" data-indexBaris="<?php echo $index + 1; ?>" data-bs-toggle="modal" data-bs-target="#modalBatalPesan">
+                      Batal
+                    </button>
+                  <?php else : ?>
+                    <span class="badge text-bg-danger">Di Batalkan</span>
+                  <?php endif; ?>
                 <?php endif; ?>
               </td>
             </tr>
