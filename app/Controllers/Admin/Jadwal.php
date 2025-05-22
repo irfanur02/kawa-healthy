@@ -243,6 +243,8 @@ class Jadwal extends BaseController
 
           if ($jadwalMenu['jadwal'] == 'update') {
             array_push($tesUpdate, $jadwalMenu['idJadwalMenu']);
+            $dataMenuAsli = [];
+            $dataMenuBaru = [];
             $dataDetailJadwalMenu = $this->jadwalModel->getDetailJadwalMenu($jadwalMenu['idJadwalMenu'])->getResultArray();
             foreach ($dataDetailJadwalMenu as $index => $data) {
               array_push($dataMenuAsli, $data['id_menu']);
