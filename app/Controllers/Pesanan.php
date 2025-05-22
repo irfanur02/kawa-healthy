@@ -424,7 +424,7 @@ class Pesanan extends BaseController
         'updated_at' => $date
       ];
       $where = $data['id_detail_menu_pesanan'];
-      $this->pesananModel->updateMenuPesananBy($where, $updateData);
+      $this->pesananModel->updateMenuPesananBy($updateData, $where);
     }
 
     $updateDataPesanan = [
