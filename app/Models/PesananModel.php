@@ -285,7 +285,8 @@ class PesananModel extends Model
   {
     $builder = $this->db->table('menu_pesanan mp');
     $builder->select('
-                  mp.id_jadwal_menu, jm.tanggal_menu, dmp.id_detail_menu_pesanan, tp.jumlah_tunda
+                  mp.id_jadwal_menu, jm.tanggal_menu, dmp.id_detail_menu_pesanan, tp.jumlah_tunda,
+                  p.berhenti_paketan
               ');
     $builder->join('tunda_pesanan tp', 'tp.id_menu_pesanan = mp.id_menu_pesanan', 'left');
     $builder->join('pesanan p', 'p.id_pesanan = mp.id_pesanan', 'left');

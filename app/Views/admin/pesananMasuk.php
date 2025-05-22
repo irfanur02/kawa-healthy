@@ -43,58 +43,60 @@
           </thead>
           <tbody>
             <?php foreach ($dataMenuPesanan as $data) : ?>
-              <tr class="align-middle">
-                <td class="text-center"><?php echo formatTanggal($data['tanggal_menu']); ?></td>
-                <td>
-                  <ul class="list-group">
-                    <?php foreach ($dataMenuDetailMenuPesanan as $detailMenu) : ?>
-                      <?php if ($data['tanggal_menu'] == $detailMenu['tanggal_menu']) : ?>
-                        <?php if (empty($detailMenu['jumlah_tunda'])) : ?>
-                          <li class="list-group-item align-items-center fw-normal">
-                            <?php echo $detailMenu['nama_menu']; ?>
-                            <span class="badge text-bg-warning rounded-pill border border-black"><?php echo $detailMenu['qty_menu']; ?></span>
-                          </li>
+              <?php if ($data['berhenti_paketan'] != "y") : ?>
+                <tr class="align-middle">
+                  <td class="text-center"><?php echo formatTanggal($data['tanggal_menu']); ?></td>
+                  <td>
+                    <ul class="list-group">
+                      <?php foreach ($dataMenuDetailMenuPesanan as $detailMenu) : ?>
+                        <?php if ($data['tanggal_menu'] == $detailMenu['tanggal_menu']) : ?>
+                          <?php if (empty($detailMenu['jumlah_tunda'])) : ?>
+                            <li class="list-group-item align-items-center fw-normal">
+                              <?php echo $detailMenu['nama_menu']; ?>
+                              <span class="badge text-bg-warning rounded-pill border border-black"><?php echo $detailMenu['qty_menu']; ?></span>
+                            </li>
+                          <?php endif; ?>
                         <?php endif; ?>
-                      <?php endif; ?>
-                    <?php endforeach; ?>
-                  </ul>
-                </td>
-                <td class="text-center">
-                  <ul class="list-group">
-                    <?php foreach ($dataPackDetailMenuPesanan as $detailPack) : ?>
-                      <?php if ($data['tanggal_menu'] == $detailPack['tanggal_menu']) : ?>
-                        <?php if (empty($detailPack['jumlah_tunda'])) : ?>
-                          <li class="list-group-item align-items-center">
-                            <?php echo $detailPack['nama_pack']; ?>
-                            <span class="badge text-bg-warning rounded-pill border border-black"><?php echo $detailPack['qty_menu']; ?></span>
-                            <?php if (empty($detailPack['nama_pack'])) : ?>
-                              Infuse
-                              <span class="badge text-bg-warning rounded-pill border border-black"><?php echo $detailPack['qty_infuse']; ?></span>
-                            <?php endif; ?>
-                          </li>
+                      <?php endforeach; ?>
+                    </ul>
+                  </td>
+                  <td class="text-center">
+                    <ul class="list-group">
+                      <?php foreach ($dataPackDetailMenuPesanan as $detailPack) : ?>
+                        <?php if ($data['tanggal_menu'] == $detailPack['tanggal_menu']) : ?>
+                          <?php if (empty($detailPack['jumlah_tunda'])) : ?>
+                            <li class="list-group-item align-items-center">
+                              <?php echo $detailPack['nama_pack']; ?>
+                              <span class="badge text-bg-warning rounded-pill border border-black"><?php echo $detailPack['qty_menu']; ?></span>
+                              <?php if (empty($detailPack['nama_pack'])) : ?>
+                                Infuse
+                                <span class="badge text-bg-warning rounded-pill border border-black"><?php echo $detailPack['qty_infuse']; ?></span>
+                              <?php endif; ?>
+                            </li>
+                          <?php endif; ?>
                         <?php endif; ?>
-                      <?php endif; ?>
-                    <?php endforeach; ?>
-                  </ul>
-                </td>
-                <td class="text-center">
-                  <ul class="list-group">
-                    <?php foreach ($dataKarboDetailMenuPesanan as $detailKarbo) : ?>
-                      <?php if ($data['tanggal_menu'] == $detailKarbo['tanggal_menu']) : ?>
-                        <?php if (empty($detailKarbo['jumlah_tunda'])) : ?>
-                          <li class="list-group-item align-items-center">
-                            <?php echo $detailKarbo['nama_karbo']; ?>
-                            <span class="badge text-bg-warning rounded-pill border border-black"><?php echo $detailKarbo['qty_menu']; ?></span>
-                          </li>
+                      <?php endforeach; ?>
+                    </ul>
+                  </td>
+                  <td class="text-center">
+                    <ul class="list-group">
+                      <?php foreach ($dataKarboDetailMenuPesanan as $detailKarbo) : ?>
+                        <?php if ($data['tanggal_menu'] == $detailKarbo['tanggal_menu']) : ?>
+                          <?php if (empty($detailKarbo['jumlah_tunda'])) : ?>
+                            <li class="list-group-item align-items-center">
+                              <?php echo $detailKarbo['nama_karbo']; ?>
+                              <span class="badge text-bg-warning rounded-pill border border-black"><?php echo $detailKarbo['qty_menu']; ?></span>
+                            </li>
+                          <?php endif; ?>
                         <?php endif; ?>
-                      <?php endif; ?>
-                    <?php endforeach; ?>
-                  </ul>
-                </td>
-                <td>
-                  <a class="btn btn-sm btn-primary rounded-pill my-border-btn lh-md" href="/dadmin/pesanan/<?php echo $data['tanggal_menu']; ?>" role="button">Lihat Detail Menu</a>
-                </td>
-              </tr>
+                      <?php endforeach; ?>
+                    </ul>
+                  </td>
+                  <td>
+                    <a class="btn btn-sm btn-primary rounded-pill my-border-btn lh-md" href="/dadmin/pesanan/<?php echo $data['tanggal_menu']; ?>" role="button">Lihat Detail Menu</a>
+                  </td>
+                </tr>
+              <?php endif; ?>
             <?php endforeach; ?>
             <!-- <tr class="align-middle">
               <td class="text-center">Selasa 2 Januari</td>
