@@ -451,7 +451,7 @@ class Pesanan extends BaseController
     $listIdMenuPesanan = [];
     $idDetailMenuPesanan = $this->pesananModel->getIdMenuPesananPaketan($idPesanan)->getResultArray();
 
-    if (count($idDetailMenuPesanan) >= $masaHariBaru) {
+    if (count($idDetailMenuPesanan) > $masaHariBaru) {
       // Ambil data id_menu_pesanan dengan limit
       $dataIdMenuPesanan = $this->pesananModel->getIdMenuPesananWithLimit($idPesanan, $masaHariBaru)->getResultArray();
       $listIdMenuPesanan = array_column($dataIdMenuPesanan, 'id_menu_pesanan');
