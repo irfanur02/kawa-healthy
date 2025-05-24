@@ -1,8 +1,8 @@
 $(document).ready(function() {
 
   // var base_url = "http://localhost:81/kawa-healthy/";
-  // var base_url = "http://localhost:8080";
-  var base_url = "https://kawahealthy.store/";
+  var base_url = "http://localhost:8080";
+  // var base_url = "https://kawahealthy.store/";
   var urlCek;
   var nilaiHargaPaket = 0;
 
@@ -583,6 +583,40 @@ $(document).ready(function() {
     const modalPaketan = document.getElementById('modalPaketan')    
 
     // view homepage
+    $("#btnLihatJadwalPersonal").on("click", function() {
+      $.ajax({
+        url: base_url + '/lihatJadwalPersonal',
+        type: 'post',
+        dataType: 'json',
+        success: function (data) {
+          console.log(data);
+          if (data.dataJadwal == 'kosong') {
+            const modalInstance = new bootstrap.Modal(modalInformasiJadwal);
+            modalInstance.show();
+          } else {
+            $(".content-katalog #katalog-personal").html(data.element)
+          }
+        }
+      })
+    })
+
+    $("#btnLihatJadwalFamily").on("click", function() {
+      $.ajax({
+        url: base_url + '/lihatJadwalFamily',
+        type: 'post',
+        dataType: 'json',
+        success: function (data) {
+          console.log(data);
+          if (data.dataJadwal == 'kosong') {
+            const modalInstance = new bootstrap.Modal(modalInformasiJadwal);
+            modalInstance.show();
+          } else {
+            $(".content-katalog #katalog-family").html(data.element)
+          }
+        }
+      })
+    })
+    
     $(".homepage").on('click', '.my-form-checkbox', function() {
       if (!$(this).hasClass("checked")) {
         $(this).addClass("checked")
@@ -593,7 +627,7 @@ $(document).ready(function() {
       }
     })
   
-    $(".personal .btnPilihMenu").on('click', function() {
+    $(".content-katalog").on('click', '.personal .btnPilihMenu', function() {
       if (!$(this).hasClass("MenuTutup")) {
         if (!$(this).hasClass("aktifPilih")) {
           $(this).addClass("aktifPilih");
@@ -611,14 +645,14 @@ $(document).ready(function() {
       }
     })
   
-    $(".family .btnPilihMenu").on('click', function() {
+    $(".content-katalog").on('click', '.family .btnPilihMenu', function() {
       $(this).css("display", "none");
       $(this).parent().find("button:nth-child(2)").css("display", "block");
       $(this).parent().find("button:nth-child(3)").css("display", "block");
       $(this).parent().parent().parent().find("input").css("display", "block");
     })
   
-    $(".family .btnBatalPilih").on('click', function() {
+    $(".content-katalog").on('click', '.family .btnBatalPilih', function() {
       $(this).css("display", "none");
       $(this).parent().find("button:nth-child(1)").css("display", "block");
       $(this).parent().find("button:nth-child(2)").css("display", "none");

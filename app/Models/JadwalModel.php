@@ -194,6 +194,35 @@ class JadwalModel extends Model
   // tabel detail jadwal menu
 
   // tabel jadwal menu
+  public function getJadwalBy($date = '', $pack = '') {
+    // Subquery builder
+    $subquery = $this->db->table('jadwal AS j')
+        ->select('j.id_jadwal')
+        ->join('jadwal_menu AS jm', 'jm.id_jadwal = j.id_jadwal')
+        ->join('detail_jadwal_menu AS djm', 'djm.id_jadwal_menu = jm.id_jadwal_menu')
+        ->join('menu AS m', 'm.id_menu = djm.id_menu')
+        ->join('pack AS p', 'p.id_pack = m.id_pack')
+        ->where('j.tanggal_mulai <=', $date)
+        ->where('j.tanggal_akhir >=', $date)
+        ->where('p.nama_pack', $pack)
+        ->groupBy('j.id_jadwal');
+    // Get compiled subquery string
+    $subQuerySql = $subquery->getCompiledSelect();
+    // Main query builder
+    $builder = $this->db->table('jadwal AS j');
+    $builder->select('j.tanggal_mulai, j.tanggal_akhir')
+        ->join('jadwal_menu AS jm', 'jm.id_jadwal = j.id_jadwal')
+        ->join('detail_jadwal_menu AS djm', 'djm.id_jadwal_menu = jm.id_jadwal_menu')
+        ->join('menu AS m', 'm.id_menu = djm.id_menu')
+        ->join('pack AS p', 'p.id_pack = m.id_pack')
+        ->where("j.id_jadwal > ($subQuerySql)", null, false)
+        ->where('p.nama_pack', $pack)
+        ->groupBy('j.id_jadwal');
+    // Eksekusi query
+    $query = $builder->get();
+    return $query;
+  }
+  
   public function getJadwalByTanggal($date = '', $pack = '')
   {
     $builder = $this->db->table('detail_jadwal_menu as djm');

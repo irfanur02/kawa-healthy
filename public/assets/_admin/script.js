@@ -1,8 +1,8 @@
 $(document).ready(function() {
 
   // var base_url = "http://localhost:81/kawa-healthy/";
-  // var base_url = "http://localhost:8080";
-  var base_url = "https://kawahealthy.store/";
+  var base_url = "http://localhost:8080";
+  // var base_url = "https://kawahealthy.store/";
   let eventSource = '';
   var jadwalNotifTanggal = false;
   var jadwalNotifMenu = false;

@@ -86,6 +86,8 @@ $routes->post('/dadmin/laporanByMenu', 'Admin\Laporan::laporanByMenu');
 // homepage
 // $routes->get('/daftar', 'Daftar::index');
 $routes->get('/', 'Homepage::index');
+$routes->post('/lihatJadwalPersonal', 'Homepage::lihatJadwalPersonal');
+$routes->post('/lihatJadwalFamily', 'Homepage::lihatJadwalFamily');
 
 // auth
 $routes->post('/authLogin', 'AuthUser::login');

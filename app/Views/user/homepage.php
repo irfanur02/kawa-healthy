@@ -60,77 +60,87 @@
         <div class="text-center mt-2">
           <div class="d-flex justify-content-center flex-wrap data-menu">
             <div class="list-data-menu personal-menu">
+              <?php $kadaluarsa = true; ?>
               <?php foreach ($dataJadwalPersonal as $data) : ?>
-                <ul class="list-group border border-black">
-                  <li class="list-group-item border border-0 my-bg-greenlight">
-                    <div class="row m-0 <?php echo ($data['status_libur'] == "L") ? "py-2" : ""; ?>">
-                      <input type="text" name="idJadwalMenu" hidden value="<?php echo $data['id_jadwal_menu']; ?>">
-                      <div class="col my-auto tanggalMenuPersonal"><?php echo formatTanggal($data['tanggal_menu']); ?></div>
-                      <?php if ($data['tanggal_menu'] < date("Y-m-d") || $data['tanggal_menu'] == date("Y-m-d")) : ?>
-                        <div class="col-3 btnPilihMenu MenuTutup">
-                          <span class="d-inline-block"><i class="bi bi-x-lg"></i></span>
-                          <span class="mx-1 d-inline-block my-2">Menu DiTutup</span>
-                        </div>
-                      <?php else : ?>
-                         <?php if ($data['status_libur'] == "B") : ?>
-                          <div class="col-3 btnPilihMenu">
-                            <span class="d-inline-block"><i class="bi bi-hand-index-thumb-fill"></i></span>
-                            <span class="mx-1 d-inline-block my-2">Pilih Menu</span>
+                <?php if ($data['tanggal_menu'] > date("Y-m-d")) : ?>
+                  <ul class="list-group border border-black">
+                    <?php $kadaluarsa = false; ?>
+                    <li class="list-group-item border border-0 my-bg-greenlight">
+                      <div class="row m-0 <?php echo ($data['status_libur'] == "L") ? "py-2" : ""; ?>">
+                        <input type="text" name="idJadwalMenu" hidden value="<?php echo $data['id_jadwal_menu']; ?>">
+                        <div class="col my-auto tanggalMenuPersonal"><?php echo formatTanggal($data['tanggal_menu']); ?></div>
+                        <?php if ($data['tanggal_menu'] < date("Y-m-d") || $data['tanggal_menu'] == date("Y-m-d")) : ?>
+                          <div class="col-3 btnPilihMenu MenuTutup">
+                            <span class="d-inline-block"><i class="bi bi-x-lg"></i></span>
+                            <span class="mx-1 d-inline-block my-2">Menu DiTutup</span>
                           </div>
+                        <?php else : ?>
+                           <?php if ($data['status_libur'] == "B") : ?>
+                            <div class="col-3 btnPilihMenu">
+                              <span class="d-inline-block"><i class="bi bi-hand-index-thumb-fill"></i></span>
+                              <span class="mx-1 d-inline-block my-2">Pilih Menu</span>
+                            </div>
+                          <?php endif; ?>
                         <?php endif; ?>
-                      <?php endif; ?>
-                    </div>
-                  </li>
-                  <?php if ($data['status_libur'] == "L") : ?>
-                    <li class="list-group-item border border-0 bg-light text-center">
-                      <div class="d-flex flex-column px-5">
-                        LIBUR
                       </div>
                     </li>
-                  <?php else : ?>
-                    <?php foreach ($dataDetailJadwalPersonal as $dataDetail) : ?>
-                      <?php if ($data['tanggal_menu'] == $dataDetail['tanggal_menu']) : ?>
-                        <li class="list-group-item ">
-                          <input type="text" name="idDetailJadwalMenu" hidden value="<?php echo $dataDetail['id_detail_jadwal_menu']; ?>">
-                          <div class="row m-0">
-                            <div class="col-1 p-0">
-                              <img src="/assets/img/menu/<?php echo $dataDetail['gambar_menu']; ?>" class="gambar-menu lihatFotoMenu" alt="..." data-bs-toggle="modal" data-bs-target="#modalLihatFotoMenu">
-                            </div>
-                            <div class="col p-0 text-start">
-                              <span class="menuPersonal"><?php echo $dataDetail['nama_menu']; ?></span>
-                            </div>
-                            <div class="col-3 p-0 d-flex align-items-center justify-content-end">
-                              <div class="my-form-checkbox d-flex align-items-center">
-                                <label class="form-check-label"><span class="jenisPaketMenu"><?php echo $dataDetail['nama_paket_menu']; ?></span><br><span class="hargaMenuPersonal"><?php echo formatRupiah($dataDetail['harga_paket_menu']); ?></span></label>
-                                <input class="form-check-input my-border-input my-0 mx-1" type="checkbox">
+                    <?php if ($data['status_libur'] == "L") : ?>
+                      <li class="list-group-item border border-0 bg-light text-center">
+                        <div class="d-flex flex-column px-5">
+                          LIBUR
+                        </div>
+                      </li>
+                    <?php else : ?>
+                      <?php foreach ($dataDetailJadwalPersonal as $dataDetail) : ?>
+                        <?php if ($data['tanggal_menu'] == $dataDetail['tanggal_menu']) : ?>
+                          <li class="list-group-item ">
+                            <input type="text" name="idDetailJadwalMenu" hidden value="<?php echo $dataDetail['id_detail_jadwal_menu']; ?>">
+                            <div class="row m-0">
+                              <div class="col-1 p-0">
+                                <img src="/assets/img/menu/<?php echo $dataDetail['gambar_menu']; ?>" class="gambar-menu lihatFotoMenu" alt="..." data-bs-toggle="modal" data-bs-target="#modalLihatFotoMenu">
+                              </div>
+                              <div class="col p-0 text-start">
+                                <span class="menuPersonal"><?php echo $dataDetail['nama_menu']; ?></span>
+                              </div>
+                              <div class="col-3 p-0 d-flex align-items-center justify-content-end">
+                                <div class="my-form-checkbox d-flex align-items-center">
+                                  <label class="form-check-label"><span class="jenisPaketMenu"><?php echo $dataDetail['nama_paket_menu']; ?></span><br><span class="hargaMenuPersonal"><?php echo formatRupiah($dataDetail['harga_paket_menu']); ?></span></label>
+                                  <input class="form-check-input my-border-input my-0 mx-1" type="checkbox">
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </li>
-                      <?php endif; ?>
-                    <?php endforeach; ?>
-                    <li class="list-group-item ">
-                      <?php foreach ($dataInfuseJadwalPersonal as $dataInfuse) : ?>
-                        <?php if ($data['tanggal_menu'] == $dataInfuse['tanggal_menu']) : ?>
-                          <input type="text" hidden name="optionInfuse" value="<?php echo $dataInfuse['id_detail_jadwal_menu'];
-                                                                                ?>">
-                          <div class="row m-0 justify-content-end">
-                            <div class="col text-end d-flex align-items-center justify-content-end">
-                              <button class="btn btn-sm lh-sm my-btn-orange border rounded-pill border-black my-border-btn lh-sm modalPilihMenu modalPersonal" data-bs-toggle="modal" data-bs-target="#modalPilihMenu">Lanjut</button>
-                            </div>
-                            <div class="col-3 p-0 d-flex align-items-center justify-content-end">
-                              <div class="my-form-checkbox d-flex align-items-center">
-                                <label class="form-check-label"><span class="jenisPaketMenu"><?php echo $dataPaketMenu['nama_paket_menu']; ?></span><br><span class="hargaMenuPersonal"><?php echo formatRupiah($dataPaketMenu['harga_paket_menu']); ?></span></label>
-                                <input class="form-check-input my-border-input my-0 mx-1" type="checkbox">
-                              </div>
-                            </div>
-                          </div>
+                          </li>
                         <?php endif; ?>
                       <?php endforeach; ?>
-                    </li>
-                  <?php endif ?>
-                </ul>
+                      <li class="list-group-item ">
+                        <?php foreach ($dataInfuseJadwalPersonal as $dataInfuse) : ?>
+                          <?php if ($data['tanggal_menu'] == $dataInfuse['tanggal_menu']) : ?>
+                            <input type="text" hidden name="optionInfuse" value="<?php echo $dataInfuse['id_detail_jadwal_menu'];
+                                                                                  ?>">
+                            <div class="row m-0 justify-content-end">
+                              <div class="col text-end d-flex align-items-center justify-content-end">
+                                <button class="btn btn-sm lh-sm my-btn-orange border rounded-pill border-black my-border-btn lh-sm modalPilihMenu modalPersonal" data-bs-toggle="modal" data-bs-target="#modalPilihMenu">Lanjut</button>
+                              </div>
+                              <div class="col-3 p-0 d-flex align-items-center justify-content-end">
+                                <div class="my-form-checkbox d-flex align-items-center">
+                                  <label class="form-check-label"><span class="jenisPaketMenu"><?php echo $dataPaketMenu['nama_paket_menu']; ?></span><br><span class="hargaMenuPersonal"><?php echo formatRupiah($dataPaketMenu['harga_paket_menu']); ?></span></label>
+                                  <input class="form-check-input my-border-input my-0 mx-1" type="checkbox">
+                                </div>
+                              </div>
+                            </div>
+                          <?php endif; ?>
+                        <?php endforeach; ?>
+                      </li>
+                    <?php endif ?>
+                  </ul>
+                <?php endif; ?>
               <?php endforeach; ?>
+              <?php if ($kadaluarsa == true) : ?>
+                <div class="flex-row mt-2">
+                  <p class="fw-bold my-0 text-danger">Jadwal Sudah Tutup</p>
+                  <button type="button" class="btn btn-sm rounded-pill btn-outline-danger d-block" id="btnLihatJadwalPersonal">lihat jadwal minggu depan</button>
+                </div>
+              <?php endif; ?>
             </div>
           </div>
         </div>
@@ -161,52 +171,62 @@
           </div>
         </div>
         <div class="list-data-menu family-menu d-flex justify-content-center flex-wrap">
+          <?php $kadaluarsa = true; ?>
           <?php foreach ($dataJadwalFamily as $data) : ?>
-            <ul class="list-group border border-black">
-              <li class="list-group-item border border-0 my-bg-greenlight text-center">
-                <input type="text" hidden name="idJadwalMenu" value="<?php echo $data['id_jadwal_menu']; ?>">
-                <span class="tanggalMenuFamily"><?php echo formatTanggal($data['tanggal_menu']); ?></span>
-              </li>
-              <?php if ($data['status_libur'] == "L") : ?>
-              <li class="list-group-item border border-0 bg-light text-center">
-                <div class="d-flex flex-column px-5">
-                  LIBUR
-                </div>
-              </li>
-            <?php else : ?>
-              <?php foreach ($dataDetailJadwalFamily as $dataDetail) : ?>
-                <?php if ($data['tanggal_menu'] == $dataDetail['tanggal_menu']) : ?>
-                  <li class="list-group-item border border-0">
-                    <input type="text" hidden name="idDetailJadwalMenu" value="<?php echo $dataDetail['id_detail_jadwal_menu']; ?>">
-                    <div class="list-menu d-flex flex-nowrap justify-content-between">
-                      <div class="col-menu p-0 text-start">
-                        <p class="lh-1 m-0"><span class="menuFamily"><?php echo $dataDetail['nama_menu']; ?></span></p>
-                        <p class="lh-1 m-0 fw-bold">
-                          <span class="hargaMenuFamily"><?php echo formatRupiah($dataDetail['harga_menu']); ?></span>
-                          <span><button type="button" class="btn btn-sm btn-link p-0 text-black lihatFotoMenu" data-gambar="/assets/img/menu/<?php echo $dataDetail['gambar_menu']; ?>" data-bs-toggle="modal" data-bs-target="#modalLihatFotoMenu">Lihat Gambar</button></span>
-                        </p>
-                      </div>
-                      <div class="my-form-checkbox d-flex align-items-center">
-                        <input class="form-check-input my-border-input my-0" type="checkbox">
-                      </div>
+            <?php if ($data['tanggal_menu'] > date("Y-m-d")) : ?>
+              <?php $kadaluarsa = false; ?>
+              <ul class="list-group border border-black">
+                <li class="list-group-item border border-0 my-bg-greenlight text-center">
+                  <input type="text" hidden name="idJadwalMenu" value="<?php echo $data['id_jadwal_menu']; ?>">
+                  <span class="tanggalMenuFamily"><?php echo formatTanggal($data['tanggal_menu']); ?></span>
+                </li>
+                <?php if ($data['status_libur'] == "L") : ?>
+                <li class="list-group-item border border-0 bg-light text-center">
+                  <div class="d-flex flex-column px-5">
+                    LIBUR
+                  </div>
+                </li>
+                <?php else : ?>
+                  <?php foreach ($dataDetailJadwalFamily as $dataDetail) : ?>
+                    <?php if ($data['tanggal_menu'] == $dataDetail['tanggal_menu']) : ?>
+                      <li class="list-group-item border border-0">
+                        <input type="text" hidden name="idDetailJadwalMenu" value="<?php echo $dataDetail['id_detail_jadwal_menu']; ?>">
+                        <div class="list-menu d-flex flex-nowrap justify-content-between">
+                          <div class="col-menu p-0 text-start">
+                            <p class="lh-1 m-0"><span class="menuFamily"><?php echo $dataDetail['nama_menu']; ?></span></p>
+                            <p class="lh-1 m-0 fw-bold">
+                              <span class="hargaMenuFamily"><?php echo formatRupiah($dataDetail['harga_menu']); ?></span>
+                              <span><button type="button" class="btn btn-sm btn-link p-0 text-black lihatFotoMenu" data-gambar="/assets/img/menu/<?php echo $dataDetail['gambar_menu']; ?>" data-bs-toggle="modal" data-bs-target="#modalLihatFotoMenu">Lihat Gambar</button></span>
+                            </p>
+                          </div>
+                          <div class="my-form-checkbox d-flex align-items-center">
+                            <input class="form-check-input my-border-input my-0" type="checkbox">
+                          </div>
+                        </div>
+                      </li>
+                    <?php endif; ?>
+                  <?php endforeach; ?>
+                  <li class="list-group-item border border-0 my-bg-greenlight text-center">
+                    <div class="d-flex flex-column px-5">
+                      <?php if ($data['tanggal_menu'] < date("Y-m-d") || $data['tanggal_menu'] == date("Y-m-d")) : ?>
+                        <span>Menu DiTutup</span>
+                      <?php else : ?>
+                        <button class="btn btn-sm lh-sm my-btn-orange border rounded-pill border-black my-border-btn text-nowrap btnPilihMenu">Pilih Menu</button>
+                        <button class="btn btn-sm lh-sm my-btn-orange border rounded-pill border-black my-border-btn text-nowrap modalPilihMenu modalFamily btnLanjut" data-bs-toggle="modal" data-bs-target="#modalPilihMenu">Lanjut</button>
+                        <button class="btn btn-sm lh-sm btn-light border rounded-pill border-black my-border-btn mt-2 btnBatalPilih">Batal</button>
+                      <?php endif; ?>
                     </div>
                   </li>
                 <?php endif; ?>
-              <?php endforeach; ?>
-              <li class="list-group-item border border-0 my-bg-greenlight text-center">
-                <div class="d-flex flex-column px-5">
-                  <?php if ($data['tanggal_menu'] < date("Y-m-d") || $data['tanggal_menu'] == date("Y-m-d")) : ?>
-                    <span>Menu DiTutup</span>
-                  <?php else : ?>
-                    <button class="btn btn-sm lh-sm my-btn-orange border rounded-pill border-black my-border-btn text-nowrap btnPilihMenu">Pilih Menu</button>
-                    <button class="btn btn-sm lh-sm my-btn-orange border rounded-pill border-black my-border-btn text-nowrap modalPilihMenu modalFamily btnLanjut" data-bs-toggle="modal" data-bs-target="#modalPilihMenu">Lanjut</button>
-                    <button class="btn btn-sm lh-sm btn-light border rounded-pill border-black my-border-btn mt-2 btnBatalPilih">Batal</button>
-                  <?php endif; ?>
-                </div>
-              </li>
+              </ul>
             <?php endif; ?>
-            </ul>
           <?php endforeach; ?>
+          <?php if ($kadaluarsa == true) : ?>
+            <div class="flex-row mt-2">
+              <p class="fw-bold my-0 text-center text-danger">Jadwal Sudah Tutup</p>
+              <button type="button" class="btn btn-sm rounded-pill btn-outline-danger d-block" id="btnLihatJadwalFamily">lihat jadwal minggu depan</button>
+            </div>
+          <?php endif; ?>
         </div>
       </div>
     </div>
@@ -224,6 +244,24 @@
         <img src="" class="rounded mx-auto d-block" alt="...">
       </div>
       <div class="modal-footer my-bg-vanilla">
+        <button type="button" class="btn btn-light btn-sm px-4 border rounded-pill border-black my-border-btn fw-medium" data-bs-dismiss="modal">Tutup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalInformasiJadwal" tabindex="-1" aria-labelledby="modalInformasiJadwalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header my-bg-orange justify-content-center border-bottom border-black">
+        <h1 class="modal-title fs-5" id="modalInformasiJadwalLabel">Informasi</h1>
+      </div>
+      <div class="modal-body p-0">
+        <div class="text-center mt-2 mb-2">
+          <span class="fs-5 text-danger fw-bold">Jadwal Belum Tersedia</span>
+        </div>
+      </div>
+      <div class="modal-footer my-bg-orange border-top border-black p-1">
         <button type="button" class="btn btn-light btn-sm px-4 border rounded-pill border-black my-border-btn fw-medium" data-bs-dismiss="modal">Tutup</button>
       </div>
     </div>

@@ -80,4 +80,52 @@ class Homepage extends BaseController
     // dd($dataDetailJadwalFamily);
     return view('user/homepage', $data);
   }
+
+  public function lihatJadwalPersonal() {
+    $today = date("Y-m-d");
+    $dataJadwalPersonal = $this->jadwalModel->getJadwalBy($today, 'personal')->getResultArray();
+    if (!empty($dataJadwalPersonal)) {
+      $dataNextJadwalPersonal = $this->jadwalModel->getJadwalByTanggal($dataJadwalPersonal[0]['tanggal_mulai'], 'personal')->getResultArray();
+      $dataNextDetailJadwalPersonal = $this->jadwalModel->getDetailJadwalByTanggal($dataJadwalPersonal[0]['tanggal_mulai'], 'personal')->getResultArray();
+      $dataNextInfuseJadwalPersonal = $this->jadwalModel->getInfuseJadwalPersonalByTanggal($dataJadwalPersonal[0]['tanggal_mulai'])->getResultArray();
+      $dataPaketMenu = $this->paketMenuModel->getPaketMenu('infuse')->getRowArray();
+
+      $htmlContent = view('user/datatable/kontenJadwalPersonal', [
+                            'dataJadwalPersonal' => $dataNextJadwalPersonal, 
+                            'dataDetailJadwalPersonal' => $dataNextDetailJadwalPersonal, 
+                            'dataInfuseJadwalPersonal' => $dataNextInfuseJadwalPersonal, 
+                            'dataPaketMenu' => $dataPaketMenu]);
+
+      $result = array(
+        'element' => $htmlContent
+      );
+    } else {
+      $result = array(
+        'dataJadwal' => 'kosong'
+      );
+    }
+    echo json_encode($result);
+  }
+
+  public function lihatJadwalFamily() {
+    $today = date("Y-m-d");
+    $dataJadwalFamily = $this->jadwalModel->getJadwalBy($today, 'family')->getResultArray();
+    if (!empty($dataJadwalFamily)) {
+      $dataNextJadwalFamily = $this->jadwalModel->getJadwalByTanggal($dataJadwalFamily[0]['tanggal_mulai'], 'family')->getResultArray();
+      $dataNextDetailJadwalFamily = $this->jadwalModel->getDetailJadwalByTanggal($dataJadwalFamily[0]['tanggal_mulai'], 'family')->getResultArray();
+
+      $htmlContent = view('user/datatable/kontenJadwalFamily', [
+                            'dataJadwalFamily' => $dataNextJadwalFamily, 
+                            'dataDetailJadwalFamily' => $dataNextDetailJadwalFamily]);
+
+      $result = array(
+        'element' => $htmlContent
+      );
+    } else {
+      $result = array(
+        'dataJadwal' => 'kosong'
+      );
+    }
+    echo json_encode($result);
+  }
 }
