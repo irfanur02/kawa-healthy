@@ -80,7 +80,7 @@ class Pesanan extends BaseController
 
   public function pesananPembayaran()
   {
-    $dataAllPesananUser = $this->pesananModel->getAllPesananUser()->getResultArray();
+    $dataAllPesananUser = $this->pesananModel->getAllPesananUser('baru')->getResultArray();
     // dd($dataAllPesananUser);
     $data = [
       'title' => 'Pembayaran',
@@ -89,6 +89,26 @@ class Pesanan extends BaseController
       'dataAllPesananUser' => $dataAllPesananUser
     ];
     return view('admin/pesananPembayaran', $data);
+  }
+
+  public function historiPembayaran() {
+    $dataAllPesananUser = $this->pesananModel->getAllPesananUser('histori')->getResultArray();
+    $htmlContent = view('admin/datatable/dataTableHistoriPembayaran', ['dataAllPesananUser' => $dataAllPesananUser]);
+
+    $result = array(
+      'element' => $htmlContent
+    );
+    echo json_encode($result);
+  }
+
+  public function pembayaranMasuk() {
+    $dataAllPesananUser = $this->pesananModel->getAllPesananUser('baru')->getResultArray();
+    $htmlContent = view('admin/datatable/dataTableHistoriPembayaran', ['dataAllPesananUser' => $dataAllPesananUser]);
+
+    $result = array(
+      'element' => $htmlContent
+    );
+    echo json_encode($result);
   }
 
   public function pesananMasuk()

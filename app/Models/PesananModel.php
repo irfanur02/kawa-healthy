@@ -972,7 +972,7 @@ class PesananModel extends Model
     return $query;
   }
 
-  public function getAllPesananUser()
+  public function getAllPesananUser($pembayaran = '')
   {
     $subquery1 = $this->db->table('catatan_pesanan cp1')
       ->select('SUM(pm1.harga_paket_menu)')
@@ -1020,12 +1020,17 @@ class PesananModel extends Model
       ->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left')
       ->join('akun a', 'a.id_akun = pe.id_akun', 'left')
       ->join('pelanggan pel', 'pel.id_pelanggan = a.id_pelanggan', 'left')
-      ->join('catatan_pesanan cp', 'cp.id_catatan_pesanan = pe.id_catatan_pesanan', 'left')
-      ->where('dmp.deleted_at IS NULL')
-      ->whereIn('sdmp.id_status_pesanan', [2, 4, 5, 6, 9])
-      ->groupBy('pe.id_pesanan')
-      ->orderBy('pe.approved', 'ASC')
-      ->orderBy('t.tanggal_transaksi', 'ASC');
+      ->join('catatan_pesanan cp', 'cp.id_catatan_pesanan = pe.id_catatan_pesanan', 'left');
+    $builder->where('dmp.deleted_at IS NULL');
+    if ($pembayaran == 'baru') {
+      $builder->where('sdmp.id_status_pesanan', 2);
+      $builder->where('pe.approved', null);
+    } elseif ($pembayaran == 'histori') {
+      $builder->where('pe.approved IS NOT', null);
+      $builder->whereIn('sdmp.id_status_pesanan', [2, 4, 5, 6, 9]);
+    }
+    $builder->groupBy('pe.id_pesanan');
+    $builder->orderBy('t.tanggal_transaksi', 'DESC');
     $query = $builder->get();
     return $query;
   }

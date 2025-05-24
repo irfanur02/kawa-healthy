@@ -1298,7 +1298,39 @@ $(document).ready(function() {
 
 
   // view pesanan
-  $(".content-pesanan .btnApprove").on('click', function(e) {
+  $(".content-pesanan #btnHistoriPembayaran").on("click", function() {
+    $('#tabPembayaran button').each(function(index, element) {
+      element.classList.remove('my-btn-main');
+    });
+    $(this).addClass('my-btn-main');
+    $.ajax({
+      url: base_url + '/dadmin/pesanan/historiPembayaran',
+      type: 'POST',
+      dataType: 'json',
+      success: function (data) {
+        console.log(data);
+        $("#tabelPembayaran").html(data.element);
+      }
+    });
+  })
+
+  $(".content-pesanan #btnPembayaranMasuk").on("click", function() {
+    $('#tabPembayaran button').each(function(index, element) {
+      element.classList.remove('my-btn-main');
+    });
+    $(this).addClass('my-btn-main');
+    $.ajax({
+      url: base_url + '/dadmin/pesanan/pembayaranMasuk',
+      type: 'POST',
+      dataType: 'json',
+      success: function (data) {
+        console.log(data);
+        $("#tabelPembayaran").html(data.element);
+      }
+    });
+  })
+
+  $(".content-pesanan").on('click', '.btnApprove', function(e) {
     var idPesanan = $(this).attr('data-idPesanan');
     $.ajax({
       url: base_url + '/dadmin/pesanan/approved',
@@ -1311,10 +1343,11 @@ $(document).ready(function() {
         console.log(data);
       }
     });
-    $(this) // Tombol approve yang diklik
-      .siblings(".btnTolakPesanan") // Cari tombol tolak pesanan bersaudara
-      .addBack() // Gabungkan dengan tombol approve
-      .remove(); // Hapus kedua elemen tersebut
+    $(this).closest('tr').remove();
+    // $(this) // Tombol approve yang diklik
+    //   .siblings(".btnTolakPesanan") // Cari tombol tolak pesanan bersaudara
+    //   .addBack() // Gabungkan dengan tombol approve
+    //   .remove(); // Hapus kedua elemen tersebut
   });
 
   $(".content-pesanan .btnLihatGambar").on('click', function(e) {
@@ -1378,12 +1411,13 @@ $(document).ready(function() {
     const modalInstance = bootstrap.Modal.getInstance(modalTolakPesanan);
     modalInstance.hide();
     $(".modal-backdrop").remove();
-    var targetRow = $("#tabelPembayaran tr").eq(indexBaris); // Ambil baris berdasarkan index
-    var btnTolakPesanan = targetRow.find(".btnTolakPesanan");
-    var btnApprove = targetRow.find(".btnTolakPesanan").siblings(".btnApprove");
-    btnTolakPesanan.after("Pesanan Ditolak");
-    btnTolakPesanan.remove();
-    btnApprove.remove();
+    var targetRow = $("#tabelPembayaran tr").eq(indexBaris).remove(); // Ambil baris berdasarkan index
+    // var targetRow = $("#tabelPembayaran tr").eq(indexBaris); // Ambil baris berdasarkan index
+    // var btnTolakPesanan = targetRow.find(".btnTolakPesanan");
+    // var btnApprove = targetRow.find(".btnTolakPesanan").siblings(".btnApprove");
+    // btnTolakPesanan.after("Pesanan Ditolak");
+    // btnTolakPesanan.remove();
+    // btnApprove.remove();
   });
 
   const modalKonfirmasiRefund = document.getElementById('modalKonfirmasiRefund')

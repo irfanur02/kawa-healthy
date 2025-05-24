@@ -21,6 +21,8 @@ $routes->post('/dadmin/pesanan/kirim', 'Admin\Pesanan::kirimPesanan');
 $routes->get('/dadmin/pesanan/(:any)', 'Admin\Pesanan::pesananDetail/$1');
 $routes->get('/dadmin/pesananMasuk', 'Admin\Pesanan::pesananMasuk');
 $routes->get('/dadmin/pesananPembayaran', 'Admin\Pesanan::pesananPembayaran');
+$routes->post('/dadmin/pesanan/historiPembayaran', 'Admin\Pesanan::historiPembayaran');
+$routes->post('/dadmin/pesanan/pembayaranMasuk', 'Admin\Pesanan::pembayaranMasuk');
 $routes->get('/dadmin/pesananBatal', 'Admin\Pesanan::pesananBatal');
 $routes->get('/dadmin/pesananRiwayat', 'Admin\Pesanan::pesananRiwayat');
 

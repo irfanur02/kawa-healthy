@@ -30,8 +30,12 @@
           </ul>
         </div>
       </div>
-      <div class="table-responsive m-4">
-        <table class="table my-table-admin table-hover mt-3" id="tabelPembayaran">
+      <div class="mt-4 text-center" id="tabPembayaran">
+        <button class="btn btn-sm rounded-pill btn-light my-border-btn my-btn-main" id="btnPembayaranMasuk">Pembayaran Masuk</button>
+        <button class="btn btn-sm rounded-pill btn-light my-border-btn" id="btnHistoriPembayaran">Histori Pembayaran</button>
+      </div>
+      <div class="table-responsive mt-1">
+        <table class="table my-table-admin table-hover" id="tabelPembayaran">
           <thead>
             <tr class="align-middle">
               <td class="text-center" scope="col">Tanggal Transaksi</td>
