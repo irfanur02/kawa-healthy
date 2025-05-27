@@ -915,7 +915,7 @@ class PesananModel extends Model
                   t.alamat_pengiriman, 
                   o.ongkir_kota, 
                   COALESCE(m.nama_menu, '') AS nama_menu,
-                  SUM(dmp.qty_menu) AS qty_menu, 
+                  SUM(DISTINCT dmp.qty_menu) AS qty_menu, 
                   SUM(dmp.qty_infuse) AS qty_infuse, 
                   m.harga_menu, 
                   pm.harga_paket_menu
@@ -933,10 +933,87 @@ class PesananModel extends Model
     $builder->join('paket_menu as pm', 'pm.id_paket_menu = m.id_paket_menu', 'left');
     $builder->whereIn('sdmp.id_status_pesanan', [5, 6]);
     $builder->where('dmp.deleted_at', NULL);
-    $builder->groupBy(['pel.nama_pelanggan', 'm.nama_menu', 'jm.tanggal_menu']);
+    $builder->groupBy(['pel.nama_pelanggan', 'm.nama_menu', 'jm.tanggal_menu', 'p.id_pesanan', 'mp.id_menu_pesanan']);
     $builder->orderBy('jm.tanggal_menu', 'DESC');
     $builder->orderBy('pel.nama_pelanggan', 'ASC');
     $builder->orderBy('m.nama_menu', 'ASC');
+    $query = $builder->get();
+    return $query;
+  }
+
+  public function getAllPesananPelangganAkun($idAkun, $tanggal)
+  {
+    $builder = $this->db->table('pesanan as p');
+    $builder->select("
+        p.id_pesanan,
+        p.id_catatan_pesanan,
+        mp.id_menu_pesanan,
+        jm.tanggal_menu, 
+        pel.nama_pelanggan, 
+        t.alamat_pengiriman, 
+        o.ongkir_kota, 
+        o.biaya_ongkir,
+        SUM(
+            COALESCE(dmp.qty_menu, dmp.qty_infuse, 0) * 
+            COALESCE(m.harga_menu, pm.harga_paket_menu, 0) + 
+            COALESCE(dmp.qty_infuse, 0) * 10000
+        ) AS total_harga
+    ");
+    $builder->join('akun as a', 'p.id_akun = a.id_akun', 'left');
+    $builder->join('pelanggan as pel', 'pel.id_pelanggan = a.id_pelanggan', 'left');
+    $builder->join('transaksi as t', 't.id_pesanan = p.id_pesanan', 'left');
+    $builder->join('ongkir as o', 'o.id_ongkir = t.id_ongkir', 'left');
+    $builder->join('menu_pesanan as mp', 'mp.id_pesanan = p.id_pesanan', 'left');
+    $builder->join('jadwal_menu as jm', 'jm.id_jadwal_menu = mp.id_jadwal_menu', 'left');
+    $builder->join('detail_menu_pesanan as dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left');
+    $builder->join('status_detail_menu_pesanan as sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left');
+    $builder->join('detail_jadwal_menu as djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left');
+    $builder->join('menu as m', 'm.id_menu = djm.id_menu', 'left');
+    $builder->join('paket_menu as pm', 'pm.id_paket_menu = m.id_paket_menu', 'left');
+    $builder->whereIn('sdmp.id_status_pesanan', [5, 6]);
+    $builder->where('dmp.deleted_at', null);
+    $builder->where('p.id_akun', $idAkun);
+    $builder->where("DATE_FORMAT(jm.tanggal_menu, '%Y-%m')", date('Y-m', strtotime($tanggal)));
+    $builder->groupBy(['p.id_pesanan', 'jm.tanggal_menu', 'pel.nama_pelanggan']);
+    $builder->orderBy('jm.tanggal_menu', 'DESC');
+    $query = $builder->get();
+    return $query;
+  }
+
+  public function getAllMenuPesananPelangganAkun($idAkun, $tanggal)
+  {
+    $builder = $this->db->table('pesanan as p');
+    $builder->select("
+        p.id_pesanan,
+        p.id_catatan_pesanan,
+        mp.id_menu_pesanan,
+        m.nama_menu,
+        jm.tanggal_menu, 
+        pel.nama_pelanggan, 
+        t.alamat_pengiriman, 
+        o.ongkir_kota, 
+        o.biaya_ongkir,
+        dmp.qty_menu,
+        dmp.qty_infuse
+    ");
+    $builder->join('akun as a', 'p.id_akun = a.id_akun', 'left');
+    $builder->join('pelanggan as pel', 'pel.id_pelanggan = a.id_pelanggan', 'left');
+    $builder->join('transaksi as t', 't.id_pesanan = p.id_pesanan', 'left');
+    $builder->join('ongkir as o', 'o.id_ongkir = t.id_ongkir', 'left');
+    $builder->join('menu_pesanan as mp', 'mp.id_pesanan = p.id_pesanan', 'left');
+    $builder->join('jadwal_menu as jm', 'jm.id_jadwal_menu = mp.id_jadwal_menu', 'left');
+    $builder->join('detail_menu_pesanan as dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left');
+    $builder->join('status_detail_menu_pesanan as sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left');
+    $builder->join('detail_jadwal_menu as djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left');
+    $builder->join('menu as m', 'm.id_menu = djm.id_menu', 'left');
+    $builder->join('paket_menu as pm', 'pm.id_paket_menu = m.id_paket_menu', 'left');
+    $builder->whereIn('sdmp.id_status_pesanan', [5, 6]);
+    $builder->where('dmp.deleted_at', null);
+    $builder->where('p.id_akun', $idAkun);
+    $builder->where("DATE_FORMAT(jm.tanggal_menu, '%Y-%m')", date('Y-m', strtotime($tanggal)));
+    $builder->groupBy(['pel.nama_pelanggan', 'm.nama_menu', 'jm.tanggal_menu', 'p.id_pesanan', 'mp.id_menu_pesanan']);
+    $builder->orderBy('jm.tanggal_menu', 'DESC');
+    $builder->orderBy('m.nama_menu', 'DESC');
     $query = $builder->get();
     return $query;
   }
@@ -1494,38 +1571,114 @@ class PesananModel extends Model
       ->where('dmp1.deleted_at IS NULL', null, false)
       ->groupBy('jm1.tanggal_menu');
 
+    $subQueryJumlahInfuse = $this->db->table('pesanan AS p1')
+      ->select('SUM(dmp1.qty_infuse)')
+      ->join('menu_pesanan AS mp1', 'mp1.id_pesanan = p1.id_pesanan', 'left')
+      ->join('jadwal_menu AS jm1', 'jm1.id_jadwal_menu = mp1.id_jadwal_menu', 'left')
+      ->join('detail_menu_pesanan AS dmp1', 'dmp1.id_menu_pesanan = mp1.id_menu_pesanan', 'left')
+      ->join('status_detail_menu_pesanan AS sdmp1', 'sdmp1.id_detail_menu_pesanan = dmp1.id_detail_menu_pesanan', 'left')
+      ->join('detail_jadwal_menu AS djm1', 'djm1.id_detail_jadwal_menu = dmp1.id_detail_jadwal_menu', 'left')
+      ->join('menu AS m1', 'm1.id_menu = djm1.id_menu', 'left')
+      ->join('pack AS pa1', 'pa1.id_pack = m1.id_pack', 'left')
+      ->whereIn('sdmp1.id_status_pesanan', [5, 6])
+      ->where('jm1.tanggal_menu = jm.tanggal_menu', null, false)
+      ->where('dmp1.deleted_at IS NULL', null, false)
+      ->groupBy('jm1.tanggal_menu');
+
     $builder = $this->db->table('pesanan AS p');
     $builder->select("
             mp.id_menu_pesanan,
             jm.tanggal_menu, 
-            SUM(o.biaya_ongkir) AS 'biaya_ongkir',
+            COUNT(DISTINCT dmp.id_menu_pesanan) AS 'jumlah_pesanan',
+            COUNT(DISTINCT(p.id_akun)) AS 'jumlah_pelanggan',
+            o.biaya_ongkir,
+            SUM(o.biaya_ongkir) AS 'biaya_ongkir1',
             SUM(dmp.qty_menu) AS qty_menu, 
             SUM(dmp.qty_infuse) AS qty_infuse,
-            SUM(
-                COALESCE(dmp.qty_menu, dmp.qty_infuse, 0) * 
-                COALESCE(m.harga_menu, pm.harga_paket_menu, 0) + 
-                COALESCE(dmp.qty_infuse, 0) * 10000
-            ) AS total_harga,
             ({$subQueryJumlahFamily->getCompiledSelect(false)}) AS jumlah_family,
-            ({$subQueryJumlahPersonal->getCompiledSelect(false)}) AS jumlah_personal
+            ({$subQueryJumlahPersonal->getCompiledSelect(false)}) AS jumlah_personal,
+            ({$subQueryJumlahInfuse->getCompiledSelect(false)}) AS jumlah_infuse
         ");
-    $builder->join('akun AS a', 'p.id_akun = a.id_akun', 'left');
-    $builder->join('pelanggan AS pel', 'pel.id_pelanggan = a.id_pelanggan', 'left');
+    // query total_ongkir
+    $subqueryBiayaOngkir = $this->db->table('pesanan p1')
+        ->select("o1.biaya_ongkir * COUNT(DISTINCT dmp1.id_menu_pesanan)")
+        ->join('transaksi AS t1', 't1.id_pesanan = p1.id_pesanan', 'left')
+        ->join('ongkir AS o1', 'o1.id_ongkir = t1.id_ongkir', 'left')
+        ->join('menu_pesanan AS mp1', 'mp1.id_pesanan = p1.id_pesanan', 'left')
+        ->join('jadwal_menu AS jm1', 'jm1.id_jadwal_menu = mp1.id_jadwal_menu', 'left')
+        ->join('detail_menu_pesanan AS dmp1', 'dmp1.id_menu_pesanan = mp1.id_menu_pesanan', 'left')
+        ->join('status_detail_menu_pesanan AS sdmp1', 'sdmp1.id_detail_menu_pesanan = dmp1.id_detail_menu_pesanan', 'left')
+        ->whereIn('sdmp1.id_status_pesanan', [5, 6])
+        ->where('jm1.tanggal_menu = jm.tanggal_menu', null, false)
+        // ->where('p1.approved', 'y')
+        ->where('dmp1.deleted_at', null)
+        ->groupBy('jm1.tanggal_menu');
+        // ->orderBy('jm1.tanggal_menu', 'DESC');
+    $builder->selectSubquery($subqueryBiayaOngkir, 'total_harga_ongkir');
+    // Subquery total_harga_family
+    $subqueryFamily = $this->db->table('pesanan p')
+        ->select('SUM(COALESCE(dmp.qty_menu, dmp.qty_infuse, 0) * COALESCE(m.harga_menu, pm.harga_paket_menu, 0))', false)
+        ->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left')
+        ->join('jadwal_menu jm1', 'jm1.id_jadwal_menu = mp.id_jadwal_menu', 'left')
+        ->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left')
+        ->join('detail_jadwal_menu djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left')
+        ->join('menu m', 'm.id_menu = djm.id_menu', 'left')
+        ->join('pack pa', 'pa.id_pack = m.id_pack', 'left')
+        ->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left')
+        ->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left')
+        ->where('sdmp.id_status_pesanan IN (5,6)', null, false)
+        ->where('pa.nama_pack', 'family')
+        ->where('jm1.tanggal_menu = jm.tanggal_menu', null, false)
+        ->where('dmp.deleted_at IS NULL', null, false)
+        ->groupBy('jm1.tanggal_menu');
+    $builder->selectSubquery($subqueryFamily, 'total_harga_family');
+    // Subquery total_harga_personal
+    $subqueryFamily = $this->db->table('pesanan p')
+        ->select('SUM(COALESCE(dmp.qty_menu, dmp.qty_infuse, 0) * COALESCE(m.harga_menu, pm.harga_paket_menu, 0))', false)
+        ->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left')
+        ->join('jadwal_menu jm1', 'jm1.id_jadwal_menu = mp.id_jadwal_menu', 'left')
+        ->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left')
+        ->join('detail_jadwal_menu djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left')
+        ->join('menu m', 'm.id_menu = djm.id_menu', 'left')
+        ->join('pack pa', 'pa.id_pack = m.id_pack', 'left')
+        ->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left')
+        ->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left')
+        ->where('sdmp.id_status_pesanan IN (5,6)', null, false)
+        ->where('pa.nama_pack', 'personal')
+        ->where('jm1.tanggal_menu = jm.tanggal_menu', null, false)
+        ->where('dmp.deleted_at IS NULL', null, false)
+        ->groupBy('jm1.tanggal_menu');
+    $builder->selectSubquery($subqueryFamily, 'total_harga_personal');
+    // Subquery total_harga_infuse
+    $subqueryInfuse = $this->db->table('pesanan p')
+        ->select('SUM(dmp.qty_infuse) * 10000', false)
+        ->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left')
+        ->join('jadwal_menu jm1', 'jm1.id_jadwal_menu = mp.id_jadwal_menu', 'left')
+        ->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left')
+        ->join('detail_jadwal_menu djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left')
+        ->join('menu m', 'm.id_menu = djm.id_menu', 'left')
+        ->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left')
+        ->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left')
+        ->where('sdmp.id_status_pesanan IN (5,6)', null, false)
+        ->where('m.nama_menu IS NULL', null, false)
+        ->where('jm1.tanggal_menu = jm.tanggal_menu', null, false)
+        ->where('dmp.deleted_at IS NULL', null, false)
+        ->groupBy('jm1.tanggal_menu');
+    $builder->selectSubquery($subqueryInfuse, 'total_harga_infuse');
+
     $builder->join('transaksi AS t', 't.id_pesanan = p.id_pesanan', 'left');
     $builder->join('ongkir AS o', 'o.id_ongkir = t.id_ongkir', 'left');
     $builder->join('menu_pesanan AS mp', 'mp.id_pesanan = p.id_pesanan', 'left');
     $builder->join('jadwal_menu AS jm', 'jm.id_jadwal_menu = mp.id_jadwal_menu', 'left');
     $builder->join('detail_menu_pesanan AS dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left');
     $builder->join('status_detail_menu_pesanan AS sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left');
-    $builder->join('detail_jadwal_menu AS djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left');
-    $builder->join('menu AS m', 'm.id_menu = djm.id_menu', 'left');
-    $builder->join('paket_menu AS pm', 'pm.id_paket_menu = m.id_paket_menu', 'left');
     $builder->whereIn('sdmp.id_status_pesanan', [5, 6]);
     if (!empty($tanggalAwal) && !empty($tanggalAkhir)) {
       $builder->where('jm.tanggal_menu >=', $tanggalAwal);
       $builder->where('jm.tanggal_menu <=', $tanggalAkhir);
     }
-    $builder->where('dmp.deleted_at IS NULL', null, false);
+    $builder->where('dmp.deleted_at', null);
+    $builder->where('p.approved', 'y');
     $builder->groupBy('jm.tanggal_menu');
     $builder->orderBy('jm.tanggal_menu', 'DESC');
     $query = $builder->get();
@@ -1565,15 +1718,73 @@ class PesananModel extends Model
     return $query;
   }
 
+  public function getTahunPerolehan() {
+    $builder = $this->db->table('transaksi tr');
+    $builder->select('DISTINCT(DATE_FORMAT(tr.tanggal_transaksi, "%Y")) AS tanggal_transaksi');
+    $builder->orderBy('tr.tanggal_transaksi', 'DESC');
+    $query = $builder->get();
+    return $query;
+  }
+
+  public function getFrekuensiHariByTanggal($bulanTahun) {
+    $builder = $this->db->table('pesanan p');
+    $builder->select("
+      DATE_FORMAT(jm.tanggal_menu, '%Y-%m') AS bulan_tahun,
+      COUNT(DISTINCT jm.tanggal_menu) AS jumlah_pesanan,
+
+      COUNT(DISTINCT CASE WHEN DAYOFWEEK(jm.tanggal_menu) = 2 THEN jm.tanggal_menu END) AS jumlah_hari_senin,
+      COUNT(DISTINCT CASE WHEN DAYOFWEEK(jm.tanggal_menu) = 3 THEN jm.tanggal_menu END) AS jumlah_hari_selasa,
+      COUNT(DISTINCT CASE WHEN DAYOFWEEK(jm.tanggal_menu) = 4 THEN jm.tanggal_menu END) AS jumlah_hari_rabu,
+      COUNT(DISTINCT CASE WHEN DAYOFWEEK(jm.tanggal_menu) = 5 THEN jm.tanggal_menu END) AS jumlah_hari_kamis,
+      COUNT(DISTINCT CASE WHEN DAYOFWEEK(jm.tanggal_menu) = 6 THEN jm.tanggal_menu END) AS jumlah_hari_jumat,
+      COUNT(DISTINCT CASE WHEN DAYOFWEEK(jm.tanggal_menu) = 7 THEN jm.tanggal_menu END) AS jumlah_hari_sabtu,
+      COUNT(DISTINCT CASE WHEN DAYOFWEEK(jm.tanggal_menu) = 1 THEN jm.tanggal_menu END) AS jumlah_hari_minggu
+    ");
+
+    $builder->join('transaksi t', 't.id_pesanan = p.id_pesanan', 'left');
+    $builder->join('ongkir o', 'o.id_ongkir = t.id_ongkir', 'left');
+    $builder->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left');
+    $builder->join('jadwal_menu jm', 'jm.id_jadwal_menu = mp.id_jadwal_menu', 'left');
+    $builder->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left');
+    $builder->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left');
+
+    $builder->where('sdmp.id_status_pesanan IN (5,6)', null, false);
+    $builder->where('dmp.deleted_at IS NULL', null, false);
+    $builder->where('p.approved', 'y');
+    $builder->where("DATE_FORMAT(jm.tanggal_menu, '%Y-%m') = ", $bulanTahun);
+    $builder->groupBy("DATE_FORMAT(jm.tanggal_menu, '%Y-%m')");
+
+    $query = $builder->get();
+    return $query;
+  }
+
   public function getDataLaporanBulan()
   {
     $builder = $this->db->table('pesanan p');
     $builder->select('
         jm.tanggal_menu,
-        DATE_FORMAT(jm.tanggal_menu, "%Y-%m") AS bulan_tahun,
-        SUM(o.biaya_ongkir) AS total_biaya_ongkir
+        COUNT(DISTINCT dmp.id_menu_pesanan) AS "jumlah_pesanan",
+        COUNT(DISTINCT(p.id_akun)) AS "jumlah_pelanggan",
+        DATE_FORMAT(jm.tanggal_menu, "%Y-%m") AS bulan_tahun
     ');
+        // SUM(o.biaya_ongkir) AS total_harga_ongkir
 
+    // query total_ongkir
+    $subqueryBiayaOngkir = $this->db->table('pesanan p1')
+        ->select("o1.biaya_ongkir * COUNT(DISTINCT dmp1.id_menu_pesanan)")
+        ->join('transaksi AS t1', 't1.id_pesanan = p1.id_pesanan', 'left')
+        ->join('ongkir AS o1', 'o1.id_ongkir = t1.id_ongkir', 'left')
+        ->join('menu_pesanan AS mp1', 'mp1.id_pesanan = p1.id_pesanan', 'left')
+        ->join('jadwal_menu AS jm1', 'jm1.id_jadwal_menu = mp1.id_jadwal_menu', 'left')
+        ->join('detail_menu_pesanan AS dmp1', 'dmp1.id_menu_pesanan = mp1.id_menu_pesanan', 'left')
+        ->join('status_detail_menu_pesanan AS sdmp1', 'sdmp1.id_detail_menu_pesanan = dmp1.id_detail_menu_pesanan', 'left')
+        ->whereIn('sdmp1.id_status_pesanan', [5, 6])
+        ->where('DATE_FORMAT(jm1.tanggal_menu, "%Y-%m") = DATE_FORMAT(jm.tanggal_menu, "%Y-%m")', null, false)
+        ->where('dmp1.deleted_at', null);
+        // ->where('p1.approved', 'y')
+        // ->groupBy('jm1.tanggal_menu')
+        // ->orderBy('jm1.tanggal_menu', 'DESC');
+    $builder->selectSubquery($subqueryBiayaOngkir, 'total_harga_ongkir');
     // Subquery total_harga_family
     $subqueryFamily = $this->db->table('pesanan p')
         ->select('SUM(COALESCE(dmp.qty_menu, dmp.qty_infuse, 0) * COALESCE(m.harga_menu, pm.harga_paket_menu, 0))', false)
@@ -1590,7 +1801,6 @@ class PesananModel extends Model
         ->where('DATE_FORMAT(jm1.tanggal_menu, "%Y-%m") = DATE_FORMAT(jm.tanggal_menu, "%Y-%m")', null, false)
         ->where('dmp.deleted_at IS NULL', null, false);
     $builder->selectSubquery($subqueryFamily, 'total_harga_family');
-
     // Subquery total_harga_personal
     $subqueryPersonal = $this->db->table('pesanan p')
         ->select('SUM(COALESCE(dmp.qty_menu, dmp.qty_infuse, 0) * COALESCE(m.harga_menu, pm.harga_paket_menu, 0))', false)
@@ -1607,7 +1817,22 @@ class PesananModel extends Model
         ->where('DATE_FORMAT(jm1.tanggal_menu, "%Y-%m") = DATE_FORMAT(jm.tanggal_menu, "%Y-%m")', null, false)
         ->where('dmp.deleted_at IS NULL', null, false);
     $builder->selectSubquery($subqueryPersonal, 'total_harga_personal');
-
+    // Subquery total_harga_infuse
+    $subqueryInfuse = $this->db->table('pesanan p')
+        ->select('SUM(dmp.qty_infuse) * 10000', false)
+        ->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left')
+        ->join('jadwal_menu jm1', 'jm1.id_jadwal_menu = mp.id_jadwal_menu', 'left')
+        ->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left')
+        ->join('detail_jadwal_menu djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left')
+        ->join('menu m', 'm.id_menu = djm.id_menu', 'left')
+        ->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left')
+        ->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left')
+        ->where('sdmp.id_status_pesanan IN (5,6)', null, false)
+        ->where('m.nama_menu IS NULL', null, false)
+        ->where('DATE_FORMAT(jm1.tanggal_menu, "%Y-%m") = DATE_FORMAT(jm.tanggal_menu, "%Y-%m")', null, false)
+        ->where('dmp.deleted_at IS NULL', null, false)
+        ->orderBy('p.id_akun', 'ASC');
+    $builder->selectSubquery($subqueryInfuse, 'total_harga_infuse');
     // Subquery total_jumlah_personal
     $subqueryJumlahPersonal = $this->db->table('pesanan p')
         ->select('SUM(dmp.qty_menu)', false)
@@ -1625,7 +1850,6 @@ class PesananModel extends Model
         ->where('dmp.deleted_at IS NULL', null, false)
         ->limit(1);
     $builder->selectSubquery($subqueryJumlahPersonal, 'total_jumlah_personal');
-
     // Subquery total_jumlah_family
     $subqueryJumlahFamily = $this->db->table('pesanan p')
         ->select('SUM(dmp.qty_menu)', false)
@@ -1643,24 +1867,22 @@ class PesananModel extends Model
         ->where('dmp.deleted_at IS NULL', null, false)
         ->limit(1);
     $builder->selectSubquery($subqueryJumlahFamily, 'total_jumlah_family');
-
-    // Subquery total_harga_infuse
-    $subqueryInfuse = $this->db->table('pesanan p')
-        ->select('SUM(dmp.qty_infuse) * 10000', false)
+    // Subquery total_jumlah_infuse
+    $subqueryJumlahInfuse = $this->db->table('pesanan p')
+        ->select('SUM(dmp.qty_infuse)', false)
         ->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left')
         ->join('jadwal_menu jm1', 'jm1.id_jadwal_menu = mp.id_jadwal_menu', 'left')
         ->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left')
         ->join('detail_jadwal_menu djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left')
         ->join('menu m', 'm.id_menu = djm.id_menu', 'left')
+        ->join('pack pa', 'pa.id_pack = m.id_pack', 'left')
         ->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left')
         ->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left')
         ->where('sdmp.id_status_pesanan IN (5,6)', null, false)
-        ->where('m.nama_menu IS NULL', null, false)
         ->where('DATE_FORMAT(jm1.tanggal_menu, "%Y-%m") = DATE_FORMAT(jm.tanggal_menu, "%Y-%m")', null, false)
         ->where('dmp.deleted_at IS NULL', null, false)
-        ->orderBy('p.id_akun', 'ASC');
-    $builder->selectSubquery($subqueryInfuse, 'total_harga_infuse');
-
+        ->limit(1);
+    $builder->selectSubquery($subqueryJumlahInfuse, 'total_jumlah_infuse');
     // Join tabel utama
     $builder->join('transaksi t', 't.id_pesanan = p.id_pesanan', 'left');
     $builder->join('ongkir o', 'o.id_ongkir = t.id_ongkir', 'left');
@@ -1668,9 +1890,9 @@ class PesananModel extends Model
     $builder->join('jadwal_menu jm', 'jm.id_jadwal_menu = mp.id_jadwal_menu', 'left');
     $builder->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left');
     $builder->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left');
-
     $builder->whereIn('sdmp.id_status_pesanan', [5, 6]);
     $builder->where('dmp.deleted_at IS NULL', null, false);
+    $builder->where('p.approved', 'y');
 
     // Group & Order
     $builder->groupBy('bulan_tahun');
@@ -1678,6 +1900,99 @@ class PesananModel extends Model
 
     $query = $builder->get();
     return $query;
+  }
+
+  public function getTanggalAktifitasPerBulan() {
+    $builder = $this->db->table('pesanan p');
+    $builder->select("
+      ");
+    $builder->join('transaksi tr', 'tr.id_pesanan = p.id_pesanan', 'left');
+    $builder->join('ongkir o', 'o.id_ongkir = tr.id_ongkir', 'left');
+    $builder->join('akun a', 'a.id_akun = p.id_akun', 'left');
+    $builder->join('pelanggan pel', 'pel.id_pelanggan = a.id_pelanggan', 'left');
+    $builder->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left');
+    $builder->join('jadwal_menu jm', 'jm.id_jadwal_menu = mp.id_jadwal_menu', 'left');
+    $builder->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left');
+    $builder->join('detail_jadwal_menu djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left');
+    $builder->join('menu m', 'm.id_menu = djm.id_menu', 'left');
+    $builder->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left');
+    $builder->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left');
+    $builder->whereIn('sdmp.id_status_pesanan', [5, 6]);
+    $builder->where('dmp.deleted_at', NULL);
+    $builder->groupBy(['pel.nama_pelanggan', 'jm.tanggal_menu', 'mp.id_pesanan']);
+    $builder->orderBy('jm.tanggal_menu', 'DESC');
+    $query = $builder->get();
+    return $query;
+  }
+
+  public function getAktifitasPerBulan($tanggal, $laporan) {
+    $builder = $this->db->table('pesanan p');
+    $builder->select("
+        jm.tanggal_menu, 
+        p.id_akun, 
+        pel.nama_pelanggan, 
+        o.biaya_ongkir,
+        mp.id_menu_pesanan,
+        dmp.qty_menu, 
+        dmp.qty_infuse,
+        m.harga_menu, 
+        pm.harga_paket_menu,
+        (COALESCE(SUM(m.harga_menu), SUM(pm.harga_paket_menu)) * dmp.qty_menu + COALESCE(SUM(dmp.qty_infuse), 0) * 10000) AS `total_harga`,
+        (COALESCE(SUM(m.harga_menu), SUM(pm.harga_paket_menu)) * dmp.qty_menu + COALESCE(SUM(dmp.qty_infuse), 0) * 10000 + o.biaya_ongkir) AS `total_harga_keseluruhan`
+    ");
+
+    $builder->join('transaksi tr', 'tr.id_pesanan = p.id_pesanan', 'left');
+    $builder->join('ongkir o', 'o.id_ongkir = tr.id_ongkir', 'left');
+    $builder->join('akun a', 'a.id_akun = p.id_akun', 'left');
+    $builder->join('pelanggan pel', 'pel.id_pelanggan = a.id_pelanggan', 'left');
+    $builder->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left');
+    $builder->join('jadwal_menu jm', 'jm.id_jadwal_menu = mp.id_jadwal_menu', 'left');
+    $builder->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left');
+    $builder->join('detail_jadwal_menu djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left');
+    $builder->join('menu m', 'm.id_menu = djm.id_menu', 'left');
+    $builder->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left');
+    $builder->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left');
+
+    $builder->where('p.approved', 'y');
+    $builder->where('dmp.deleted_at', null);
+    $builder->whereIn('sdmp.id_status_pesanan', [5, 6]);
+    if ($laporan == 'periode') {
+      $builder->where("jm.tanggal_menu = ", $tanggal);
+    } elseif ($laporan == 'bulan') {
+      $builder->where("DATE_FORMAT(jm.tanggal_menu, '%Y-%m') = ", date('Y-m', strtotime($tanggal)));
+    }
+
+    $builder->groupBy('mp.id_menu_pesanan');
+    $builder->orderBy('jm.tanggal_menu', 'ASC');
+    $query = $builder->get();
+    return $query;
+//     SELECT 
+//   jm.tanggal_menu, 
+//     p.id_akun, 
+//     pel.nama_pelanggan, o.biaya_ongkir,
+//     mp.id_menu_pesanan,
+//     dmp.qty_menu, dmp.qty_infuse,
+//     m.harga_menu, pm.harga_paket_menu,
+//     (COALESCE(m.harga_menu, pm.harga_paket_menu) * dmp.qty_menu + COALESCE(dmp.qty_infuse, 0) * 10000) AS 'total harga',
+//     (o.biaya_ongkir + COALESCE(m.harga_menu, pm.harga_paket_menu) * dmp.qty_menu + COALESCE(dmp.qty_infuse, 0) * 10000) AS 'total harga keseluruhan'
+// FROM pesanan p
+// LEFT JOIN transaksi tr ON tr.id_pesanan = p.id_pesanan
+// LEFT JOIN ongkir o ON o.id_ongkir = tr.id_ongkir
+// LEFT JOIN akun a ON a.id_akun = p.id_akun
+// LEFT JOIN pelanggan pel ON pel.id_pelanggan = a.id_pelanggan
+// LEFT JOIN menu_pesanan mp ON mp.id_pesanan = p.id_pesanan
+// LEFT JOIN jadwal_menu jm ON jm.id_jadwal_menu = mp.id_jadwal_menu
+// LEFT JOIN detail_menu_pesanan dmp ON dmp.id_menu_pesanan = mp.id_menu_pesanan
+// LEFT JOIN detail_jadwal_menu djm ON djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu
+// LEFT JOIN menu m ON m.id_menu = djm.id_menu
+// LEFT JOIN paket_menu pm ON pm.id_paket_menu = m.id_paket_menu
+// LEFT JOIN status_detail_menu_pesanan sdmp ON sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan
+// WHERE p.approved = 'y'
+//   AND dmp.deleted_at IS NULL
+//     AND sdmp.id_status_pesanan IN(5,6)
+//     AND DATE_FORMAT(jm.tanggal_menu, '%Y-%m') = '2025-03'
+// GROUP BY mp.id_menu_pesanan
+// ORDER BY jm.tanggal_menu ASC
   }
 
   public function getTotalHargaOngkirBulan()
@@ -1701,16 +2016,73 @@ class PesananModel extends Model
   public function getJumlahPemesananPelanggan()
   {
     $builder = $this->db->table('pesanan p');
-    $builder->select('p.id_akun, pel.nama_pelanggan, COUNT(DISTINCT jm.tanggal_menu) AS jumlah_pemesanan');
+    $builder->select(
+          'p.id_akun, pel.nama_pelanggan, o.biaya_ongkir,
+          COUNT(DISTINCT jm.tanggal_menu) AS jumlah_pemesanan,
+          SUM(
+            COALESCE(dmp.qty_menu, dmp.qty_infuse, 0) * 
+            COALESCE(m.harga_menu, pm.harga_paket_menu, 0) +
+            COALESCE(dmp.qty_infuse, 0) * 10000
+          ) AS total_menu,
+          (SUM(
+                COALESCE(dmp.qty_menu, dmp.qty_infuse, 0) * 
+                COALESCE(m.harga_menu, pm.harga_paket_menu, 0) +
+                COALESCE(dmp.qty_infuse, 0) * 10000
+            ) + o.biaya_ongkir * COUNT(DISTINCT jm.tanggal_menu)
+          ) AS total_keseluruhan'
+        );
     $builder->join('akun a', 'a.id_akun = p.id_akun', 'left');
     $builder->join('pelanggan pel', 'pel.id_pelanggan = a.id_pelanggan', 'left');
     $builder->join('transaksi t', 't.id_pesanan = p.id_pesanan', 'left');
+    $builder->join('ongkir o', 'o.id_ongkir = t.id_ongkir', 'left');
     $builder->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left');
     $builder->join('jadwal_menu jm', 'jm.id_jadwal_menu = mp.id_jadwal_menu', 'left');
     $builder->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left');
+    $builder->join('detail_jadwal_menu djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left');
+    $builder->join('menu m', 'm.id_menu = djm.id_menu', 'left');
+    $builder->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left');
     $builder->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left');
     $builder->whereIn('sdmp.id_status_pesanan', [5, 6]);
+    $builder->where('dmp.deleted_at', null);
     $builder->groupBy('pel.nama_pelanggan');
+    $builder->orderBy('jumlah_pemesanan', 'DESC');
+    $builder->orderBy('total_keseluruhan', 'DESC');
+    $query = $builder->get();
+    return $query;
+  }
+
+  public function getTotalPembelianPelanggan($idAkun) {
+    $builder = $this->db->table('pesanan p');
+    $builder->select(
+            "COUNT(DISTINCT jm.tanggal_menu) as jumlah_pemesanan,
+            SUM(
+              COALESCE(dmp.qty_menu, dmp.qty_infuse, 0) * 
+              COALESCE(m.harga_menu, pm.harga_paket_menu, 0) +
+              COALESCE(dmp.qty_infuse, 0) * 10000
+            ) AS total_menu,
+            (
+              SUM(
+                  COALESCE(dmp.qty_menu, dmp.qty_infuse, 0) * 
+                  COALESCE(m.harga_menu, pm.harga_paket_menu, 0) +
+                  COALESCE(dmp.qty_infuse, 0) * 10000
+              ) + o.biaya_ongkir * COUNT(DISTINCT jm.tanggal_menu)
+            ) AS total_keseluruhan"
+    );
+    $builder->join('akun a', 'a.id_akun = p.id_akun', 'left');
+    $builder->join('pelanggan pel', 'pel.id_pelanggan = a.id_pelanggan', 'left');
+    $builder->join('transaksi t', 't.id_pesanan = p.id_pesanan', 'left');
+    $builder->join('ongkir o', 'o.id_ongkir = t.id_ongkir', 'left');
+    $builder->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left');
+    $builder->join('jadwal_menu jm', 'jm.id_jadwal_menu = mp.id_jadwal_menu', 'left');
+    $builder->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left');
+    $builder->join('detail_jadwal_menu djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left');
+    $builder->join('menu m', 'm.id_menu = djm.id_menu', 'left');
+    $builder->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left');
+    $builder->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left');
+    $builder->whereIn('sdmp.id_status_pesanan', [5, 6]);
+    $builder->where('dmp.deleted_at', null);
+    $builder->where('p.id_akun', $idAkun);
+    $builder->groupBy('p.id_akun');
     $query = $builder->get();
     return $query;
   }
@@ -1719,16 +2091,34 @@ class PesananModel extends Model
   {
     $builder = $this->db->table('pesanan p');
     $builder->select(
-      "DATE_FORMAT(jm.tanggal_menu, '%Y-%m') AS bulan_tahun, jm.tanggal_menu, COUNT(DISTINCT jm.tanggal_menu) as jumlah_pemesanan"
+            "DATE_FORMAT(jm.tanggal_menu, '%Y-%m') AS bulan_tahun, 
+            jm.tanggal_menu, 
+            COUNT(DISTINCT jm.tanggal_menu) as jumlah_pemesanan,
+            SUM(
+              COALESCE(dmp.qty_menu, dmp.qty_infuse, 0) * 
+              COALESCE(m.harga_menu, pm.harga_paket_menu, 0) +
+              COALESCE(dmp.qty_infuse, 0) * 10000
+            ) AS total_menu,
+            (SUM(
+                  COALESCE(dmp.qty_menu, dmp.qty_infuse, 0) * 
+                  COALESCE(m.harga_menu, pm.harga_paket_menu, 0) +
+                  COALESCE(dmp.qty_infuse, 0) * 10000
+              ) + o.biaya_ongkir * COUNT(DISTINCT jm.tanggal_menu)
+            ) AS total_keseluruhan"
     );
     $builder->join('akun a', 'a.id_akun = p.id_akun', 'left');
     $builder->join('pelanggan pel', 'pel.id_pelanggan = a.id_pelanggan', 'left');
     $builder->join('transaksi t', 't.id_pesanan = p.id_pesanan', 'left');
+    $builder->join('ongkir o', 'o.id_ongkir = t.id_ongkir', 'left');
     $builder->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left');
     $builder->join('jadwal_menu jm', 'jm.id_jadwal_menu = mp.id_jadwal_menu', 'left');
     $builder->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left');
+    $builder->join('detail_jadwal_menu djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left');
+    $builder->join('menu m', 'm.id_menu = djm.id_menu', 'left');
+    $builder->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left');
     $builder->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left');
     $builder->whereIn('sdmp.id_status_pesanan', [5, 6]);
+    $builder->where('dmp.deleted_at', null);
     $builder->where('p.id_akun', $idAkun);
     $builder->groupBy('bulan_tahun');
     $builder->orderBy('bulan_tahun', 'DESC');
@@ -1738,13 +2128,50 @@ class PesananModel extends Model
 
   public function getJumlahPesananDataMenu()
   {
+    // (
+    //     SELECT COUNT(*) AS "terjadwal"
+    // FROM transaksi tr1
+    // LEFT JOIN pesanan pe1 ON pe1.id_pesanan = tr1.id_pesanan
+    // LEFT JOIN menu_pesanan mp1 ON mp1.id_pesanan = pe1.id_pesanan
+    // LEFT JOIN detail_menu_pesanan dmp1 ON dmp1.id_menu_pesanan = mp1.id_menu_pesanan
+    // LEFT JOIN status_detail_menu_pesanan sdmp1 ON sdmp1.id_detail_menu_pesanan = dmp1.id_detail_menu_pesanan
+    // LEFT JOIN detail_jadwal_menu djm1 ON djm1.id_detail_jadwal_menu = dmp1.id_detail_jadwal_menu
+    // LEFT JOIN menu me1 ON me1.id_menu = djm1.id_menu
+    // LEFT JOIN paket_menu pm1 ON pm1.id_paket_menu = me1.id_paket_menu
+    // WHERE djm1.id_menu = m.id_menu AND sdmp1.id_status_pesanan IN (5, 6)
+    // ) AS "terjadwal",
+
+    $subquery = $this->db->table('transaksi tr1')
+    ->select('(SUM(dmp1.qty_menu) * COALESCE(me1.harga_menu, pm1.harga_paket_menu))', false)
+    ->join('pesanan pe1', 'pe1.id_pesanan = tr1.id_pesanan', 'left')
+    ->join('menu_pesanan mp1', 'mp1.id_pesanan = pe1.id_pesanan', 'left')
+    ->join('detail_menu_pesanan dmp1', 'dmp1.id_menu_pesanan = mp1.id_menu_pesanan', 'left')
+    ->join('status_detail_menu_pesanan sdmp1', 'sdmp1.id_detail_menu_pesanan = dmp1.id_detail_menu_pesanan', 'left')
+    ->join('detail_jadwal_menu djm1', 'djm1.id_detail_jadwal_menu = dmp1.id_detail_jadwal_menu', 'left')
+    ->join('menu me1', 'me1.id_menu = djm1.id_menu', 'left')
+    ->join('paket_menu pm1', 'pm1.id_paket_menu = me1.id_paket_menu', 'left')
+    ->where('djm1.id_menu = m.id_menu', null, false)
+    ->whereIn('sdmp1.id_status_pesanan', [5, 6])
+    ->getCompiledSelect();
+
     $builder = $this->db->table('pesanan p');
-    $builder->select("m.nama_menu, SUM(dmp.qty_menu) AS qty_menu, SUM(dmp.qty_infuse) AS qty_infuse");
+    $builder->select("
+        m.id_menu,
+        m.nama_menu,
+        m.harga_menu,
+        pm.nama_paket_menu,
+        pm.harga_paket_menu,
+        SUM(dmp.qty_menu) AS qty_menu,
+        SUM(dmp.qty_infuse) AS qty_infuse,
+        ($subquery) AS perolehan
+    ", false);
+
     $builder->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left');
     $builder->join('jadwal_menu jm', 'jm.id_jadwal_menu = mp.id_jadwal_menu', 'left');
     $builder->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left');
     $builder->join('detail_jadwal_menu djm', 'djm.id_detail_jadwal_menu = dmp.id_detail_jadwal_menu', 'left');
     $builder->join('menu m', 'm.id_menu = djm.id_menu', 'left');
+    $builder->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left');
     $builder->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left');
     $builder->whereIn('sdmp.id_status_pesanan', [5, 6]);
     $builder->groupBy('m.nama_menu');

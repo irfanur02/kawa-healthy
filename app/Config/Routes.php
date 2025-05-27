@@ -78,6 +78,9 @@ $routes->post('/dadmin/laporanByBulan', 'Admin\Laporan::laporanByBulan');
 $routes->post('/dadmin/laporanByPelanggan', 'Admin\Laporan::laporanByPelanggan');
 $routes->post('/dadmin/laporanByDetailPelanggan', 'Admin\Laporan::laporanByDetailPelanggan');
 $routes->post('/dadmin/laporanByMenu', 'Admin\Laporan::laporanByMenu');
+$routes->post('/dadmin/laporanFrekuensiHariByBulan', 'Admin\Laporan::laporanFrekuensiHariByBulan');
+$routes->post('/dadmin/laporanAktifitas', 'Admin\Laporan::laporanAktifitas');
+$routes->post('/dadmin/laporanDetailPelangganPemesanan', 'Admin\Laporan::laporanDetailPelangganPemesanan');
 // ROUTES ADMIN
 #
 #

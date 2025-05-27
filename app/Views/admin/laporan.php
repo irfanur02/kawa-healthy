@@ -66,22 +66,52 @@
               <tr class="align-middle">
                 <td scope="col" style="padding: .5em 30px .5em 30px;">Tanggal</td>
                 <td scope="col" style="padding: .5em 30px .5em 30px;">Pendapatan</td>
-                <td scope="col" style="padding: .5em 30px .5em 30px;">Jumlah Jenis Pack</td>
+                <td scope="col" style="padding: .5em 30px .5em 30px;">Aktifitas</td>
+                <td scope="col" style="padding: .5em 30px .5em 30px;">Pembelian</td>
+                <td scope="col" style="padding: .5em 30px .5em 30px;">Aksi</td>
               </tr>
             </thead>
             <tbody>
               <?php foreach ($dataLaporan as $data) : ?>
                 <tr class="align-middle fw-medium">
-                  <td><?php echo $data['tanggal_menu']; ?></td>
-                  <td><?php echo formatRupiah($data['total_harga'] + $data['biaya_ongkir']); ?></td>
+                  <td><?php echo formatTanggal($data['tanggal_menu'], false, false, true); ?></td>
+                  <td>
+                    <?php echo formatRupiah($data['total_harga_family'] + $data['total_harga_personal'] +
+                                          $data['total_harga_infuse'] + $data['total_harga_ongkir']); ?>
+                  </td>
+                  <td>
+                    <?php echo $data['jumlah_pelanggan']; ?> Pelanggan
+                    <br>
+                    <?php echo $data['jumlah_pesanan']; ?> Pesanan
+                  </td>
                   <td>
                     <span class="d-block">family pack: <?php echo (!empty($data['jumlah_family']) ? $data['jumlah_family'] : "-"); ?></span>
                     <span class="d-block">personal pack: <?php echo (!empty($data['jumlah_personal']) ? $data['jumlah_personal'] : "-"); ?></span>
+                    <span class="d-block">infuse: <?php echo $data['jumlah_infuse']; ?></span>
+                  </td>
+                  <td>
+                    <button class="btn p-0 px-1 btn-sm btn-outline-dark rounded-pill my-border-btn btnDetailAktifitas" data-laporan="periode" data-bs-toggle="modal" data-bs-target="#modalDetailAktifitas" data-tanggal="<?php echo $data['tanggal_menu']; ?>">lihat detail</button>
                   </td>
                 </tr>
               <?php endforeach; ?>
             </tbody>
           </table>
+        </div>
+      </div>
+      <!-- Modal lihat detail aktifitas-->
+      <div class="modal fade" id="modalDetailAktifitas" tabindex="-1" aria-labelledby="modalDetailAktifitasLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+          <div class="modal-content border border-dark">
+            <div class="modal-header justify-content-center" style=" background-color: #055160; color: white;">
+              <h1 class="modal-title fs-5 text-center" id="modalDetailAktifitasLabel">
+              </h1>
+            </div>
+            <div class="modal-body">
+              <div class="d-flex justify-content-center" id="laporanAktifitas">
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

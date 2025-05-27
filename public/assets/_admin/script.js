@@ -1778,11 +1778,13 @@ $(document).ready(function() {
       type: 'POST',
       data: {
         tanggalAwal: $("#filterPerPeriode input[name=tanggalAwal]").val(),
-        tanggalAkhir: $("#filterPerPeriode input[name=tanggalAkhir]").val()
+        tanggalAkhir: $("#filterPerPeriode input[name=tanggalAkhir]").val(),
+        range: 'aktif'
       },
       dataType: 'json',
       success: function (data) {
         console.log(data.laporan);
+        console.log(data);
         $("#dataLaporan").html(data.element)
       }
     });
@@ -1798,6 +1800,7 @@ $(document).ready(function() {
       success: function (data) {
         console.log(data.laporan);
         console.log(data.id);
+        console.log(data);
         $("#dataLaporan").html(data.element)
       }
     });
@@ -1810,7 +1813,155 @@ $(document).ready(function() {
       dataType: 'json',
       success: function (data) {
         console.log(data.laporan);
+        console.log(data);
         $("#dataLaporan").html(data.element)
+      }
+    });
+  })
+
+  function renderChart(labels, data) {
+    const canvas = document.getElementById('chartCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const barWidth = 40;  // Tetap
+    const gap = 20;
+    const height = 300;
+    const totalWidth = (barWidth + gap) * data.length + gap;
+
+    canvas.width = totalWidth;
+    canvas.height = height;
+
+    // Bersihkan
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const chartHeight = height - 50;
+    const max = Math.max(...data);
+    const scale = chartHeight / max;
+
+    ctx.font = "12px Arial";
+    ctx.textAlign = "center";
+
+    data.forEach((value, index) => {
+      const x = index * (barWidth + gap) + gap;
+      const barHeight = value * scale;
+      const y = height - barHeight - 30;
+
+      // Bar
+      ctx.fillStyle = "#2E86C1";
+      ctx.fillRect(x, y, barWidth, barHeight);
+
+      // Value
+      ctx.fillStyle = "#000";
+      ctx.fillText(value, x + barWidth / 2, y - 5);
+
+      // Label
+      ctx.fillText(labels[index], x + barWidth / 2, height - 10);
+    });
+  }
+
+  function formatTanggal(tanggal, format) {
+    var dateObj = new Date(tanggal);
+    // Validasi input
+    if (isNaN(dateObj.getTime())) {
+      return "Tanggal tidak valid";
+    }
+    // Array nama bulan dalam Bahasa Indonesia
+    var bulanIndo = [
+      "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+      "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    ];
+    if (format === 'm-y') {
+      return bulanIndo[dateObj.getMonth()] + " " + dateObj.getFullYear();
+    } else if (format === 'd-m-y') {
+      return dateObj.getDate() + " " + bulanIndo[dateObj.getMonth()] + " " + dateObj.getFullYear();
+    }
+    // Tambahan format jika diperlukan di masa depan
+    return tanggal;
+  }
+
+  $(".content-laporan").on("click", ".btnFrekuensiHari", function() {
+    console.log($(this).data('tanggal'));
+    var tanggal = $(this).data('tanggal');
+
+    $.ajax({
+      url: base_url + '/dadmin/laporanFrekuensiHariByBulan',
+      type: 'POST',
+      data: {
+        tanggal: tanggal
+      },
+      dataType: 'json',
+      success: function (data) {
+        console.log(data);
+        // Contoh data dummy (bisa diganti dengan hasil AJAX)
+        let labels = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+        let dataFrekuensiHari = [
+                  data.dataFrekuensiHari['jumlah_hari_senin'],
+                  data.dataFrekuensiHari['jumlah_hari_selasa'],
+                  data.dataFrekuensiHari['jumlah_hari_rabu'],
+                  data.dataFrekuensiHari['jumlah_hari_kamis'],
+                  data.dataFrekuensiHari['jumlah_hari_jumat'],
+                  data.dataFrekuensiHari['jumlah_hari_sabtu'],
+                  data.dataFrekuensiHari['jumlah_hari_minggu']];
+        // Render chart
+        renderChart(labels, dataFrekuensiHari);
+        $(".content-laporan #modalFrekuensiHari .modal-header h1").html(formatTanggal(tanggal, 'm-y'));
+        // $("#dataLaporan").html(data.element)
+      }
+    });
+  })
+
+  $(".content-laporan").on("click", ".btnDetailPelangganPemesanan", function() {
+    var tanggal = $(this).data('tanggal');
+    var idAkun = $(this).attr('data-idAkun');
+    var tanggalPemesanan = $(this).closest('tr').find("td").eq(0).text().trim();
+    console.log(idAkun+' '+tanggal);
+    
+    $.ajax({
+      url: base_url + '/dadmin/laporanDetailPelangganPemesanan',
+      type: 'POST',
+      data: {
+        tanggal: tanggal,
+        idAkun: idAkun
+      },
+      dataType: 'json',
+      success: function (data) {
+        console.log(data);
+        $(".content-laporan #modalDetailPelangganPemesanan .modal-title").html(`
+            ${tanggalPemesanan}`);
+        $(".content-laporan #modalDetailPelangganPemesanan #laporanDetailPelangganPemesanan").html(data.element);
+        // $("#dataLaporan").html(data.element)
+      }
+    });
+  })
+
+  $(".content-laporan").on("click", ".btnDetailAktifitas", function() {
+    var tanggal = $(this).data('tanggal');
+    var pendapatan = $(this).closest('tr').find("td").eq(1).text().trim();
+    var laporan = $(this).data('laporan');
+    var tanggalFormat = (laporan == 'periode') ? 'd-m-y' : 'm-y';
+    if (laporan == 'periode') {
+      laporan = 'periode';
+    } else if (laporan == 'bulan') {
+      laporan = 'bulan';
+    }
+
+    $.ajax({
+      url: base_url + '/dadmin/laporanAktifitas',
+      type: 'POST',
+      data: {
+        tanggal: tanggal,
+        laporan: laporan
+      },
+      dataType: 'json',
+      success: function (data) {
+        console.log(data);
+        $(".content-laporan #modalDetailAktifitas .modal-title").html(`
+            <span>Total Pendapatan ${formatTanggal(tanggal, tanggalFormat)}</span>
+            <br>
+            <span>${pendapatan}</span>
+            `);
+        $(".content-laporan #modalDetailAktifitas #laporanAktifitas").html(data.element);
+        // $("#dataLaporan").html(data.element)
       }
     });
   })
@@ -1818,6 +1969,7 @@ $(document).ready(function() {
   $(".content-laporan select#selectLaporan").on('change', function() {
     if(this.value == "periode" || this.value == "bulan" || this.value == "pelanggan" || this.value == "menu") {
       $(".content-laporan #filterPerPeriode").css("display", 'none');
+      $(".content-laporan #filterPerPeriode input").val('');
     };
 
     if(this.value == "periode") {
@@ -1829,6 +1981,8 @@ $(document).ready(function() {
         dataType: 'json',
         success: function (data) {
           console.log(data.laporan);
+          console.log(data.data);
+          console.log(data);
           $("#dataLaporan").html(data.element)
         }
       });
