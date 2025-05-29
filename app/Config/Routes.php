@@ -22,7 +22,9 @@ $routes->get('/dadmin/pesanan/(:any)', 'Admin\Pesanan::pesananDetail/$1');
 $routes->get('/dadmin/pesananMasuk', 'Admin\Pesanan::pesananMasuk');
 $routes->get('/dadmin/pesananPembayaran', 'Admin\Pesanan::pesananPembayaran');
 $routes->post('/dadmin/pesanan/historiPembayaran', 'Admin\Pesanan::historiPembayaran');
+$routes->post('/dadmin/pesanan/historiPembatalan', 'Admin\Pesanan::historiPembatalan');
 $routes->post('/dadmin/pesanan/pembayaranMasuk', 'Admin\Pesanan::pembayaranMasuk');
+$routes->post('/dadmin/pesanan/pembatalanMasuk', 'Admin\Pesanan::pembatalanMasuk');
 $routes->get('/dadmin/pesananBatal', 'Admin\Pesanan::pesananBatal');
 $routes->get('/dadmin/pesananRiwayat', 'Admin\Pesanan::pesananRiwayat');
 

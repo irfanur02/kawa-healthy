@@ -30,8 +30,21 @@
           </ul>
         </div>
       </div>
-      <div class="table-responsive m-4">
-        <table class="table my-table-admin table-hover mt-3" id="tabelPesananBatal">
+      <div class="mt-4 text-center d-flex justify-content-center gap-1" id="tabPembayaran">
+        <button class="btn btn-sm rounded-pill btn-light my-border-btn my-btn-main" id="btnPembatalanMasuk">Pembatalan Masuk</button>
+        <div class="my-dropdown">
+          <button class="btn btn-sm rounded-pill btn-light my-border-btn" id="btnHistoriPembatalan">Histori Pembatalan</button>
+          <div class="my-content-dropdown">
+            <ul class="list-group list-group-flush" style="font-size: .9em;">
+              <li class="list-group-item fw-normal px-2 py-1 gantiMasaHari">Ganti Masa Hari</li>
+              <li class="list-group-item fw-normal px-2 py-1 berhentiPaketan">Berhenti Paketan</li>
+              <li class="list-group-item fw-normal px-2 py-1 batalPesanan">Batal Pesanan</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive m-1">
+        <table class="table my-table-admin table-hover" id="tabelPesananBatal">
           <thead>
             <tr class="align-middle">
               <td class="text-center" scope="col">Pelanggan</td>
@@ -40,7 +53,7 @@
             </tr>
           </thead>
           <tbody>
-            <?php foreach ($getAllPaketanPesananGantiMasa as $index => $data) : ?>
+            <?php foreach ($dataAllPaketanPesananGantiMasa as $index => $data) : ?>
               <tr class="align-middle text-center">
                 <td><?php echo $data['nama_pelanggan']; ?></td>
                 <td>

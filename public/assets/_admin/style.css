@@ -4,6 +4,24 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
+.my-dropdown {
+  position: relative;
+}
+
+.my-dropdown .my-content-dropdown {
+  position: absolute;
+  overflow: hidden;
+  display: none;
+  border-radius: 1em;
+  border: 1px solid black;
+  width: 100%;
+}
+
+.my-dropdown ul li:hover {
+  cursor: pointer;
+  background-color: #e6e6e6;
+}
+
 .my-border-input {
   outline: 1px solid black;
 }

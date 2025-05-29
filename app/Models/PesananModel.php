@@ -753,7 +753,7 @@ class PesananModel extends Model
     return $query;
   }
 
-  public function getAllPaketanPesananBerhenti()
+  public function getAllPaketanPesananBerhenti($pembatalan = '')
   {
     // Subquery: Menghitung jumlah pesanan yang belum dikirim
     $subQueryBelumDikirim = $this->db->table('menu_pesanan mp1')
@@ -762,6 +762,7 @@ class PesananModel extends Model
       ->join('status_detail_menu_pesanan sdmp1', 'sdmp1.id_detail_menu_pesanan = dmp1.id_detail_menu_pesanan')
       ->where('mp1.id_pesanan = p.id_pesanan')
       ->whereIn('sdmp1.id_status_pesanan', [2, 9])
+      ->where('p.berhenti_paketan', 'y')
       ->groupBy('mp1.id_pesanan')
       ->getCompiledSelect(false);
 
@@ -795,13 +796,15 @@ class PesananModel extends Model
     $builder->join('detail_catatan dc', 'dc.id_catatan_pesanan = cp.id_catatan_pesanan');
     $builder->join('paket_menu pm', 'pm.id_paket_menu = dc.id_paket_menu');
     $builder->where('p.berhenti_paketan', 'y');
+    $builder->whereIn('sdmp.id_status_pesanan', [($pembatalan == 'baru') ? 2 : 9]);
+    $builder->orderBy('sdmp.updated_at', "DESC");
     $builder->groupBy('p.id_pesanan');
 
     $query = $builder->get();
     return $query;
   }
 
-  public function getAllPaketanPesananGantiMasa()
+  public function getAllPaketanPesananGantiMasa($pembatalan = '')
   {
     $builder = $this->db->table('masa_hari_batal as mhb');
     $builder->select('
@@ -821,12 +824,18 @@ class PesananModel extends Model
     // $builder->where('p.masa_hari_batal IS NOT', NULL);
     // $builder->orWhere('p.berhenti_paketan IS NOT', NULL);
     // $builder->groupEnd();
+    if ($pembatalan == 'baru') {
+      $builder->where('mhb.uang_dikembalikan', null);
+    } else {
+      $builder->where('mhb.uang_dikembalikan', 'y');
+    }
     $builder->groupBy('p.id_pesanan');
+    $builder->orderBy('mhb.updated_at', "DESC");
     $query = $builder->get();
     return $query;
   }
 
-  public function getAllBatalPesanan()
+  public function getAllBatalPesanan($pembatalan = '')
   {
     $builder = $this->db->table('menu_pesanan mp');
     $builder->select("
@@ -851,12 +860,13 @@ class PesananModel extends Model
     $builder->join('akun a', 'a.id_akun = p.id_akun', 'left');
     $builder->join('pelanggan pel', 'pel.id_pelanggan = a.id_pelanggan', 'left');
     $builder->groupStart() // Group conditions for "OR" logic
-      ->orWhereIn('sdmp.id_status_pesanan', [2, 4])
+      ->orWhereIn('sdmp.id_status_pesanan', [($pembatalan == 'baru') ? 2 : 4])
+      // ->orWhereIn('sdmp.id_status_pesanan', [2, 4])
       ->where('dmp.batal', 'b')
       ->where('p.id_catatan_pesanan', NULL)
       ->groupEnd();
     $builder->groupBy(['mp.id_menu_pesanan', 'mp.id_pesanan']);
-    $builder->orderBy('sdmp.id_status_pesanan', "ASC");
+    $builder->orderBy('sdmp.updated_at', "DESC");
     $query = $builder->get();
     return $query;
   }

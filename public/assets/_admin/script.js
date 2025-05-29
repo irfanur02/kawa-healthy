@@ -1298,6 +1298,59 @@ $(document).ready(function() {
 
 
   // view pesanan
+  // Tampilkan saat klik tombol
+  $('.content-batal-pesanan #btnHistoriPembatalan').on('click', function (e) {
+    e.stopPropagation(); // supaya tidak tertutup langsung
+    $('.my-dropdown').find('.my-content-dropdown').css('block');
+  });
+
+  // Tampilkan saat hover (opsional: kamu bisa pakai salah satu saja)
+  $('.my-dropdown').hover(
+    function () {
+      $(this).find('.my-content-dropdown').stop(true, true).fadeIn(150);
+    },
+    function () {
+      $(this).find('.my-content-dropdown').stop(true, true).fadeOut(150);
+    }
+  );
+
+  // Sembunyikan dropdown jika klik di luar
+  $(document).on('click', function (e) {
+    if (!$(e.target).closest('.my-dropdown').length) {
+      $('.my-content-dropdown').fadeOut(150);
+    }
+  });
+
+
+  $(".content-batal-pesanan .my-dropdown ul li").on("click", function() {
+    // console.log(($(this).hasClass("gantiMasaHari")) ? "ganti" : "");
+    if ($(this).hasClass("gantiMasaHari")) {
+      var statusPembatalan = 'gantiMasaHari';
+    } else if ($(this).hasClass("berhentiPaketan")) {
+      var statusPembatalan = 'berhentiPaketan';
+    } else if ($(this).hasClass("batalPesanan")) {
+      var statusPembatalan = 'batalPesanan';
+    }
+
+    $('#tabPembayaran button').each(function(index, element) {
+      element.classList.remove('my-btn-main');
+    });
+
+    $(this).parent().parent().parent().find('button').addClass('my-btn-main');
+    $.ajax({
+      url: base_url + '/dadmin/pesanan/historiPembatalan',
+      type: 'POST',
+      data: {
+        statusPembatalan: statusPembatalan
+      },
+      dataType: 'json',
+      success: function (data) {
+        console.log(data);
+        $("#tabelPesananBatal").html(data.element);
+      }
+    });
+  })
+
   $(".content-pesanan #btnHistoriPembayaran").on("click", function() {
     $('#tabPembayaran button').each(function(index, element) {
       element.classList.remove('my-btn-main');
@@ -1326,6 +1379,22 @@ $(document).ready(function() {
       success: function (data) {
         console.log(data);
         $("#tabelPembayaran").html(data.element);
+      }
+    });
+  })
+
+  $(".content-batal-pesanan #btnPembatalanMasuk").on("click", function() {
+    $('#tabPembayaran button').each(function(index, element) {
+      element.classList.remove('my-btn-main');
+    });
+    $(this).addClass('my-btn-main');
+    $.ajax({
+      url: base_url + '/dadmin/pesanan/pembatalanMasuk',
+      type: 'POST',
+      dataType: 'json',
+      success: function (data) {
+        console.log(data);
+        $("#tabelPesananBatal").html(data.element);
       }
     });
   })
@@ -1486,8 +1555,9 @@ $(document).ready(function() {
     const modalInstance = bootstrap.Modal.getInstance(modalKonfirmasiRefund);
     modalInstance.hide();
     $(".modal-backdrop").remove();
-    var btnKembalikanUang = $("#tabelPesananBatal tr").find(`.${dataStatus}[data-indexBaris="${indexBaris}"]`); // Ambil baris berdasarkan index
-    btnKembalikanUang.after("Sudah Dikembalikan");
+    // var btnKembalikanUang = $("#tabelPesananBatal tr").find(`.${dataStatus}[data-indexBaris="${indexBaris}"]`); // Ambil baris berdasarkan index
+    var btnKembalikanUang = $("#tabelPesananBatal tr").eq(indexBaris);
+    // btnKembalikanUang.after("Sudah Dikembalikan");
     btnKembalikanUang.remove();
 
     window.open("https://wa.me/"+ nohp +"?text=Kakak%20ini%20uangnya%20mau%20dikirim%20lewat%20apa%20?");

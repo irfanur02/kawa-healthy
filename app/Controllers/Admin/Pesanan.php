@@ -111,6 +111,42 @@ class Pesanan extends BaseController
     echo json_encode($result);
   }
 
+  public function historiPembatalan() {
+    $statusPembatalan = $this->request->getVar('statusPembatalan');
+    if ($statusPembatalan == 'gantiMasaHari') {
+      $getAllPaketanPesananGantiMasa = $this->pesananModel->getAllPaketanPesananGantiMasa('histori')->getResultArray();
+    } elseif ($statusPembatalan == 'berhentiPaketan') {
+      $getAllPaketanPesananBerhenti = $this->pesananModel->getAllPaketanPesananBerhenti('histori')->getResultArray();
+    } elseif ($statusPembatalan == 'batalPesanan') {
+      $dataAllPesananBatal = $this->pesananModel->getAllBatalPesanan('histori')->getResultArray();
+    }
+    // $dataAllPesananUser = $this->pesananModel->getAllPesananUser('histori')->getResultArray();
+    $htmlContent = view('admin/datatable/dataTableHistoriPembatalan', [
+      'dataAllPaketanPesananGantiMasa' => ($statusPembatalan == 'gantiMasaHari') ? $getAllPaketanPesananGantiMasa : null, 
+      'dataAllPaketanPesananBerhenti' => ($statusPembatalan == 'berhentiPaketan') ? $getAllPaketanPesananBerhenti : null, 
+      'dataAllPesananBatal' => ($statusPembatalan == 'batalPesanan') ? $dataAllPesananBatal : null, 
+      'statusPembatalan' => $statusPembatalan,
+      'status' => 'historiPembatalan']);
+
+    $result = array(
+      'element' => $htmlContent
+    );
+    echo json_encode($result);
+  }
+
+  public function pembatalanMasuk() {
+    $getAllPaketanPesananGantiMasa = $this->pesananModel->getAllPaketanPesananGantiMasa('baru')->getResultArray();
+    $getAllPaketanPesananBerhenti = $this->pesananModel->getAllPaketanPesananBerhenti('baru')->getResultArray();
+    $dataAllPesananBatal = $this->pesananModel->getAllBatalPesanan('baru')->getResultArray();
+    // $dataAllPesananUser = $this->pesananModel->getAllPesananUser('histori')->getResultArray();
+    $htmlContent = view('admin/datatable/dataTableHistoriPembatalan', ['dataAllPaketanPesananGantiMasa' => $getAllPaketanPesananGantiMasa, 'dataAllPaketanPesananBerhenti' => $getAllPaketanPesananBerhenti, 'dataAllPesananBatal' => $dataAllPesananBatal, 'status' => 'pembatalanBaru']);
+
+    $result = array(
+      'element' => $htmlContent
+    );
+    echo json_encode($result);
+  }
+
   public function pesananMasuk()
   {
     $dataMenuPesanan = $this->pesananModel->getAllMenuPesanan(2)->getResultArray(); // terbayar
@@ -152,15 +188,15 @@ class Pesanan extends BaseController
 
   public function pesananBatal()
   {
-    $getAllPaketanPesananGantiMasa = $this->pesananModel->getAllPaketanPesananGantiMasa()->getResultArray();
-    $getAllPaketanPesananBerhenti = $this->pesananModel->getAllPaketanPesananBerhenti()->getResultArray();
-    $dataAllPesananBatal = $this->pesananModel->getAllBatalPesanan()->getResultArray();
-    // dd($dataAllPesananBatal);
+    $getAllPaketanPesananGantiMasa = $this->pesananModel->getAllPaketanPesananGantiMasa('baru')->getResultArray();
+    $getAllPaketanPesananBerhenti = $this->pesananModel->getAllPaketanPesananBerhenti('baru')->getResultArray();
+    $dataAllPesananBatal = $this->pesananModel->getAllBatalPesanan('baru')->getResultArray();
+    // dd($getAllPaketanPesananBerhenti);
     $data = [
       'title' => 'Pesanan Batal',
       'sidebar' => 'pesanan',
       'tabPesanan' => 'pesananBatal',
-      'getAllPaketanPesananGantiMasa' => $getAllPaketanPesananGantiMasa,
+      'dataAllPaketanPesananGantiMasa' => $getAllPaketanPesananGantiMasa,
       'dataAllPesananBatal' => $dataAllPesananBatal,
       'dataAllPaketanPesananBerhenti' => $getAllPaketanPesananBerhenti
     ];
