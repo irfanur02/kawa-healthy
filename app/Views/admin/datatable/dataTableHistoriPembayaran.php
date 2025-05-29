@@ -39,6 +39,9 @@
           <?php if ($data['approved'] == 'n') : ?>
             Pesanan Ditolak
           <?php endif; ?>
+          <?php if ($data['approved'] == '-') : ?>
+            Dibatalkan Pelanggan
+          <?php endif; ?>
         </div>
       </td>
     </tr>

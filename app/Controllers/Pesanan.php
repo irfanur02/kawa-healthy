@@ -437,6 +437,13 @@ class Pesanan extends BaseController
       $this->pesananModel->updateMenuPesananBy($where, $updateData);
     }
 
+    $updateDataPesanan = [
+      'approved' => '-',
+      'updated_at' => $date
+    ];
+    $where = $idPesanan;
+    $this->pesananModel->updateDataPesananBy($updateDataPesanan, $where);
+
     $result = array(
       'data' => $dataPesananBiasa,
     );
@@ -459,6 +466,7 @@ class Pesanan extends BaseController
     }
 
     $updateDataPesanan = [
+      'approved' => '-',
       'berhenti_paketan' => "y",
       'updated_at' => $date
     ];

@@ -174,7 +174,7 @@ class Pesanan extends BaseController
   {
     $dataPelangganPemesanan = $this->pesananModel->getAllPelangganPemesanan($tanggalMenu)->getResultArray();
     $dataPesananPelanggan = $this->pesananModel->getAllPesananPelanggan($tanggalMenu, null, [2])->getResultArray();
-    // dd($dataPelangganPemesanan);
+    // dd($dataPesananPelanggan);
     $data = [
       'title' => 'Detail Pesanan',
       'sidebar' => 'pesanan',

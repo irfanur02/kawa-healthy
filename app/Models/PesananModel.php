@@ -212,7 +212,7 @@ class PesananModel extends Model
     $builder->where('tp.jumlah_tunda', null);
     $builder->where('pe.approved', 'y');
     $builder->groupBy('
-                  pe.id_pesanan, pe.id_catatan_pesanan, m.nama_menu, dmp.qty_menu, dmp.qty_infuse, p.nama_pack, k.nama_karbo, 
+                  pe.id_pesanan, m.nama_menu, dmp.qty_menu, dmp.qty_infuse, p.nama_pack, k.nama_karbo, 
                   dmp.pantangan_pesanan, dmp.keterangan_pedas');
     $builder->orderBy('mp.id_menu_pesanan', 'ASC');
     $query = $builder->get();
@@ -244,7 +244,7 @@ class PesananModel extends Model
     $builder->where('dmp.deleted_at IS NULL', null, false);
     $builder->where('dmp.batal IS NULL', null, false);
     $builder->where('pe.approved', 'y');
-    $builder->groupBy('pel.nama_pelanggan, o.ongkir_kota, t.alamat_pengiriman');
+    $builder->groupBy('pel.nama_pelanggan, o.ongkir_kota, t.alamat_pengiriman, pe.id_pesanan');
     $builder->orderBy('mp.id_menu_pesanan', 'ASC');
 
     $query = $builder->get();
@@ -1080,6 +1080,13 @@ class PesananModel extends Model
       ->join('jadwal_menu', 'jadwal_menu.id_jadwal_menu = menu_pesanan.id_jadwal_menu')
       ->where('menu_pesanan.id_pesanan = pe.id_pesanan');
 
+    $subquery4 = $this->db->table('pesanan p1')
+      ->select('dmp1.id_detail_menu_pesanan')
+      ->join('menu_pesanan mp1', 'mp1.id_pesanan = pe1.id_pesanan', 'left')
+      ->join('detail_menu_pesanan dmp1', 'dmp1.id_menu_pesanan = mp1.id_menu_pesanan', 'left')
+      ->where('pe1.id_pesanan', 'pe.id_pesanan')
+      ->groupBy('dmp1.id_menu_pesanan');
+
     // * ({$subquery3->getCompiledSelect()} * o.biaya_ongkir) AS total_ongkir, 
     $builder = $this->db->table('pesanan pe')
       ->select("
@@ -1096,7 +1103,7 @@ class PesananModel extends Model
                   COALESCE(dmp.qty_menu, 0) * COALESCE(m.harga_menu, pm.harga_paket_menu, 0) +
                   COALESCE(dmp.qty_infuse, 0) * 10000
                 ) AS total_harga", false)
-      ->select('pe.approved')
+      ->select('pe.approved, sdmp.id_status_pesanan')
       ->join('transaksi t', 't.id_pesanan = pe.id_pesanan', 'left')
       ->join('ongkir o', 'o.id_ongkir = t.id_ongkir', 'left')
       ->join('menu_pesanan mp', 'mp.id_pesanan = pe.id_pesanan', 'left')
@@ -1109,11 +1116,14 @@ class PesananModel extends Model
       ->join('pelanggan pel', 'pel.id_pelanggan = a.id_pelanggan', 'left')
       ->join('catatan_pesanan cp', 'cp.id_catatan_pesanan = pe.id_catatan_pesanan', 'left');
     $builder->where('dmp.deleted_at IS NULL');
+    // $builder->where('dmp.id_menu_pesanan', $subquery3->getCompiledSelect());
     if ($pembayaran == 'baru') {
       $builder->where('sdmp.id_status_pesanan', 2);
+      $builder->where('pe.berhenti_paketan', null);
       $builder->where('pe.approved', null);
     } elseif ($pembayaran == 'histori') {
       $builder->where('pe.approved IS NOT', null);
+      // $builder->where('dmp.batal =', 'b');
       $builder->whereIn('sdmp.id_status_pesanan', [2, 4, 5, 6, 9]);
     }
     $builder->groupBy('pe.id_pesanan');
@@ -1151,9 +1161,10 @@ class PesananModel extends Model
     $builder->where('p.id_akun', $idAkun);
     $builder->where('p.id_catatan_pesanan', null);
     $builder->whereIn('sdmp.id_status_pesanan', $statusPesanan);
+    $builder->where('dmp.deleted_at', NULL);
     $builder->groupBy('jm.tanggal_menu');
     $builder->groupBy('t.id_transaksi');
-    $builder->where('dmp.deleted_at', NULL);
+    $builder->orderBy('t.tanggal_transaksi', 'DESC');
     $query = $builder->get();
     return $query;
   }
@@ -1226,12 +1237,7 @@ class PesananModel extends Model
     // Grouping
     $builder->groupBy('p.id_pesanan');
     $builder->groupBy('t.id_transaksi');
-    // $builder->orderBy('p.id_pesanan', "DESC");
-    // $builder->orderBy('jm.tanggal_menu', "ASC");
-    $builder->orderBy('p.approved', "DESC");
-    $builder->orderBy('p.berhenti_paketan', "ASC");
-    // $builder->orderBy('sdmp.id_status_pesanan', "ASC");
-    // $builder->orderBy('t.tanggal_transaksi', "DESC");
+    $builder->orderBy('t.tanggal_transaksi', "DESC");
     $query = $builder->get();
     return $query;
   }

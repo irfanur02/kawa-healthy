@@ -35,7 +35,7 @@
                         </thead>
                         <tbody>
                           <?php foreach ($dataPesananPelanggan as $detail) : ?>
-                            <?php if ($detail['nama_pelanggan'] == $data['nama_pelanggan']) : ?>
+                            <?php if ($detail['id_pesanan'] == $data['id_pesanan']) : ?>
                               <?php if (empty($detail['jumlah_tunda'])) : ?>
                                 <tr>
                                   <td class="fw-normal d-flex align-items-center grid gap-2">
@@ -80,7 +80,7 @@
           <?php if (!empty($dataPelangganPemesanan)) : ?>
             <?php //if (empty($data['jumlah_tunda'])) : 
             ?>
-            <div class="mx-auto" style="width:fit-content;">
+            <div class="mx-auto mb-5" style="width:fit-content;">
               <button class="btn btn-success rounded-pill my-border-btn mt-3 mx-auto lh-md" data-tanggalMenu="<?php echo $tanggalMenu; ?>" style="padding: .1em 2em;" id="btnKirimPesanan">Ok, Kirim</button>
             </div>
             <?php //endif; 
