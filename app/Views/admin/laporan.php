@@ -60,7 +60,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="col d-flex justify-content-center" id="dataLaporan">
+        <div class="col d-flex justify-content-center flex-column align-items-center" id="dataLaporan">
           <table class="table my-table-admin table-hover text-center mt-3" style="width: fit-content;">
             <thead>
               <tr class="align-middle">

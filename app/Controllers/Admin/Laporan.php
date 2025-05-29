@@ -114,8 +114,10 @@ class Laporan extends BaseController
 
   public function laporanByPelanggan()
   {
-    $dataJumlahPemesananPelanggan = $this->pesananModel->getJumlahPemesananPelanggan()->getResultArray();
-    $htmlContent = view('admin/datatable/dataTableLaporanByPelanggan', ['dataJumlahPemesananPelanggan' => $dataJumlahPemesananPelanggan]);
+    $dataBulanPerolehan = $this->pesananModel->getBulanPerolehan()->getResultArray();
+    $dataTahunPerolehan = $this->pesananModel->getTahunPerolehan()->getResultArray();
+    $dataJumlahPemesananPelanggan = $this->pesananModel->getJumlahPemesananPelanggan('null', 'null')->getResultArray();
+    $htmlContent = view('admin/datatable/dataTableLaporanByPelanggan', ['dataJumlahPemesananPelanggan' => $dataJumlahPemesananPelanggan, 'tahunPerolehan' => $dataTahunPerolehan, 'bulanPerolehan' => $dataBulanPerolehan]);
 
     // $htmlContent = view('admin/datatable/dataTableLaporanByPelanggan');
 
@@ -170,15 +172,71 @@ class Laporan extends BaseController
 
   public function laporanByMenu()
   {
+    $dataBulanPerolehan = $this->pesananModel->getBulanPerolehan()->getResultArray();
+    $dataTahunPerolehan = $this->pesananModel->getTahunPerolehan()->getResultArray();
     $paketInfuse = $this->paketMenuModel->getPaketMenu("infuse")->getRowArray();
-    $dataJumlahPesananDataMenu = $this->pesananModel->getJumlahPesananDataMenu()->getResultArray();
-    $htmlContent = view('admin/datatable/dataTableLaporanByMenu', ['dataJumlahPesananDataMenu' => $dataJumlahPesananDataMenu, 'paketInfuse' => $paketInfuse['harga_paket_menu']]);
+    $dataJumlahPesananDataMenu = $this->pesananModel->getJumlahPesananDataMenu('null', 'null')->getResultArray();
+    $htmlContent = view('admin/datatable/dataTableLaporanByMenu', ['dataJumlahPesananDataMenu' => $dataJumlahPesananDataMenu, 'paketInfuse' => $paketInfuse['harga_paket_menu'], 'tahunPerolehan' => $dataTahunPerolehan, 'bulanPerolehan' => $dataBulanPerolehan]);
 
     // $htmlContent = view('admin/datatable/dataTableLaporanByMenu');
 
     $result = array(
       'element' => $htmlContent,
       'laporan' => "menu"
+    );
+    echo json_encode($result);
+  }
+
+  public function laporanByMenuFilter()
+  {
+    $bulan = $this->request->getVar('bulan');
+    $tahun = $this->request->getVar('tahun');
+    $dataBulanPerolehan = $this->pesananModel->getBulanPerolehan()->getResultArray();
+    $dataTahunPerolehan = $this->pesananModel->getTahunPerolehan()->getResultArray();
+    $paketInfuse = $this->paketMenuModel->getPaketMenu("infuse")->getRowArray();
+    if ($bulan == 'null') {
+      $bulanConvert = 'null';
+    } else {
+      $bulanConvert = date('m', strtotime($bulan));
+    }
+    $tahunConvert = date('Y', strtotime($tahun));
+    $dataJumlahPesananDataMenu = $this->pesananModel->getJumlahPesananDataMenu($bulanConvert, $tahunConvert)->getResultArray();
+    $htmlContent = view('admin/datatable/dataTableLaporanByMenu', ['dataJumlahPesananDataMenu' => $dataJumlahPesananDataMenu, 'paketInfuse' => $paketInfuse['harga_paket_menu'], 'tahunPerolehan' => $dataTahunPerolehan, 'bulanPerolehan' => $dataBulanPerolehan]);
+
+    // $htmlContent = view('admin/datatable/dataTableLaporanByMenu');
+
+    $result = array(
+      'element' => $htmlContent,
+      'bulan' => $bulan,
+      'tahun' => $tahun,
+      'infuse' => $paketInfuse,
+      'menu' => $dataJumlahPesananDataMenu
+    );
+    echo json_encode($result);
+  }
+
+  public function laporanByPelangganFilter()
+  {
+    $bulan = $this->request->getVar('bulan');
+    $tahun = $this->request->getVar('tahun');
+    $dataBulanPerolehan = $this->pesananModel->getBulanPerolehan()->getResultArray();
+    $dataTahunPerolehan = $this->pesananModel->getTahunPerolehan()->getResultArray();
+    if ($bulan == 'null') {
+      $bulanConvert = 'null';
+    } else {
+      $bulanConvert = date('m', strtotime($bulan));
+    }
+    $tahunConvert = date('Y', strtotime($tahun));
+    $dataJumlahPemesananPelanggan = $this->pesananModel->getJumlahPemesananPelanggan($bulanConvert, $tahunConvert)->getResultArray();
+    $htmlContent = view('admin/datatable/dataTableLaporanByPelanggan', ['dataJumlahPemesananPelanggan' => $dataJumlahPemesananPelanggan, 'tahunPerolehan' => $dataTahunPerolehan, 'bulanPerolehan' => $dataBulanPerolehan]);
+
+    // $htmlContent = view('admin/datatable/dataTableLaporanByPelanggan');
+
+    $result = array(
+      'element' => $htmlContent,
+      'bulan' => $bulan,
+      'tahun' => $tahun,
+      'data' => $dataJumlahPemesananPelanggan
     );
     echo json_encode($result);
   }

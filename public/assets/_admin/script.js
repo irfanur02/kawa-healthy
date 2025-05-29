@@ -1874,6 +1874,8 @@ $(document).ready(function() {
       return bulanIndo[dateObj.getMonth()] + " " + dateObj.getFullYear();
     } else if (format === 'd-m-y') {
       return dateObj.getDate() + " " + bulanIndo[dateObj.getMonth()] + " " + dateObj.getFullYear();
+    } else if (format === 'm') {
+      return dateObj.getMonth();
     }
     // Tambahan format jika diperlukan di masa depan
     return tanggal;
@@ -1965,6 +1967,123 @@ $(document).ready(function() {
       }
     });
   })
+
+  $(".content-laporan").on('change', '#selectBulanPerolehan', function() {
+    var tahun = $(".content-laporan #selectTahunPerolehan").val();
+    var bulan = $(".content-laporan #selectBulanPerolehan").val();
+    console.log(tahun);
+    console.log(bulan);
+    if ($(this).hasClass("perMenu")) {
+      if (bulan == 'null') {
+        $.ajax({
+          url: base_url + '/dadmin/laporanByMenuFilter',
+          type: 'POST',
+          data: {
+            bulan: 'null',
+            tahun: tahun
+          },
+          dataType: 'json',
+          success: function (data) {
+            console.log(data);
+            $("#dataLaporan").html(data.element)
+            $(".content-laporan #selectBulanPerolehan").val('null');
+          }
+        });
+      } else {
+        $.ajax({
+          url: base_url + '/dadmin/laporanByMenuFilter',
+          type: 'POST',
+          data: {
+            tahun: tahun,
+            bulan: bulan
+          },
+          dataType: 'json',
+          success: function (data) {
+            console.log(data);
+            $("#dataLaporan").html(data.element)
+            $(".content-laporan #selectBulanPerolehan").val(formatTanggal(data.bulan, 'Y-m'));
+          }
+        });
+      }
+    } else {
+      console.log("sds");
+      if (bulan == 'null') {
+        $.ajax({
+          url: base_url + '/dadmin/laporanByPelangganFilter',
+          type: 'POST',
+          data: {
+            bulan: 'null',
+            tahun: tahun
+          },
+          dataType: 'json',
+          success: function (data) {
+            console.log(data);
+            $("#dataLaporan").html(data.element)
+            $(".content-laporan #selectBulanPerolehan").val('null');
+          }
+        });
+      } else {
+        $.ajax({
+          url: base_url + '/dadmin/laporanByPelangganFilter',
+          type: 'POST',
+          data: {
+            tahun: tahun,
+            bulan: bulan
+          },
+          dataType: 'json',
+          success: function (data) {
+            console.log(data);
+            $("#dataLaporan").html(data.element)
+            $(".content-laporan #selectBulanPerolehan").val(formatTanggal(data.bulan, 'Y-m'));
+          }
+        });
+      }
+    }
+  });
+
+  $(".content-laporan").on('change', '#selectTahunPerolehan', function() {
+    var tahun = $(".content-laporan #selectTahunPerolehan").val();
+    var bulan = $(".content-laporan #selectBulanPerolehan").val();
+    console.log(bulan);
+    if(bulan == 'null') {
+      if ($(this).hasClass("perMenu")) {
+        $.ajax({
+          url: base_url + '/dadmin/laporanByMenuFilter',
+          type: 'POST',
+          data: {
+            bulan: 'null',
+            tahun:tahun
+          },
+          dataType: 'json',
+          success: function (data) {
+            console.log(data);
+            $("#dataLaporan").html(data.element)
+          }
+        });
+      } else {
+
+      }
+    } else {
+      if ($(this).hasClass("perMenu")) {
+        $.ajax({
+          url: base_url + '/dadmin/laporanByMenuFilter',
+          type: 'POST',
+          data: {
+            tahun: tahun,
+            bulan: bulan
+          },
+          dataType: 'json',
+          success: function (data) {
+            console.log(data);
+            $("#dataLaporan").html(data.element);
+            $(".content-laporan #selectTahunPerolehan").val(formatTanggal(data.bulan, 'Y'));
+          }
+        });
+      } else {
+
+      }
+    };
+  });
 
   $(".content-laporan select#selectLaporan").on('change', function() {
     if(this.value == "periode" || this.value == "bulan" || this.value == "pelanggan" || this.value == "menu") {

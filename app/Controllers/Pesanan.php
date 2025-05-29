@@ -324,6 +324,8 @@ class Pesanan extends BaseController
     ];
     $this->pesananModel->insertDetailPembayaran($data);
 
+    
+
     $result = array(
       // 'data' => $fileGambar->getName()
       'data' => $dataPesanan,

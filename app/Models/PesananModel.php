@@ -1719,9 +1719,35 @@ class PesananModel extends Model
   }
 
   public function getTahunPerolehan() {
-    $builder = $this->db->table('transaksi tr');
-    $builder->select('DISTINCT(DATE_FORMAT(tr.tanggal_transaksi, "%Y")) AS tanggal_transaksi');
-    $builder->orderBy('tr.tanggal_transaksi', 'DESC');
+    $builder = $this->db->table('pesanan p');
+    $builder->select('jm.tanggal_menu');
+    $builder->join('transaksi t', 't.id_pesanan = p.id_pesanan', 'left');
+    $builder->join('ongkir o', 'o.id_ongkir = t.id_ongkir', 'left');
+    $builder->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left');
+    $builder->join('jadwal_menu jm', 'jm.id_jadwal_menu = mp.id_jadwal_menu', 'left');
+    $builder->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left');
+    $builder->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left');
+    $builder->where('sdmp.id_status_pesanan IN (5,6)', null, false);
+    $builder->where('dmp.deleted_at IS NULL', null, false);
+    $builder->groupBy("DATE_FORMAT(jm.tanggal_menu, '%Y')");
+    $builder->orderBy('jm.tanggal_menu', 'DESC');
+    $query = $builder->get();
+    return $query;
+  }
+
+  public function getBulanPerolehan() {
+    $builder = $this->db->table('pesanan p');
+    $builder->select('jm.tanggal_menu');
+    $builder->join('transaksi t', 't.id_pesanan = p.id_pesanan', 'left');
+    $builder->join('ongkir o', 'o.id_ongkir = t.id_ongkir', 'left');
+    $builder->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left');
+    $builder->join('jadwal_menu jm', 'jm.id_jadwal_menu = mp.id_jadwal_menu', 'left');
+    $builder->join('detail_menu_pesanan dmp', 'dmp.id_menu_pesanan = mp.id_menu_pesanan', 'left');
+    $builder->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left');
+    $builder->where('sdmp.id_status_pesanan IN (5,6)', null, false);
+    $builder->where('dmp.deleted_at IS NULL', null, false);
+    $builder->groupBy("DATE_FORMAT(jm.tanggal_menu, '%Y-%m')");
+    $builder->orderBy('jm.tanggal_menu', 'DESC');
     $query = $builder->get();
     return $query;
   }
@@ -2013,7 +2039,7 @@ class PesananModel extends Model
     return $query;
   }
 
-  public function getJumlahPemesananPelanggan()
+  public function getJumlahPemesananPelanggan($bulan = '', $tahun = '')
   {
     $builder = $this->db->table('pesanan p');
     $builder->select(
@@ -2044,6 +2070,15 @@ class PesananModel extends Model
     $builder->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left');
     $builder->whereIn('sdmp.id_status_pesanan', [5, 6]);
     $builder->where('dmp.deleted_at', null);
+    if ($tahun != 'null') {
+      if ($bulan != 'null') {
+        // berdasarkan bulan dan tahun
+        $builder->where("DATE_FORMAT(jm.tanggal_menu, '%Y-%m')", $tahun.'-'.$bulan);
+      } else {
+        // berdasarkan tahun
+        $builder->where("DATE_FORMAT(jm.tanggal_menu, '%Y')", $tahun);
+      }
+    }
     $builder->groupBy('pel.nama_pelanggan');
     $builder->orderBy('jumlah_pemesanan', 'DESC');
     $builder->orderBy('total_keseluruhan', 'DESC');
@@ -2126,7 +2161,7 @@ class PesananModel extends Model
     return $query;
   }
 
-  public function getJumlahPesananDataMenu()
+  public function getJumlahPesananDataMenu($bulan = '', $tahun = '')
   {
     // (
     //     SELECT COUNT(*) AS "terjadwal"
@@ -2142,17 +2177,17 @@ class PesananModel extends Model
     // ) AS "terjadwal",
 
     $subquery = $this->db->table('transaksi tr1')
-    ->select('(SUM(dmp1.qty_menu) * COALESCE(me1.harga_menu, pm1.harga_paket_menu))', false)
-    ->join('pesanan pe1', 'pe1.id_pesanan = tr1.id_pesanan', 'left')
-    ->join('menu_pesanan mp1', 'mp1.id_pesanan = pe1.id_pesanan', 'left')
-    ->join('detail_menu_pesanan dmp1', 'dmp1.id_menu_pesanan = mp1.id_menu_pesanan', 'left')
-    ->join('status_detail_menu_pesanan sdmp1', 'sdmp1.id_detail_menu_pesanan = dmp1.id_detail_menu_pesanan', 'left')
-    ->join('detail_jadwal_menu djm1', 'djm1.id_detail_jadwal_menu = dmp1.id_detail_jadwal_menu', 'left')
-    ->join('menu me1', 'me1.id_menu = djm1.id_menu', 'left')
-    ->join('paket_menu pm1', 'pm1.id_paket_menu = me1.id_paket_menu', 'left')
-    ->where('djm1.id_menu = m.id_menu', null, false)
-    ->whereIn('sdmp1.id_status_pesanan', [5, 6])
-    ->getCompiledSelect();
+          ->select('(SUM(dmp1.qty_menu) * COALESCE(me1.harga_menu, pm1.harga_paket_menu))', false)
+          ->join('pesanan pe1', 'pe1.id_pesanan = tr1.id_pesanan', 'left')
+          ->join('menu_pesanan mp1', 'mp1.id_pesanan = pe1.id_pesanan', 'left')
+          ->join('detail_menu_pesanan dmp1', 'dmp1.id_menu_pesanan = mp1.id_menu_pesanan', 'left')
+          ->join('status_detail_menu_pesanan sdmp1', 'sdmp1.id_detail_menu_pesanan = dmp1.id_detail_menu_pesanan', 'left')
+          ->join('detail_jadwal_menu djm1', 'djm1.id_detail_jadwal_menu = dmp1.id_detail_jadwal_menu', 'left')
+          ->join('menu me1', 'me1.id_menu = djm1.id_menu', 'left')
+          ->join('paket_menu pm1', 'pm1.id_paket_menu = me1.id_paket_menu', 'left')
+          ->where('djm1.id_menu = m.id_menu', null, false)
+          ->whereIn('sdmp1.id_status_pesanan', [5, 6])
+          ->getCompiledSelect();
 
     $builder = $this->db->table('pesanan p');
     $builder->select("
@@ -2163,7 +2198,9 @@ class PesananModel extends Model
         pm.harga_paket_menu,
         SUM(dmp.qty_menu) AS qty_menu,
         SUM(dmp.qty_infuse) AS qty_infuse,
-        ($subquery) AS perolehan
+        (
+          SUM(dmp.qty_menu) * COALESCE(m.harga_menu, pm.harga_paket_menu)
+        ) AS 'perolehan'
     ", false);
 
     $builder->join('menu_pesanan mp', 'mp.id_pesanan = p.id_pesanan', 'left');
@@ -2174,8 +2211,17 @@ class PesananModel extends Model
     $builder->join('paket_menu pm', 'pm.id_paket_menu = m.id_paket_menu', 'left');
     $builder->join('status_detail_menu_pesanan sdmp', 'sdmp.id_detail_menu_pesanan = dmp.id_detail_menu_pesanan', 'left');
     $builder->whereIn('sdmp.id_status_pesanan', [5, 6]);
+    if ($tahun != 'null') {
+      if ($bulan != 'null') {
+        // berdasarkan bulan dan tahun
+        $builder->where("DATE_FORMAT(jm.tanggal_menu, '%Y-%m')", $tahun.'-'.$bulan);
+      } else {
+        // berdasarkan tahun
+        $builder->where("DATE_FORMAT(jm.tanggal_menu, '%Y')", $tahun);
+      }
+    }
     $builder->groupBy('m.nama_menu');
-    $builder->orderBy('m.nama_menu', 'ASC');
+    $builder->orderBy('perolehan', 'DESC');
     $query = $builder->get();
     return $query;
   }

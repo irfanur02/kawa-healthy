@@ -1,19 +1,19 @@
-<div class="flex-row">
+<div class="flex-row mt-4">
   <?php if ($laporan == 'bulan') : ?>
-    <div class="d-flex justify-content-between align-items-center mt-2">
+    <div class="d-flex justify-content-between align-items-center">
       <span class="d-inline align-baseline fw-medium">Total Perolehan : <?php echo formatRupiah($dataPerolehanPemasukan); ?></span>
       <div class="fw-medium">
         <span>Tahun</span>
         <select class="form-select form-select-sm my-border-input d-inline fw-medium" style="width: fit-content;" id="selectTahunPerolehan">
           <?php foreach ($tahunPerolehan as $key => $data): ?>
-            <option selected value="periode"><?php echo $data['tanggal_transaksi']; ?></option>
-          <?php endforeach ?>
+          <option selected value="<?php echo $data['tanggal_menu']; ?>"><?php echo date('Y', strtotime($data['tanggal_menu'])); ?></option>
+        <?php endforeach ?>
         </select>
       </div>
     </div>
   <?php elseif ($laporan == 'periode') : ?>
     <?php if ($range == 'aktif') : ?>
-      <div class="d-flex justify-content-between align-items-center mt-2">
+      <div class="d-flex justify-content-between align-items-center">
         <span class="d-inline align-baseline fw-medium">
           Rentang Tanggal
           <br>
@@ -28,7 +28,7 @@
     <?php endif ?>
   <?php endif; ?>
 
-  <table class="table my-table-admin table-hover text-center mt-2" style="width: fit-content;">
+  <table class="table my-table-admin table-hover text-center mt-1" style="width: fit-content;">
     <thead>
       <tr class="align-middle">
         <td scope="col" style="padding: .5em 30px .5em 30px;"><?php echo ($laporan == 'periode') ? "Tanggal" : "Bulan"; ?></td>
@@ -99,7 +99,7 @@
               <span class="d-block">infuse: <?php echo $data['total_jumlah_infuse']; ?></span>
             </td>
             <td>
-              <button class="btn p-0 px-1 btn-sm btn-outline-dark rounded-pill my-border-btn btnDetailAktifitas" data-laporan="periode" data-bs-toggle="modal" data-bs-target="#modalDetailAktifitas" data-tanggal="<?php echo $data['tanggal_menu']; ?>">lihat detail</button>
+              <button class="btn p-0 px-1 btn-sm btn-outline-dark rounded-pill my-border-btn btnDetailAktifitas" data-laporan="bulan" data-bs-toggle="modal" data-bs-target="#modalDetailAktifitas" data-tanggal="<?php echo $data['tanggal_menu']; ?>">lihat detail</button>
             </td>
           </tr>
         <?php endforeach; ?>
