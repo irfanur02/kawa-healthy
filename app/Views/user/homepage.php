@@ -135,11 +135,13 @@
                   </ul>
                 <?php endif; ?>
               <?php endforeach; ?>
-              <?php if ($kadaluarsa == true) : ?>
-                <div class="flex-row mt-2">
-                  <p class="fw-bold my-0 text-danger">Jadwal Sudah Tutup</p>
-                  <button type="button" class="btn btn-sm rounded-pill btn-outline-danger d-block" id="btnLihatJadwalPersonal">lihat jadwal minggu depan</button>
-                </div>
+              <?php if (!empty($dataJadwalPersonal[0]['tanggal_menu'])) : ?>
+                <?php if ($kadaluarsa == true) : ?>
+                  <div class="flex-row mt-2">
+                    <p class="fw-bold my-0 text-danger">Jadwal Sudah Tutup</p>
+                    <button type="button" class="btn btn-sm rounded-pill btn-outline-danger d-block" id="btnLihatJadwalPersonal">lihat jadwal minggu depan</button>
+                  </div>
+                <?php endif; ?>
               <?php endif; ?>
             </div>
           </div>
@@ -221,11 +223,13 @@
               </ul>
             <?php endif; ?>
           <?php endforeach; ?>
-          <?php if ($kadaluarsa == true) : ?>
-            <div class="flex-row mt-2">
-              <p class="fw-bold my-0 text-center text-danger">Jadwal Sudah Tutup</p>
-              <button type="button" class="btn btn-sm rounded-pill btn-outline-danger d-block" id="btnLihatJadwalFamily">lihat jadwal minggu depan</button>
-            </div>
+          <?php if (!empty($dataJadwalPersonal[0]['tanggal_menu'])) : ?>
+            <?php if ($kadaluarsa == true) : ?>
+              <div class="flex-row mt-2">
+                <p class="fw-bold my-0 text-center text-danger">Jadwal Sudah Tutup</p>
+                <button type="button" class="btn btn-sm rounded-pill btn-outline-danger d-block" id="btnLihatJadwalFamily">lihat jadwal minggu depan</button>
+              </div>
+            <?php endif; ?>
           <?php endif; ?>
         </div>
       </div>
