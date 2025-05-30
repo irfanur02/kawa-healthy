@@ -64,6 +64,7 @@ class AkunModel extends Model
     $builder = $this->db->table('akun');
     $builder->select('*');
     $builder->join('pelanggan', 'pelanggan.id_pelanggan = akun.id_pelanggan');
+    $builder->join('ongkir', 'ongkir.id_ongkir = pelanggan.id_ongkir');
     $builder->where('akun.id_akun', $id);
     $query = $builder->get();
     return $query;

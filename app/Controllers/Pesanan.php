@@ -606,6 +606,7 @@ class Pesanan extends BaseController
     $masaHariAwal = $this->request->getVar('masaHariAwal');
     $idCatatanPesanan = $this->request->getVar('idCatatanPesanan');
     $nominal = $this->request->getVar('nominal');
+    $ongkir = $this->akunModel->getDataPelangganById($idAkun)->getRowArray()['biaya_ongkir'];
     $namaPelanggan = $this->akunModel->getDataPelangganById($idAkun)->getRowArray()['nama_pelanggan'];
 
     $listIdMenuPesanan = [];
@@ -654,7 +655,7 @@ class Pesanan extends BaseController
         <h2 style="color: #333;">Notifikasi Pembatalan</h2>
         <div style="background-color: #fff; border: 1px solid #6e6e6e; padding: 15px;">
           <p><strong>Pembatalan dari:</strong> '.$namaPelanggan.'</p>
-          <p><strong>Jumlah:</strong> '.formatRupiah($nominal).'</p>
+          <p><strong>Jumlah:</strong> '.formatRupiah($nominal + ($ongkir * $masaHariBaru)).'</p>
           <p><strong>Ketarangan:</strong> Ganti Masa Hari</p>
           <p><i>* '.$masaHariAwal.' hari, jadi '.$masaHariBaru.' hari</i></p>
           <p><i>* '.($masaHariAwal - $masaHariBaru).' hari jadwal menu batal</i></p>
