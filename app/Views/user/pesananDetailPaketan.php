@@ -44,7 +44,7 @@
           <div class="col-auto">
             <p><span class="fw-bold">Tanggal Transaksi: </span><?php echo formatTanggal($catatanPaketan['tanggal_transaksi'], false, false, true); ?></p>
             <p><span class="fw-bold">Tanggal Mulai: </span><?php echo formatTanggal($catatanPaketan['tanggal_mulai_pesanan'], false, false, true); ?></p>
-            <p><span class="fw-bold">Paketan: </span><?php echo (empty($catatanPaketan['periode_hari_baru']) ? $catatanPaketan['periode_hari_paketan'] : $catatanPaketan['periode_hari_baru']); ?> Hari (<?php echo (!empty($pesananTerkirim['pesanan_terkirim']) ? $pesananTerkirim['pesanan_terkirim'] : 0); ?> hari terlewat)</p>
+            <p><span class="fw-bold">Paketan: </span><span class="masaHariAwal"><?php echo (empty($catatanPaketan['periode_hari_baru']) ? $catatanPaketan['periode_hari_paketan'] : $catatanPaketan['periode_hari_baru']); ?></span> Hari (<?php echo (!empty($pesananTerkirim['pesanan_terkirim']) ? $pesananTerkirim['pesanan_terkirim'] : 0); ?> hari terlewat)</p>
             <?php if ($catatanPaketan['approved'] == "y") : ?>
               <?php if ((empty($catatanPaketan['periode_hari_baru']) ? $catatanPaketan['periode_hari_paketan'] : $catatanPaketan['periode_hari_baru']) > 1) : ?>
                 <?php if ($catatanPaketan['berhenti_paketan'] != "y") : ?>
@@ -93,10 +93,22 @@
             <div class="col">
               <?php foreach ($dataDetailPesananPaketan as $detail) : ?>
                 <?php if ($data['tanggal_menu'] == $detail['tanggal_menu']) : ?>
-                  <p class="fw-bold lh-1 m-0"><?php echo $detail['nama_paket_menu']; ?></p>
-                  <?php echo $detail['nama_menu']; ?>
-                  <?php if ($detail['nama_paket_menu'] == null) : ?>
-                    + infuse
+                  <?php if ($detail['nama_menu'] != null) : ?>
+                    <p class="fw-bold lh-1 m-0"><?php echo $detail['nama_paket_menu']; ?></p>
+                    <?php echo $detail['nama_menu']; ?>&nbsp-
+                    <span class="fw-medium nominalHarga">
+                      <?php if ($detail['nama_paket_menu'] != null) : ?>
+                        <?php echo formatRupiah($detail['harga_paket_menu']); ?>
+                      <?php else: ?>
+                        <?php echo formatRupiah($detail['harga_menu']); ?>
+                      <?php endif; ?>
+                    </span>
+                  <?php else: ?>
+                    <br>
+                    infuse&nbsp-
+                    <span class="fw-medium nominalHarga">
+                      Rp. 10.000
+                    </span>
                   <?php endif; ?>
                 <?php endif; ?>
               <?php endforeach; ?>
@@ -104,33 +116,6 @@
           </div>
         </li>
       <?php endforeach; ?>
-      <!-- <li class="list-group-item">
-        <div class="row flex-wrap align-items-center">
-          <div class="col-auto text-center">
-            Selasa 2 Januari<br>
-            <span class="badge text-bg-success border border-black">Selesai</span>
-          </div>
-          <div class="col">
-            N.merah, ayam cicane, oseng wortel pokcoy, sambal belimbing
-            <hr class="mt-2 mb-2">
-            <p class="m-0 text-decoration-underline">Review</p>
-            <p class="m-0">Rasanya enak pas, cocok dah</p>
-          </div>
-        </div>
-      </li>
-      <li class="list-group-item">
-        <div class="row flex-wrap align-items-center">
-          <div class="col-auto text-center">
-            Selasa 2 Januari<br>
-            <button type="button" class="btn btn-sm my-btn-orange my-border-btn rounded-pill lh-1 mt-1" data-bs-toggle="modal" data-bs-target="#modalTundaPesanan">
-              Tunda
-            </button>
-          </div>
-          <div class="col">
-            N.merah, ayam cicane, oseng wortel pokcoy, sambal belimbing
-          </div>
-        </div>
-      </li> -->
       <li class="list-group-item">
         <div class="row">
           <div class="col text-center">

@@ -80,3 +80,16 @@ if (!function_exists('cekSession')) {
     }
   }
 }
+
+if (!function_exists('kirim_email')) {
+  function kirim_email($to, $fromEmail, $fromName, $subject, $message)
+  {
+    $email = \Config\Services::email();
+    $email->setFrom($fromEmail, $fromName);
+    $email->setTo($to);
+    $email->setSubject($subject);
+    $email->setMessage($message);
+
+    return $email->send();
+  }
+}

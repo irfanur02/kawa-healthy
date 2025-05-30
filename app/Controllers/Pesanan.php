@@ -5,17 +5,23 @@ namespace App\Controllers;
 use App\Controllers\Admin\BiayaOngkir;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
+use CodeIgniter\Email\Email;
 
 use App\Models\PesananModel;
 use App\Models\BiayaOngkirModel;
 use App\Models\PaketMenuModel;
 use App\Models\JadwalModel;
 use App\Models\ReviewModel;
+use App\Models\AkunModel;
 
 class Pesanan extends BaseController
 {
   protected $pesananModel;
+  protected $biayaOngkirModel;
+  protected $paketMenuModel;
+  protected $jadwalModel;
   protected $reviewModel;
+  protected $akunModel;
 
   public function __construct()
   {
@@ -24,6 +30,7 @@ class Pesanan extends BaseController
     $this->paketMenuModel = new PaketMenuModel();
     $this->jadwalModel = new JadwalModel();
     $this->reviewModel = new ReviewModel();
+    $this->akunModel = new AkunModel();
   }
 
   public function daftarPesanan()
@@ -82,6 +89,7 @@ class Pesanan extends BaseController
   {
     $date = date("Y-m-d") . ' ' . date('H-i-s');
     $idAkun = $this->session->get("id_akun");
+    $email = $this->akunModel->getAkunById($idAkun)->getRowArray()['email_akun'];
     $listPaketMenu = json_decode($this->request->getVar('listPaketMenu'), true);
     $newListPaketMenuNoInfuse = [];
     $listPaketMenuNoInfuse = json_decode($this->request->getVar('listPaketMenuNoInfuse'), true);
@@ -220,7 +228,33 @@ class Pesanan extends BaseController
     ];
     $this->pesananModel->insertDetailPembayaran($data);
 
+
+    $pesan = '
+      <html>
+      <body style="font-family: Arial, sans-serif; background-color: #f8f9fa; padding: 20px;">
+        <h2 style="color: #333;">Notifikasi Pembayaran Masuk</h2>
+        <div style="background-color: #fff; border: 1px solid #ccc; padding: 15px; border-left: 5px solid green;">
+          <p><strong>Pembayaran dari:</strong> '.$atasNama.'</p>
+          <p><strong>Jumlah:</strong> '.formatRupiah($nominal).'</p>
+          <p><strong>Tanggal:</strong> '. formatTanggal(date('Y-m-d'), false, false, true) .' '.date("H:i:s").'</p>
+        </div>
+        <div style="margin-top: 20px; padding: 10px; background-color: #eee; text-align: center;">
+          <p><strong>Lihat Bukti Pembayaran</strong></p>
+          <p><a href="'. base_url("dadmin/pesanan") .'" style="color: blue;">Klik di sini untuk melihat</a></p>
+          <p>Atau<br>Refresh halaman pembayaran pada <strong>Menu Lihat Pesanan</strong></p>
+        </div>
+      </body>
+      </html>
+    ';
+
+    if (!kirim_email('snkawahealthy@gmail.com', $email, $atasNama, 'Pembayaran Masuk dari User', $pesan)) {
+      $status = service('email')->printDebugger(['headers']);
+    } else {
+      $status = "ok";
+    }
+
     $result = array(
+      'status' => $status,
       'idtran' => $idTransaksi,
       'data' => $data,
       'gambar' => $fileGambar->getName(),
@@ -235,6 +269,7 @@ class Pesanan extends BaseController
       'pantangan' => $pantangan,
       'atasNama' => $atasNama,
     );
+
     echo json_encode($result);
   }
 
@@ -325,8 +360,33 @@ class Pesanan extends BaseController
     $this->pesananModel->insertDetailPembayaran($data);
 
     
+    $pesan = '
+      <html>
+      <body style="font-family: Arial, sans-serif; background-color: #f8f9fa; padding: 20px;">
+        <h2 style="color: #333;">Notifikasi Pembayaran Masuk</h2>
+        <div style="background-color: #fff; border: 1px solid #ccc; padding: 15px; border-left: 5px solid green;">
+          <p><strong>Pembayaran dari:</strong> '.$atasNama.'</p>
+          <p><strong>Jumlah:</strong> '.formatRupiah($nominal).'</p>
+          <p><strong>Tanggal:</strong> '. formatTanggal(date('Y-m-d'), false, false, true) .' '.date("H:i:s").'</p>
+        </div>
+        <div style="margin-top: 20px; padding: 10px; background-color: #eee; text-align: center;">
+          <p><strong>Lihat Bukti Pembayaran</strong></p>
+          <p><a href="'. base_url("dadmin/pesanan") .'" style="color: blue;">Klik di sini untuk melihat</a></p>
+          <p>Atau<br>Refresh halaman pembayaran pada <strong>Menu Lihat Pesanan</strong></p>
+        </div>
+      </body>
+      </html>
+    ';
+
+    $email = $this->akunModel->getAkunById($idAkun)->getRowArray()['email_akun'];
+    if (!kirim_email('snkawahealthy@gmail.com', $email, $atasNama, 'Pembayaran Masuk dari User', $pesan)) {
+      $status = service('email')->printDebugger(['headers']);
+    } else {
+      $status = "ok";
+    }
 
     $result = array(
+      'status' => $status,
       // 'data' => $fileGambar->getName()
       'data' => $dataPesanan,
       'idAkun' => $idAkun,
@@ -422,8 +482,11 @@ class Pesanan extends BaseController
   public function batalPesanan()
   {
     $date = date("Y-m-d") . ' ' . date('H-i-s');
+    $idAkun = $this->session->get("id_akun");
     $idPesanan = $this->request->getVar('idPesanan');
     $idJadwalMenu = $this->request->getVar('idJadwalMenu');
+    $nominal = $this->request->getVar('nominal');
+    $namaPelanggan = $this->akunModel->getDataPelangganById($idAkun)->getRowArray()['nama_pelanggan'];
 
     $tanggalMenu = $this->jadwalModel->getTanggalMenuBy($idJadwalMenu)->getRowArray()['tanggal_menu'];
     $dataPesananBiasa = $this->pesananModel->getDetailPesananBiasaBy($idPesanan, $tanggalMenu, [2])->getResultArray(); //terbayar
@@ -444,8 +507,34 @@ class Pesanan extends BaseController
     $where = $idPesanan;
     $this->pesananModel->updateDataPesananBy($updateDataPesanan, $where);
 
+    $pesan = '
+      <html>
+      <body style="font-family: Arial, sans-serif; background-color: #f8f9fa; padding: 20px;">
+        <h2 style="color: #333;">Notifikasi Pembatalan</h2>
+        <div style="background-color: #fff; border: 1px solid #ccc; padding: 15px; border-left: 5px solid green;">
+          <p><strong>Pembayaran dari:</strong> '.$namaPelanggan.'</p>
+          <p><strong>Jumlah:</strong> '.$nominal.'</p>
+          <p><strong>Ketarangan:</strong> Batal Pesanan</p>
+        </div>
+        <div style="margin-top: 20px; padding: 10px; background-color: #eee; text-align: center;">
+          <p><strong>Lanjut Ke Proses Pengembalian Uang</strong></p>
+          <p><a href="'. base_url("dadmin/pesananBatal") .'" style="color: blue;">Klik di sini untuk melanjutkan</a></p>
+          <p>Atau<br>Refresh halaman pesanan batal pada <strong>Menu Lihat Pesanan</strong></p>
+        </div>
+      </body>
+      </html>
+    ';
+
+    $email = $this->akunModel->getAkunById($idAkun)->getRowArray()['email_akun'];
+    if (!kirim_email('snkawahealthy@gmail.com', $email, $namaPelanggan, 'Pembatalan Pesanan dari User', $pesan)) {
+      $status = service('email')->printDebugger(['headers']);
+    } else {
+      $status = "ok";
+    }
+
     $result = array(
-      'data' => $dataPesananBiasa,
+      // 'data' => $dataPesananBiasa,
+      'status' => $status
     );
     echo json_encode($result);
   }
@@ -453,7 +542,10 @@ class Pesanan extends BaseController
   public function berhentiPaketan()
   {
     $date = date("Y-m-d") . ' ' . date('H-i-s');
+    $idAkun = $this->session->get("id_akun");
     $idPesanan = $this->request->getVar('idPesanan');
+    $nominal = $this->request->getVar('nominal');
+    $namaPelanggan = $this->akunModel->getDataPelangganById($idAkun)->getRowArray()['nama_pelanggan'];
 
     $dataMenuPesanan = $this->pesananModel->getIdMenuPesananWillBerhenti($idPesanan)->getResultArray();
     foreach ($dataMenuPesanan as $data) {
@@ -473,8 +565,34 @@ class Pesanan extends BaseController
     $where = $idPesanan;
     $this->pesananModel->updateDataPesananBy($updateDataPesanan, $where);
 
+    $pesan = '
+      <html>
+      <body style="font-family: Arial, sans-serif; background-color: #f8f9fa; padding: 20px;">
+        <h2 style="color: #333;">Notifikasi Pembatalan</h2>
+        <div style="background-color: #fff; border: 1px solid #ccc; padding: 15px; border-left: 5px solid green;">
+          <p><strong>Pembatalan dari:</strong> '.$namaPelanggan.'</p>
+          <p><strong>Jumlah:</strong> '.$nominal.'</p>
+          <p><strong>Ketarangan:</strong> Berhenti Paketan</p>
+        </div>
+        <div style="margin-top: 20px; padding: 10px; background-color: #eee; text-align: center;">
+          <p><strong>Lanjut Ke Proses Pengembalian Uang</strong></p>
+          <p><a href="'. base_url("dadmin/pesananBatal") .'" style="color: blue;">Klik di sini untuk melanjutkan</a></p>
+          <p>Atau<br>Refresh halaman pesanan batal pada <strong>Menu Lihat Pesanan</strong></p>
+        </div>
+      </body>
+      </html>
+    ';
+
+    $email = $this->akunModel->getAkunById($idAkun)->getRowArray()['email_akun'];
+    if (!kirim_email('snkawahealthy@gmail.com', $email, $namaPelanggan, 'Pembatalan Pesanan dari User', $pesan)) {
+      $status = service('email')->printDebugger(['headers']);
+    } else {
+      $status = "ok";
+    }
+
     $result = array(
-      'data' => $updateDataPesanan,
+      // 'data' => $updateDataPesanan,
+      'status' => $status
     );
     echo json_encode($result);
   }
@@ -485,7 +603,10 @@ class Pesanan extends BaseController
     $idPesanan = $this->request->getVar('idPesanan');
     $idAkun = $this->session->get('id_akun');
     $masaHariBaru = $this->request->getVar('masaHariBaru');
+    $masaHariAwal = $this->request->getVar('masaHariAwal');
     $idCatatanPesanan = $this->request->getVar('idCatatanPesanan');
+    $nominal = $this->request->getVar('nominal');
+    $namaPelanggan = $this->akunModel->getDataPelangganById($idAkun)->getRowArray()['nama_pelanggan'];
 
     $listIdMenuPesanan = [];
     $idDetailMenuPesanan = $this->pesananModel->getIdMenuPesananPaketan($idPesanan)->getResultArray();
@@ -527,8 +648,36 @@ class Pesanan extends BaseController
     $where = $idCatatanPesanan;
     $this->pesananModel->updateMasaHariPaketan($data, $where);
 
+    $pesan = '
+      <html>
+      <body style="font-family: Arial, sans-serif; background-color: #f8f9fa; padding: 20px;">
+        <h2 style="color: #333;">Notifikasi Pembatalan</h2>
+        <div style="background-color: #fff; border: 1px solid #6e6e6e; padding: 15px;">
+          <p><strong>Pembatalan dari:</strong> '.$namaPelanggan.'</p>
+          <p><strong>Jumlah:</strong> '.formatRupiah($nominal).'</p>
+          <p><strong>Ketarangan:</strong> Ganti Masa Hari</p>
+          <p><i>* '.$masaHariAwal.' hari, jadi '.$masaHariBaru.' hari</i></p>
+          <p><i>* '.($masaHariAwal - $masaHariBaru).' hari jadwal menu batal</i></p>
+        </div>
+        <div style="margin-top: 20px; padding: 10px; background-color: #eee; text-align: center;">
+          <p><strong>Lanjut Ke Proses Pengembalian Uang</strong></p>
+          <p><a href="'. base_url("dadmin/pesananBatal") .'" style="color: blue;">Klik di sini untuk melanjutkan</a></p>
+          <p>Atau<br>Refresh halaman pesanan batal pada <strong>Menu Lihat Pesanan</strong></p>
+        </div>
+      </body>
+      </html>
+    ';
+
+    $email = $this->akunModel->getAkunById($idAkun)->getRowArray()['email_akun'];
+    if (!kirim_email('snkawahealthy@gmail.com', $email, $namaPelanggan, 'Pembatalan Pesanan dari User', $pesan)) {
+      $status = service('email')->printDebugger(['headers']);
+    } else {
+      $status = "ok";
+    }
+
     $result = array(
       'data' => count($idDetailMenuPesanan),
+      'status' => $status
     );
     echo json_encode($result);
   }

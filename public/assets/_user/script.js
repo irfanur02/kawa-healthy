@@ -1299,160 +1299,169 @@ $(document).ready(function() {
     })
 
     $("#modalPaketan #btnLanjutBayar").on("click", function() {
-    // Ambil semua input yang diperlukan
-    var checkedBoxes = $(".cbkPaketMenu:checked");
-    var multiselect = $(".multiselect");
-    var tanggal = $("#modalPaketan input[name=tanggal]").val();
-    var jumlahHari = $("#modalPaketan #jumlahHari").val();
-    var karbo = $("#modalPaketan select[name=karbo]").val();
-    var pantangan = $("#modalPaketan #txtPantangan").val();
-    var kota = $("#modalPaketan select[name=kota]").val();
-    var alamat = $("#modalPaketan input[name=alamat]").val();
-    var nominal = $("#modalPaketan #txtNominal").val();
-    var atasNama = $("#modalPaketan #txtAtasNama").val();
-    var fileInput = $('#modalPaketan #fileGambar')[0];
+      // Ambil semua input yang diperlukan
+      var checkedBoxes = $(".cbkPaketMenu:checked");
+      var multiselect = $(".multiselect");
+      var tanggal = $("#modalPaketan input[name=tanggal]").val();
+      var jumlahHari = $("#modalPaketan #jumlahHari").val();
+      var karbo = $("#modalPaketan select[name=karbo]").val();
+      var pantangan = $("#modalPaketan #txtPantangan").val();
+      var kota = $("#modalPaketan select[name=kota]").val();
+      var alamat = $("#modalPaketan input[name=alamat]").val();
+      var nominal = $("#modalPaketan #txtNominal").val();
+      var atasNama = $("#modalPaketan #txtAtasNama").val();
+      var fileInput = $('#modalPaketan #fileGambar')[0];
 
-    // Hapus pesan error sebelumnya
-    $(".invalid-feedback, .valid-feedback, .text-danger").remove();
+      // Hapus pesan error sebelumnya
+      $(".invalid-feedback, .valid-feedback, .text-danger").remove();
 
-    // Validasi Paket Menu
-    if (checkedBoxes.length === 0) {
-      multiselect.append(`<div class="text-danger invalid-paket-menu">
-          Paket Menu belum diisi
-      </div>`);
-      return; // Berhenti jika validasi gagal
-    }
+      // Validasi Paket Menu
+      if (checkedBoxes.length === 0) {
+        multiselect.append(`<div class="text-danger invalid-paket-menu">
+            Paket Menu belum diisi
+        </div>`);
+        return; // Berhenti jika validasi gagal
+      }
 
-    // Validasi Tanggal
-    if (!tanggal) {
-      $("#modalPaketan input[name=tanggal]").parent().append(`<div class="text-danger invalid-tanggal">
-          Tanggal belum diisi
-      </div>`);
-      return;
-    }
-
-    var paketPilihan = $("#modalPaketan #checkboxes input:checked").attr("data-idPaketMenu");
-    if (paketPilihan == "1") {
-      // Validasi Karbo
-      if (!karbo || karbo === "-") {
-        $("#modalPaketan select[name=karbo]").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-karbo">
-            Karbo belum diisi
+      // Validasi Tanggal
+      if (!tanggal) {
+        $("#modalPaketan input[name=tanggal]").parent().append(`<div class="text-danger invalid-tanggal">
+            Tanggal belum diisi
         </div>`);
         return;
       }
-    }
 
-    // Validasi Kota
-    if (!kota) {
-      $("#modalPaketan select[name=kota]").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-kota">
-          Kota belum diisi
-      </div>`);
-      return;
-    }
-
-    // Validasi Alamat
-    if (!alamat) {
-      $("#modalPaketan input[name=alamat]").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-alamat">
-          Alamat belum diisi
-      </div>`);
-      return;
-    }
-
-    // Validasi File Gambar
-    if (!fileInput.files || fileInput.files.length === 0) {
-      $("#modalPaketan #fileGambar").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-fileGambar">
-          File bukti transfer belum diupload
-      </div>`);
-      return;
-    }
-
-    var file = fileInput.files[0];
-    var allowedExtensions = ["jpg", "jpeg"];
-    var allowedMimeTypes = ["image/jpeg", "image/jpg"];
-
-    // Ambil ekstensi file
-    var fileExtension = file.name.split('.').pop().toLowerCase();
-
-    // Validasi ekstensi file
-    if (!allowedExtensions.includes(fileExtension)) {
-      $("#modalPaketan #fileGambar").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-fileGambar">
-          File harus dalam format JPG/JPEG
-      </div>`);
-      return;
-    }
-
-    // Validasi tipe MIME
-    if (!allowedMimeTypes.includes(file.type)) {
-      $("#modalPaketan #fileGambar").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-fileGambar">
-          File harus dalam format JPG/JPEG
-      </div>`);
-      return;
-    }
-
-    // Validasi Nominal
-    if (!nominal) {
-      $("#modalPaketan #txtNominal").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-nominal">
-          Nominal belum diisi
-      </div>`);
-      return;
-    }
-
-    // Validasi Atas Nama
-    if (!atasNama) {
-      $("#modalPaketan #txtAtasNama").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-atasNama">
-          Nama Penarasfer belum diisi
-      </div>`);
-      return;
-    }
-
-    // Proses data checkbox yang dicentang
-    var listPaketMenuNoInfuse = [];
-    var listPaketMenuWithInfuse = [];
-    var listPaketMenu = [];
-    checkedBoxes.each(function() {
-        var idPaketMenu = $(this).data('idpaketmenu');
-        listPaketMenu.push({ idPaketMenu: idPaketMenu });
-        if (idPaketMenu != 4) {
-            listPaketMenuNoInfuse.push({ idPaketMenu: idPaketMenu });
+      var paketPilihan = $("#modalPaketan #checkboxes input:checked").attr("data-idPaketMenu");
+      if (paketPilihan == "1") {
+        // Validasi Karbo
+        if (!karbo || karbo === "-") {
+          $("#modalPaketan select[name=karbo]").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-karbo">
+              Karbo belum diisi
+          </div>`);
+          return;
         }
-        if (idPaketMenu == 4) {
-            listPaketMenuWithInfuse.push({ idPaketMenu: idPaketMenu });
-        }
-    });
+      }
 
-    // Buat FormData untuk dikirim via AJAX
-    var formData = new FormData();
-    formData.append('listPaketMenu', JSON.stringify(listPaketMenu));
-    formData.append('listPaketMenuNoInfuse', JSON.stringify(listPaketMenuNoInfuse));
-    formData.append('listPaketMenuWithInfuse', JSON.stringify(listPaketMenuWithInfuse));
-    formData.append('tanggal', tanggal);
-    formData.append('jumlahHari', jumlahHari);
-    formData.append('karbo', (karbo) ? karbo : "-");
-    formData.append('pantangan', pantangan);
-    formData.append('ongkir', kota);
-    formData.append('alamat', alamat);
-    formData.append('nominal', nominal);
-    formData.append('atasNama', atasNama);
-    formData.append('fileGambar', fileInput.files[0]);
+      // Validasi Kota
+      if (!kota) {
+        $("#modalPaketan select[name=kota]").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-kota">
+            Kota belum diisi
+        </div>`);
+        return;
+      }
 
-    // Kirim data menggunakan AJAX
-    $.ajax({
-      url: base_url + '/pesananPaketan/bayar',
-      type: 'POST',
-      data: formData,
-      dataType: 'json',
-      contentType: false,  // Jangan set Content-Type, biar FormData yang mengatur
-      processData: false,  // Jangan memproses data menjadi string
-      success: function(response) {
-        console.log(response);
-          window.location.href = base_url + '/pesananKu'; // Redirect jika sukses
-      },
-      error: function(xhr, status, error) {
+      // Validasi Alamat
+      if (!alamat) {
+        $("#modalPaketan input[name=alamat]").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-alamat">
+            Alamat belum diisi
+        </div>`);
+        return;
+      }
+
+      // Validasi File Gambar
+      if (!fileInput.files || fileInput.files.length === 0) {
+        $("#modalPaketan #fileGambar").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-fileGambar">
+            File bukti transfer belum diupload
+        </div>`);
+        return;
+      }
+
+      var file = fileInput.files[0];
+      var allowedExtensions = ["jpg", "jpeg"];
+      var allowedMimeTypes = ["image/jpeg", "image/jpg"];
+
+      // Ambil ekstensi file
+      var fileExtension = file.name.split('.').pop().toLowerCase();
+
+      // Validasi ekstensi file
+      if (!allowedExtensions.includes(fileExtension)) {
+        $("#modalPaketan #fileGambar").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-fileGambar">
+            File harus dalam format JPG/JPEG
+        </div>`);
+        return;
+      }
+
+      // Validasi tipe MIME
+      if (!allowedMimeTypes.includes(file.type)) {
+        $("#modalPaketan #fileGambar").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-fileGambar">
+            File harus dalam format JPG/JPEG
+        </div>`);
+        return;
+      }
+
+      // Validasi Nominal
+      if (!nominal) {
+        $("#modalPaketan #txtNominal").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-nominal">
+            Nominal belum diisi
+        </div>`);
+        return;
+      }
+
+      // Validasi Atas Nama
+      if (!atasNama) {
+        $("#modalPaketan #txtAtasNama").addClass('is-invalid').parent().append(`<div class="invalid-feedback invalid-atasNama">
+            Nama Penarasfer belum diisi
+        </div>`);
+        return;
+      }
+
+      // Proses data checkbox yang dicentang
+      var listPaketMenuNoInfuse = [];
+      var listPaketMenuWithInfuse = [];
+      var listPaketMenu = [];
+      checkedBoxes.each(function() {
+          var idPaketMenu = $(this).data('idpaketmenu');
+          listPaketMenu.push({ idPaketMenu: idPaketMenu });
+          if (idPaketMenu != 4) {
+              listPaketMenuNoInfuse.push({ idPaketMenu: idPaketMenu });
+          }
+          if (idPaketMenu == 4) {
+              listPaketMenuWithInfuse.push({ idPaketMenu: idPaketMenu });
+          }
+      });
+
+      // Buat FormData untuk dikirim via AJAX
+      var formData = new FormData();
+      formData.append('listPaketMenu', JSON.stringify(listPaketMenu));
+      formData.append('listPaketMenuNoInfuse', JSON.stringify(listPaketMenuNoInfuse));
+      formData.append('listPaketMenuWithInfuse', JSON.stringify(listPaketMenuWithInfuse));
+      formData.append('tanggal', tanggal);
+      formData.append('jumlahHari', jumlahHari);
+      formData.append('karbo', (karbo) ? karbo : "-");
+      formData.append('pantangan', pantangan);
+      formData.append('ongkir', kota);
+      formData.append('alamat', alamat);
+      formData.append('nominal', nominal);
+      formData.append('atasNama', atasNama);
+      formData.append('fileGambar', fileInput.files[0]);
+
+      // Kirim data menggunakan AJAX
+      $.ajax({
+        url: base_url + '/pesananPaketan/bayar',
+        type: 'POST',
+        data: formData,
+        dataType: 'json',
+        contentType: false,  // Jangan set Content-Type, biar FormData yang mengatur
+        processData: false,  // Jangan memproses data menjadi string
+        beforeSend: function () {
+          const modalPaketan = document.getElementById('modalPaketan');    
+          const modalInstanceModalPaketan = bootstrap.Modal.getInstance(modalPaketan);
+          modalInstanceModalPaketan.hide();
+          const modalInstanceBackdropLoading = new bootstrap.Modal(modalStaticBackdropLoading);
+          modalInstanceBackdropLoading.show();
+        },
+        success: function(response) {
+          console.log(response);
+        },
+        error: function(xhr, status, error) {
           alert('Terjadi kesalahan saat mengirim data. Silakan coba lagi.');
           console.error(xhr.responseText);
-      }
+        },
+        complete: function () {
+          window.location.href = base_url + '/pesananKu';
+        }
+      });
     });
-});
   
     const modalPilihMenu = document.getElementById('modalPilihMenu');
     modalPilihMenu.addEventListener('hidden.bs.modal', event => {
@@ -1850,6 +1859,8 @@ $(document).ready(function() {
       formData.append('dataPesanan', JSON.stringify(dataPesanan));
       formData.append('fileGambar', fileInput.files[0]);
 
+      
+
       // Kirim data menggunakan AJAX
       $.ajax({
         url: base_url + '/pesanan/bayar',
@@ -1858,13 +1869,19 @@ $(document).ready(function() {
         dataType: 'json',
         contentType: false,  // Jangan set Content-Type, biar FormData yang mengatur
         processData: false,  // Jangan memproses data menjadi string
+        beforeSend: function () {
+          const modalInstance = new bootstrap.Modal(modalStaticBackdropLoading);
+          modalInstance.show();
+        },
         success: function(response) {
             console.log(response);
-            window.location.href = base_url + '/pesananKu';
         },
         error: function(xhr, status, error) {
-            // Menangani kesalahan
-            alert('Terjadi kesalahan saat mengupload!');
+          // Menangani kesalahan
+          alert('Terjadi kesalahan saat mengupload!');
+        },
+        complete: function () {
+          window.location.href = base_url + '/pesananKu';
         }
       });
     })
@@ -1884,29 +1901,41 @@ $(document).ready(function() {
     $("#modalBerhentiPaketan #modalBtnBerhentiPaketan").on("click", function() {
       var idPesanan = $(this).attr("data-idPesanan");
       var indexBaris = $(this).attr("data-indexBaris");
+      var nominal = $("table tr").find(`.btnBerhentiPaketan[data-indexBaris="${indexBaris}"]`).closest("tr").find('td').eq(3).text();
+      // console.log(nominal);
 
       $.ajax({
         url: base_url + '/pesanan/berhentiPaketan',
         type: 'POST',
         data: {
-          idPesanan: idPesanan
+          idPesanan: idPesanan,
+          nominal: nominal
         },
         dataType: 'json',
+        beforeSend: function () {
+          const modalBerhentiPaketan = document.getElementById('modalBerhentiPaketan');    
+          const modalInstance = bootstrap.Modal.getInstance(modalBerhentiPaketan);
+          modalInstance.hide();
+          const modalInstanceBackdropLoading = new bootstrap.Modal(modalStaticBackdropLoading);
+          modalInstanceBackdropLoading.show();
+        },
         success: function(response) {
-            console.log(response);
+          console.log(response);
         },
         error: function(xhr, status, error) {
-            // Menangani kesalahan
-            alert('Terjadi kesalahan saat mengupload!');
+          // Menangani kesalahan
+          alert('Terjadi kesalahan saat mengupload!');
+        },
+        complete: function () {
+          const modalStaticBackdropLoading = document.getElementById('modalStaticBackdropLoading');    
+          const modalInstance = bootstrap.Modal.getInstance(modalStaticBackdropLoading);
+          modalInstance.hide();
+          $(".modal-backdrop").remove();
+          var btnBerhentiPaketan = $("table tr").find(`.btnBerhentiPaketan[data-indexBaris="${indexBaris}"]`);
+          btnBerhentiPaketan.after(`<span class="badge text-bg-danger">Berhenti</span>`);
+          btnBerhentiPaketan.remove();
         }
       });
-      const modalBerhentiPaketan = document.getElementById('modalBerhentiPaketan');    
-      const modalInstance = bootstrap.Modal.getInstance(modalBerhentiPaketan);
-      modalInstance.hide();
-      $(".modal-backdrop").remove();
-      var btnBerhentiPaketan = $("table tr").find(`.btnBerhentiPaketan[data-indexBaris="${indexBaris}"]`);
-      btnBerhentiPaketan.after(`<span class="badge text-bg-danger">Berhenti</span>`);
-      btnBerhentiPaketan.remove();
     })
 
     $(".content-pesananku .btnBatalPesanan").on("click", function() {
@@ -1923,30 +1952,42 @@ $(document).ready(function() {
       var idPesanan = $(this).attr("data-idPesanan");
       var idJadwalMenu = $(this).attr("data-idJadwalMenu");
       var indexBaris = $(this).attr("data-indexBaris");
+      var nominal = $("table tr").find(`.btnBatalPesanan[data-indexBaris="${indexBaris}"]`).closest("tr").find('td').eq(3).text();
+      // console.log(nominal);
 
       $.ajax({
         url: base_url + '/pesanan/batal',
         type: 'POST',
         data: {
           idPesanan: idPesanan,
-          idJadwalMenu: idJadwalMenu
+          idJadwalMenu: idJadwalMenu,
+          nominal: nominal
         },
         dataType: 'json',
+        beforeSend: function () {
+          const modalBatalPesan = document.getElementById('modalBatalPesan');    
+          const modalInstance = bootstrap.Modal.getInstance(modalBatalPesan);
+          modalInstance.hide();
+          const modalInstanceBackdropLoading = new bootstrap.Modal(modalStaticBackdropLoading);
+          modalInstanceBackdropLoading.show();
+        },
         success: function(response) {
-            console.log(response);
+          console.log(response);
         },
         error: function(xhr, status, error) {
-            // Menangani kesalahan
-            alert('Terjadi kesalahan saat mengupload!');
+          // Menangani kesalahan
+          alert('Terjadi kesalahan saat mengupload!');
+        },
+        complete: function () {
+          const modalStaticBackdropLoading = document.getElementById('modalStaticBackdropLoading');    
+          const modalInstance = bootstrap.Modal.getInstance(modalStaticBackdropLoading);
+          modalInstance.hide();
+          $(".modal-backdrop").remove();
+          var btnTolakPesanan = $("table tr").find(`.btnBatalPesanan[data-indexBaris="${indexBaris}"]`);
+          btnTolakPesanan.after(`<span class="badge text-bg-danger">Di Batalkan</span>`);
+          btnTolakPesanan.remove();
         }
       });
-      const modalBatalPesan = document.getElementById('modalBatalPesan');    
-      const modalInstance = bootstrap.Modal.getInstance(modalBatalPesan);
-      modalInstance.hide();
-      $(".modal-backdrop").remove();
-      var btnTolakPesanan = $("table tr").find(`.btnBatalPesanan[data-indexBaris="${indexBaris}"]`);
-      btnTolakPesanan.after(`<span class="badge text-bg-danger">Di Batalkan</span>`);
-      btnTolakPesanan.remove();
     })
   }
 
@@ -1974,6 +2015,18 @@ $(document).ready(function() {
       var idPesanan = $(this).attr("data-idPesanan");
       var idCatatanPesanan = $(this).attr("data-idCatatanPesanan");
       var masaHariBaru = $("#modalGantiMasa input").val();
+      var masaHariAwal = $(".masaHariAwal").text();
+      let total = 0;
+      let text = '';
+      let angka = 0;
+
+      // var nominalHarga = $(".nominalHarga").text().trim();
+      $('.nominalHarga').each(function () {
+        text = $(this).text();
+        angka = parseInt(text.replace(/[^0-9]/g, '')); // Hilangkan Rp. dan titik
+        total += angka;
+      });
+      console.log(masaHariAwal);
 
       $.ajax({
         url: base_url + '/pesanan/gantiMasaHariPaketan',
@@ -1981,18 +2034,29 @@ $(document).ready(function() {
         data: {
           idPesanan: idPesanan,
           idCatatanPesanan: idCatatanPesanan,
-          masaHariBaru: masaHariBaru
+          masaHariBaru: masaHariBaru,
+          masaHariAwal: masaHariAwal,
+          nominal: masaHariBaru * total
         },
         dataType: 'json',
+        beforeSend: function () {
+          const modalGantiMasa = document.getElementById('modalGantiMasa');    
+          const modalInstanceModalGantiMasa = bootstrap.Modal.getInstance(modalGantiMasa);
+          modalInstanceModalGantiMasa.hide();
+          const modalInstanceBackdropLoading = new bootstrap.Modal(modalStaticBackdropLoading);
+          modalInstanceBackdropLoading.show();
+        },
         success: function(response) {
-            console.log(response);
+          console.log(response);
         },
         error: function(xhr, status, error) {
-            // Menangani kesalahan
-            alert('Terjadi kesalahan saat mengupload!');
+          // Menangani kesalahan
+          alert('Terjadi kesalahan saat mengupload!');
+        },
+        complete: function () {
+          location.reload();
         }
       });
-      location.reload();
     })
   }
 

@@ -1354,6 +1354,8 @@ class PesananModel extends Model
                     jm.tanggal_menu, 
                     m.nama_menu, 
                     pm.nama_paket_menu,
+                    m.harga_menu,
+                    pm.harga_paket_menu,
                     dmp.batal
                 ');
     $builder->join('ongkir o', 'o.id_ongkir = t.id_ongkir');

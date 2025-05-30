@@ -71,6 +71,9 @@
                 <?php if ($data['approved'] == "n") : ?>
                   <span class="badge text-bg-danger">Di Tolak</span>
                 <?php endif; ?>
+                <?php if ($data['approved'] == "-") : ?>
+                  <span class="badge text-bg-danger">Di Batalkan</span>
+                <?php endif; ?>
                 <a class="btn btn-sm my-btn-orange my-border-btn rounded-pill fw-medium lh-1" href="/pesananDetailPaketan/<?php echo $data['id_pesanan']; ?>" role="button">Detail</a>
               </td>
             </tr>

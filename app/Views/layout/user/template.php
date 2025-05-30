@@ -13,6 +13,20 @@
 
 <body>
 
+  <!-- Spinner loading -->
+  <div class="modal fade" id="modalStaticBackdropLoading" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="false">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div id="loading" class="text-center my-3">
+          <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="mt-2 fw-medium">Sedang memproses data...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <?php echo $this->renderSection('content'); ?>
 
   <script src=<?php echo base_url("/assets/js/bootstrap.bundle.min.js"); ?>></script>
